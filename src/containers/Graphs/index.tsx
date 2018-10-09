@@ -221,7 +221,6 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   private handleNewBlock = block => {
     const { panelConfigs } = this.props.config
     this.setState(state => {
-      // console.log(+block.header.number)
       const blocks = [...state.blocks, block].slice(-this.state.maxCount)
       if (this.blockGraph && blocks.length > 1) {
         const source = getBlockSource({ blocks })
