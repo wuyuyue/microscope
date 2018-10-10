@@ -13,7 +13,7 @@ const list = [
   { name: 'Website', value: 'website' },
   { name: 'Genesis Time', value: 'genesisTimestamp' },
   // { name: 'Version', value: 'version' },
-  { name: 'Block Interval', value: 'blockInterval' },
+  { name: 'Block Interval', value: 'blockInterval', unitName: 'ms' },
   { name: 'Token Name', value: 'tokenName' },
   { name: 'Token Symbol', value: 'tokenSymbol' }
   // { name: 'Economical Model', value: 'economicalModel' }
@@ -22,9 +22,12 @@ const list = [
 const MetadataRender = translate('microscope')(
   ({ metadata, t }: { metadata: Metadata; t: (key: string) => string }) => (
     <div className={styles.display}>
-      {list.map(item => (
+      {list.map((item) => (
         <div key={item.name} className={`${styles.item} ${text.ellipsis}`}>
-          {t(item.name)}: <span className={styles.itemValue}>{metadata[item.value]}</span>
+          {t(item.name)}:{' '}
+          <span className={styles.itemValue}>
+            {metadata[item.value]} {item.unitName || ''}
+          </span>
         </div>
       ))}
       <div className={styles.validators}>
@@ -73,6 +76,10 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
     <MetadataRender metadata={metadata} />
     <div className={styles.title}>
       {t('other')} {t('chain')}
+    </div>
+    <div>
+      If you connect to an AppChain node instead of a <a href="https://github.com/cryptape/re-birth">ReBirth</a> server,
+      Microscope will NOT be fully functional.
     </div>
     <div className={styles.fields}>
       <input
