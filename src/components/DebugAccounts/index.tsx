@@ -42,7 +42,7 @@ updateDebugAccounts: React.EventHandler<React.SyntheticEvent<HTMLElement>>
     <ExpansionPanelDetails>
       <List style={{ width: '100%' }}>
         <ListItem>
-          <ListItemText primary="Private Key & Address" />
+          <ListItemText primary="Address & Private Key" />
           <ListItemText
             primary="Balance"
             classes={{
