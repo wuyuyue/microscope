@@ -352,7 +352,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
     clearTimeout(inputTimeout)
     if (Math.round(v) === v && v >= 10 && v <= 100) {
       this.props.config.changePanelConfig({ ...configs, [key]: v })
-      this.setState({ saving: false})
+      this.setState({ saving: false })
     } else {
       const t = setTimeout(() => {
         v = 10
