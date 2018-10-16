@@ -92,7 +92,9 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
             <div className={styles.fields}>
               <div className={styles.titles}>
                 {selectors.map(selector => (
-                  <span className={styles.title}>{t(selector.text)}</span>
+                  <span className={styles.title} key={selector.key}>
+                    {t(selector.text)}
+                  </span>
                 ))}
               </div>
               <div className={styles.inputs}>

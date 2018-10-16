@@ -29,7 +29,7 @@ const initState = {
   keyword: '',
   metadata: initMetadata,
   sidebarNavs: false,
-  activePanel: window.localStorage.getItem('chainIp') ? '' : 'metadata',
+  activePanel: window.urlParamChain || window.localStorage.getItem('chainIp') ? '' : 'metadata',
   searchIp: '',
   otherMetadata: initMetadata,
   tps: 0,
@@ -194,6 +194,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     window.location.reload()
   }
   private switchChain = (chain: string = '') => (e?: any) => {
+    window.location.search = ''
     const { otherMetadata } = this.state
     this.setState({ inputChainError: false })
     this.setState({ waitingMetadata: true })
