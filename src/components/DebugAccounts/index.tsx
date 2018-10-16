@@ -26,13 +26,11 @@ const DebugAccounts = ({
   privateKeysField,
   handleAccountsInput,
   updateDebugAccounts
-}: // handleKeyPress
-{
+}: {
 accounts: DebugAccount[]
 privateKeysField: string
 handleAccountsInput: React.EventHandler<React.SyntheticEvent<HTMLElement>>
 updateDebugAccounts: React.EventHandler<React.SyntheticEvent<HTMLElement>>
-// handleKeyPress: React.EventHandler<React.SyntheticEvent<HTMLElement>>
 }) => (
   <ExpansionPanel defaultExpanded style={{ marginBottom: '15px' }}>
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>

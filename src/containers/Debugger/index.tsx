@@ -78,6 +78,10 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
         })
       }
     })
+    this.props.CITAObservables.newBlockByNumberSubject.subscribe(block => {
+      // new block comes
+      this.fetchAndUpdateAccounts(this.state.accounts)
+    })
   }
   public loadDebugAccounts = () => {
     let privateKeys = getLocalDebugAccounts()
@@ -117,12 +121,6 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
       [key]: value
     }))
   }
-  // private handleKeyPress = key => (e: React.KeyboardEvent<HTMLElement>) => {
-  //   console.log(e.keyCode)
-  //   if (e.keyCode === 13 && key === '') {
-  //     this.updateDebugAccounts()
-  //   }
-  // }
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   public render () {
@@ -134,7 +132,6 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
             accounts={this.state.accounts}
             updateDebugAccounts={this.updateDebugAccounts}
             handleAccountsInput={this.handleInput('privateKeysField')}
-            // handleKeyPress={this.handleKeyPress('privateKeysField')}
           />
           <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
             <Grid item md={6} sm={12} xs={12}>
