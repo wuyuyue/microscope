@@ -56,12 +56,18 @@ class Account extends React.Component<AccountProps, AccountState> {
   private onMount = account => {
     this.setState(initAccountState)
     this.updateBasicInfo(account)
+    this.fetchContractCode(account)
   }
   private onTabClick = (e, value) => {
     this.setState({ panelOn: value })
   }
 
   private setTransactionsCount = count => this.setState({ txCount: count })
+  private fetchContractCode = account =>
+    this.props.CITAObservables.getCode({
+      contractAddr: account,
+      blockNumber: 'latest'
+    }).subscribe(code => this.setState({ code }))
   protected readonly addrGroups = [
     {
       key: 'normals',
@@ -225,8 +231,8 @@ class Account extends React.Component<AccountProps, AccountState> {
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private renderPanelByTab = () => {
-    const { abi, addr, panelOn } = this.state
-    const { account } = this.props.match.params
+    const { abi, addr, panelOn, code } = this.state
+    // const { account } = this.props.match.params
     const erc = (
       <ERCPanel
         abi={abi.filter(abiEl => abiEl.type === 'function')}
@@ -235,11 +241,16 @@ class Account extends React.Component<AccountProps, AccountState> {
       />
     )
     const tx = <TransactionTable {...this.props} key={addr} setTransactionsCount={this.setTransactionsCount} inset />
-    const info = <ContractInfoPanel account={account} abi={abi} />
-    const table = [tx, erc, info]
-    let n = Number(panelOn)
-    n = n >= 0 && n < table.length ? n : 0
-    return table[n]
+    const info = <ContractInfoPanel code={code} abi={abi} />
+    const table = {
+      tx,
+      abi: erc,
+      info
+    }
+    // let n = Number(panelOn)
+    // console.log(panelOn)
+    // n = n >= 0 && n < table.length ? n : 0
+    return table[panelOn]
   }
   render () {
     const {
@@ -256,6 +267,7 @@ class Account extends React.Component<AccountProps, AccountState> {
       erc20sAdd,
       erc721sAdd,
       abi,
+      code,
       error
     } = this.state
 
@@ -281,10 +293,10 @@ class Account extends React.Component<AccountProps, AccountState> {
           <Card classes={{ root: layouts.cardContainer }} elevation={0}>
             <CardHeader action={<Button onClick={this.toggleAddrs(true)}>管理本地账户</Button>} />
             <CardContent>
-              <Tabs value={+panelOn} onChange={this.onTabClick}>
-                <Tab label={`Transactions(${txCount || 0})`} />
-                {abi && abi.length ? <Tab label="Contract Panel" /> : null}
-                <Tab label="Contract Info" />
+              <Tabs value={panelOn} onChange={this.onTabClick}>
+                <Tab value="tx" label={`Transactions(${txCount || 0})`} />
+                {abi && abi.length ? <Tab value="abi" label="Contract Panel" /> : null}
+                {code === '0x' ? null : <Tab value="info" label="Contract Info" />}
               </Tabs>
               <Divider />
               {this.renderPanelByTab()}
