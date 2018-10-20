@@ -114,6 +114,7 @@ export const initAccountState = {
   type: AccountType.NORMAL,
   addr: '',
   abi: [] as ABI,
+  code: '0x',
   contract: { _jsonInterface: [], methods: [] } as Contract,
   balance: '',
   txCount: 0,
@@ -126,7 +127,7 @@ export const initAccountState = {
   normals: [] as LocalAccount[],
   erc20s: [] as LocalAccount[],
   erc721s: [] as LocalAccount[],
-  panelOn: false,
+  panelOn: 'tx',
   addrsOn: false,
   normalsAdd: {
     name: '',
