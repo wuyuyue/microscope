@@ -67,17 +67,16 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
 
   handleSelectorInput = (selector: string) => e => {
     e.persist()
-    this.setState(state => {
-      const { selectorsValue } = state
-      const newSelectorsValue = {
-        ...selectorsValue,
+    this.setState(state => ({
+      selectorsValue: {
+        ...state.selectorsValue,
         [selector]: e.target.value
+      },
+      selectorsError: {
+        ...state.selectorsError,
+        [selector]: false
       }
-
-      return {
-        selectorsValue: newSelectorsValue
-      }
-    })
+    }))
   }
   handleSubmit = e => {
     const { selectorsError } = this.state
@@ -95,8 +94,8 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
   }
   handleSelectorBlur = (selector: string, check: any = () => false) => e => {
     e.persist()
-    const {value} = e.target
-    const valueError = !check(value)
+    const { value } = e.target
+    const valueError = value ? !check(value) : false
     this.setState(state => {
       const { selectorsValue, selectorsError } = state
       const newSelectorsValue = {
