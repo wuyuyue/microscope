@@ -22,7 +22,7 @@ enum SearchType {
   ERROR
 }
 
-const searchGen = keyword => {
+const searchGen = (keyword) => {
   let word = keyword
   if (!word.startsWith('0x')) {
     if (check.digits(word)) {
