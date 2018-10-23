@@ -23,6 +23,8 @@ import { handleError, dismissError } from '../../utils/handleError'
 const layout = require('../../styles/layout.scss')
 const styles = require('./graph.scss')
 
+const PRICE = 1
+
 const initState = {
   blocks: [] as IBlock[],
   transactions: [] as TransactionFromServer[],
@@ -50,7 +52,7 @@ const getBlockSource = ({ blocks = this.state.blocks }) => {
       `${+(curr as IBlock).header.number}`, // height
       +(curr as IBlock).header.timestamp - +(prev as IBlock).header.timestamp, // interval
       (curr as IBlock).body.transactions.length, // tx count
-      `${+(curr as IBlock).header.gasUsed / 1e9}`
+      `${+(curr as IBlock).header.gasUsed / PRICE}`
     ])
     return curr
   })

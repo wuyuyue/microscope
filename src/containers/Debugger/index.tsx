@@ -127,12 +127,14 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
     return (
       <React.Fragment>
         <div className={layout.main}>
-          <DebugAccounts
-            privateKeysField={this.state.privateKeysField}
-            accounts={this.state.accounts}
-            updateDebugAccounts={this.updateDebugAccounts}
-            handleAccountsInput={this.handleInput('privateKeysField')}
-          />
+          {window.location.hostname === 'localhost' ? (
+            <DebugAccounts
+              privateKeysField={this.state.privateKeysField}
+              accounts={this.state.accounts}
+              updateDebugAccounts={this.updateDebugAccounts}
+              handleAccountsInput={this.handleInput('privateKeysField')}
+            />
+          ) : null}
           <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
             <Grid item md={6} sm={12} xs={12}>
               <StaticCard icon="/microscopeIcons/blocks.png" title="Blocks" page="blocks" className={styles.card}>
