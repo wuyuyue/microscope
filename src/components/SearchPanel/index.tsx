@@ -14,6 +14,7 @@ import check from '../../utils/check'
 
 const styles = require('./styles.scss')
 
+const NOT_FOUND_IMG = `${process.env.PUBLIC}/images/search_not_found.png`
 enum SearchType {
   BLOCK,
   TRANSACTION,
@@ -22,15 +23,8 @@ enum SearchType {
   ERROR
 }
 
-const searchGen = (keyword) => {
-  let word = keyword
-  if (!word.startsWith('0x')) {
-    if (check.digits(word)) {
-      word = `0x${Number(word).toString(16)}`
-    } else {
-      word = `0x${word}`
-    }
-  }
+const searchGen = keyword => {
+  let word = check.format0x(keyword)
   word = word.toLocaleLowerCase()
   if (check.address(word)) {
     return { type: SearchType.ACCOUNT, value: word }
@@ -41,6 +35,13 @@ const searchGen = (keyword) => {
   }
   return { type: SearchType.ERROR, value: word }
 }
+
+const NotFound = () => (
+  <div className={styles.notFound}>
+    <img src={NOT_FOUND_IMG} title="not found" alt="not found" />
+    <span>Not Found</span>
+  </div>
+)
 
 const BlockDisplay = translate('microscope')(({ block, t }: { block: IBlock; t: (key: string) => string }) => (
   <div className={styles.display}>
@@ -135,7 +136,8 @@ const initState = {
   transaction: { ...initUnsignedTransaction, hash: '' },
   txCount: '',
   balance: '',
-  searchValueError: false
+  searchValueError: false,
+  searched: false
 }
 
 type SearchPanelState = typeof initState
@@ -146,7 +148,8 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
   private handleInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
     const { value } = e.currentTarget
     this.setState({
-      keyword: value
+      keyword: value,
+      searched: false
     })
   }
   private handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -195,7 +198,7 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
     const { fetchHeight, fetchTxOrBlock, fetchAccount, inputSearchError } = this
     if (keyword === '') return
     // clear history
-    this.setState({ ...initState, keyword })
+    this.setState({ ...initState, keyword, searched: true })
     const typeTable = {
       [SearchType.HEIGHT]: fetchHeight,
       [SearchType.TRANSACTION]: fetchTxOrBlock,
@@ -206,7 +209,7 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
     typeTable[search.type](search.value)
   }
   render () {
-    const { keyword, block, transaction, balance, txCount, searchValueError } = this.state
+    const { keyword, block, transaction, balance, txCount, searchValueError, searched } = this.state
     return (
       <div>
         <div className={`${styles.fields} ${searchValueError ? styles.error : ''}`}>
@@ -232,6 +235,7 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
         {block.hash ? <BlockDisplay block={block} /> : null}
         {transaction.hash ? <TransactionDisplay tx={transaction} /> : null}
         {balance !== '' ? <AccountDisplay balance={balance} txCount={+txCount} addr={keyword} /> : null}
+        {searched && !searchValueError && !block.hash && !transaction.hash && !balance ? <NotFound /> : null}
       </div>
     )
   }

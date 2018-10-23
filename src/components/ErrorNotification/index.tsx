@@ -18,7 +18,7 @@ export default ({ error, dismissError }) => (
           href="https://docs.nervos.org/cita/#/rpc_guide/rpc_error_code"
           target="_blank"
           rel="noopener noreferrer"
-          className={texts.highlight}
+          className={texts.errMsgLink}
         >
           More
         </a>

@@ -52,7 +52,7 @@ const initState: TransactionState = {
     value: '',
     data: '',
     quotaLimit: '',
-    // quotaPrice: '',
+    quotaPrice: '',
     quotaUsed: '',
     createdContractAddress: '',
     errorMessage: ''
@@ -120,6 +120,7 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       this.props.CITAObservables.getTransactionReceipt(transaction).subscribe((receipt: Chain.TransactionReceipt) => {
         this.handleReturnedTxReceipt(receipt)
       }, this.handleError)
+      this.getQuotaPrice()
     }
   }
   public componentDidMount () {
@@ -139,6 +140,18 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
   }
   public componentDidCatch (err) {
     this.handleError(err)
+  }
+  private getQuotaPrice = () => {
+    this.props.CITAObservables.getQuotaPrice().subscribe((price: string) => {
+      this.setState(state =>
+        Object.assign({}, state, {
+          basicInfo: {
+            ...state.basicInfo,
+            quotaPrice: `${price === '0x' ? '0' : +price}`
+          }
+        })
+      )
+    }, this.handleError)
   }
   private handleReturnedTx = (tx: Chain.Transaction) => {
     if (!tx) {
@@ -206,7 +219,7 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
     { key: 'value', label: 'Value' },
     { key: 'data', label: 'Data' },
     { key: 'quotaLimit', label: 'Quota Limit' },
-    // { key: 'quotaPrice', label: 'Quota Price' },
+    { key: 'quotaPrice', label: 'Quota Price' },
     { key: 'quotaUsed', label: 'Quota Used' },
     { key: 'createdContractAddress', label: 'Created Contract Address' },
     { key: 'errorMessage', label: 'Error Message' }
