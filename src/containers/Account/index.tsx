@@ -18,6 +18,7 @@ import Banner from '../../components/Banner'
 import Dialog from '../Dialog'
 import ErrorNotification from '../../components/ErrorNotification'
 import LocalAccounts from '../../components/LocalAccounts'
+import ContractInfoPanel from '../../components/ContractInfoPanel'
 
 import { AccountType } from '../../typings/account'
 import { IContainerProps } from '../../typings'
@@ -31,7 +32,7 @@ import valueFormatter from '../../utils/valueFormatter'
 const layouts = require('../../styles/layout.scss')
 const text = require('../../styles/text.scss')
 
-const accountFormatter = (addr: string) => (addr.startsWith('0x') ? addr : `0x${addr}`)
+const accountFormatter = (addr: string) => (/^0x/i.test(addr) ? addr : `0x${addr}`)
 interface AccountProps extends IContainerProps {}
 type AccountState = typeof initAccountState
 class Account extends React.Component<AccountProps, AccountState> {
@@ -52,14 +53,22 @@ class Account extends React.Component<AccountProps, AccountState> {
   public componentDidCatch (err) {
     this.handleError(err)
   }
-  private onMount = account => {
+  private onMount = accountInput => {
+    const account = accountFormatter(accountInput)
     this.setState(initAccountState)
     this.updateBasicInfo(account)
+    this.fetchContractCode(account)
   }
   private onTabClick = (e, value) => {
-    this.setState({ panelOn: !!value })
+    this.setState({ panelOn: value })
   }
 
+  private setTransactionsCount = count => this.setState({ txCount: count })
+  private fetchContractCode = account =>
+    this.props.CITAObservables.getCode({
+      contractAddr: account,
+      blockNumber: 'latest'
+    }).subscribe(code => this.setState({ code }))
   protected readonly addrGroups = [
     {
       key: 'normals',
@@ -76,20 +85,20 @@ class Account extends React.Component<AccountProps, AccountState> {
   ]
   private fetchInfo = addr => {
     // NOTE: async
-    this.setState(state => ({ loading: state.loading + 3 })) // for get balance, get transaction count, and get abi
+    this.setState(state => ({ loading: state.loading + 2 })) // for get balance, get transaction count, and get abi
     this.props.CITAObservables.getBalance({ addr, blockNumber: 'latest' })
       // .finally(() => this.setState(state => ({ loading: state.loading - 1 })))
       .subscribe(
         (balance: string) => this.setState(state => ({ loading: state.loading - 1, balance: `${+balance}` })),
         this.handleError
       )
-    this.props.CITAObservables.getTransactionCount({
-      addr,
-      blockNumber: 'latest'
-    }).subscribe(
-      (count: string) => this.setState(state => ({ txCount: +count, loading: state.loading - 1 })),
-      this.handleError
-    )
+    // this.props.CITAObservables.getTransactionCount({
+    //   addr,
+    //   blockNumber: 'latest'
+    // }).subscribe(
+    //   (count: string) => this.setState(state => ({ txCount: +count, loading: state.loading - 1 })),
+    //   this.handleError
+    // )
 
     this.props.CITAObservables.getAbi({
       contractAddr: addr,
@@ -222,6 +231,25 @@ class Account extends React.Component<AccountProps, AccountState> {
   }
   private handleError = handleError(this)
   private dismissError = dismissError(this)
+  private renderPanelByTab = () => {
+    const { abi, addr, panelOn, code } = this.state
+    // const { account } = this.props.match.params
+    const erc = (
+      <ERCPanel
+        abi={abi.filter(abiEl => abiEl.type === 'function')}
+        handleAbiValueChange={this.handleAbiValueChange}
+        handleEthCall={this.handleEthCall}
+      />
+    )
+    const tx = <TransactionTable {...this.props} key={addr} setTransactionsCount={this.setTransactionsCount} inset />
+    const info = <ContractInfoPanel code={code} abi={abi} />
+    const table = {
+      tx,
+      abi: erc,
+      info
+    }
+    return table[panelOn]
+  }
   render () {
     const {
       loading,
@@ -237,8 +265,10 @@ class Account extends React.Component<AccountProps, AccountState> {
       erc20sAdd,
       erc721sAdd,
       abi,
+      code,
       error
     } = this.state
+
     return (
       <React.Fragment>
         {loading ? (
@@ -261,20 +291,13 @@ class Account extends React.Component<AccountProps, AccountState> {
           <Card classes={{ root: layouts.cardContainer }} elevation={0}>
             <CardHeader action={<Button onClick={this.toggleAddrs(true)}>管理本地账户</Button>} />
             <CardContent>
-              <Tabs value={+panelOn} onChange={this.onTabClick}>
-                <Tab label={`Transactions(${txCount || 0})`} />
-                {abi && abi.length ? <Tab label="Contract Panel" /> : null}
+              <Tabs value={panelOn} onChange={this.onTabClick}>
+                <Tab value="tx" label={`Transactions(${txCount || 0})`} />
+                {abi && abi.length ? <Tab value="abi" label="Contract Panel" /> : null}
+                {code === '0x' ? null : <Tab value="info" label="Contract Info" />}
               </Tabs>
               <Divider />
-              {panelOn ? (
-                <ERCPanel
-                  abi={abi.filter(abiEl => abiEl.type === 'function')}
-                  handleAbiValueChange={this.handleAbiValueChange}
-                  handleEthCall={this.handleEthCall}
-                />
-              ) : (
-                <TransactionTable {...this.props} key={addr} inset />
-              )}
+              {this.renderPanelByTab()}
             </CardContent>
           </Card>
         </div>

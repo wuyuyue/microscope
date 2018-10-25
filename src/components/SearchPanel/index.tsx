@@ -6,37 +6,42 @@ import { unsigner } from '@nervos/signer'
 import { withObservables } from '../../contexts/observables'
 import { IContainerProps, IBlock, UnsignedTransaction } from '../../typings'
 import { initBlock, initUnsignedTransaction } from '../../initValues'
+import { fetchTransactions } from '../../utils/fetcher'
 import toText from '../../utils/toText'
 import bytesToHex from '../../utils/bytesToHex'
 import valueFormatter from '../../utils/valueFormatter'
+import check from '../../utils/check'
 
 const styles = require('./styles.scss')
 
+const NOT_FOUND_IMG = `${process.env.PUBLIC}/images/search_not_found.png`
 enum SearchType {
   BLOCK,
   TRANSACTION,
   ACCOUNT,
-  HEIGHT
+  HEIGHT,
+  ERROR
 }
 
 const searchGen = keyword => {
-  switch (keyword.length) {
-    case 64:
-    case 66: {
-      return [
-        { type: SearchType.BLOCK, url: `/block/${keyword}` },
-        { type: SearchType.TRANSACTION, url: `/transactions/${keyword}` }
-      ]
-    }
-    case 40:
-    case 42: {
-      return [{ type: SearchType.ACCOUNT, url: `/account/${keyword}` }]
-    }
-    default: {
-      return [{ type: SearchType.HEIGHT, url: `/height/${keyword}` }]
-    }
+  let word = check.format0x(keyword)
+  word = word.toLocaleLowerCase()
+  if (check.address(word)) {
+    return { type: SearchType.ACCOUNT, value: word }
+  } else if (check.transaction(word)) {
+    return { type: SearchType.TRANSACTION, value: word }
+  } else if (check.height(word)) {
+    return { type: SearchType.HEIGHT, value: word }
   }
+  return { type: SearchType.ERROR, value: word }
 }
+
+const NotFound = () => (
+  <div className={styles.notFound}>
+    <img src={NOT_FOUND_IMG} title="not found" alt="not found" />
+    <span>Not Found</span>
+  </div>
+)
 
 const BlockDisplay = translate('microscope')(({ block, t }: { block: IBlock; t: (key: string) => string }) => (
   <div className={styles.display}>
@@ -130,7 +135,9 @@ const initState = {
   block: initBlock,
   transaction: { ...initUnsignedTransaction, hash: '' },
   txCount: '',
-  balance: ''
+  balance: '',
+  searchValueError: false,
+  searched: false
 }
 
 type SearchPanelState = typeof initState
@@ -141,7 +148,8 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
   private handleInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
     const { value } = e.currentTarget
     this.setState({
-      keyword: value
+      keyword: value,
+      searched: false
     })
   }
   private handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -149,69 +157,85 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
       this.handleSearch()
     }
   }
-  private handleSearch = () => {
-    const { keyword } = this.state
-    if (keyword === '') return
-    // clear history
-    this.setState({ ...initState, keyword })
-
-    const { CITAObservables } = this.props
-    const searches = searchGen(keyword)
-    searches.forEach(search => {
-      switch (search.type) {
-        case SearchType.BLOCK: {
-          return CITAObservables.blockByHash(keyword).subscribe(block =>
-            this.setState(state => Object.assign({}, state, { block }))
-          )
-        }
-        case SearchType.HEIGHT: {
-          return CITAObservables.blockByNumber((+keyword).toString(16)).subscribe(block =>
-            this.setState(state => Object.assign({}, state, { block }))
-          )
-        }
-        case SearchType.TRANSACTION: {
-          return CITAObservables.getTransaction(keyword).subscribe(transaction => {
-            const unsignedTransaction = unsigner(transaction.content)
-            unsignedTransaction.hash = transaction.hash
-            this.setState(state => Object.assign({}, state, { transaction: unsignedTransaction }))
-          })
-        }
-        case SearchType.ACCOUNT: {
-          // CITAObservables.getBalance({ addr: keyword, blockNumber: "latest" }).subscribe(balance => {
-          //   this.setState(state => Object.assign({}, state, {balance}))
-          // })
-          CITAObservables.getTransactionCount({
-            addr: keyword,
-            blockNumber: 'latest'
-          }).subscribe(txCount => {
-            this.setState(state => Object.assign({}, state, { txCount }))
-          })
-          return CITAObservables.getBalance({
-            addr: keyword,
-            blockNumber: 'latest'
-          }).subscribe(balance => {
-            this.setState(state => Object.assign({}, state, { balance }))
-          })
-        }
-        default: {
-          return false
-        }
-      }
+  private fetchHeight = value =>
+    this.props.CITAObservables.blockByNumber(value).subscribe(block =>
+      this.setState(state => Object.assign({}, state, { block }))
+    )
+  private fetchTxOrBlock = value => {
+    this.props.CITAObservables.blockByHash(value).subscribe(block =>
+      this.setState(state => Object.assign({}, state, { block }))
+    )
+    this.props.CITAObservables.getTransaction(value).subscribe(transaction => {
+      const unsignedTransaction = unsigner(transaction.content)
+      unsignedTransaction.hash = transaction.hash
+      this.setState(state => Object.assign({}, state, { transaction: unsignedTransaction }))
     })
   }
+  private fetchAccount = value => {
+    fetchTransactions({ account: value })
+      .then(({ result }) => this.setState(state => Object.assign({}, state, { txCount: result.count })))
+      .catch(() => {
+        this.props.CITAObservables.getTransactionCount({
+          addr: value,
+          blockNumber: 'latest'
+        }).subscribe(txCount => {
+          this.setState(state => Object.assign({}, state, { txCount }))
+        })
+      })
+    return this.props.CITAObservables.getBalance({
+      addr: value,
+      blockNumber: 'latest'
+    }).subscribe(balance => {
+      this.setState(state => Object.assign({}, state, { balance }))
+    })
+  }
+  private inputSearchError = () =>
+    this.setState({
+      searchValueError: true
+    })
+  private handleSearch = () => {
+    const { keyword } = this.state
+    const { fetchHeight, fetchTxOrBlock, fetchAccount, inputSearchError } = this
+    if (keyword === '') return
+    // clear history
+    this.setState({ ...initState, keyword, searched: true })
+    const typeTable = {
+      [SearchType.HEIGHT]: fetchHeight,
+      [SearchType.TRANSACTION]: fetchTxOrBlock,
+      [SearchType.ACCOUNT]: fetchAccount,
+      [SearchType.ERROR]: inputSearchError
+    }
+    const search = searchGen(keyword)
+    typeTable[search.type](search.value)
+  }
   render () {
-    const { keyword, block, transaction, balance, txCount } = this.state
+    const { keyword, block, transaction, balance, txCount, searchValueError, searched } = this.state
     return (
       <div>
-        <div className={styles.fields}>
-          <input type="text" value={keyword} onChange={this.handleInput} onKeyUp={this.handleKeyUp} />
-          <button onClick={this.handleSearch}>
-            <SearchIcon />
-          </button>
+        <div className={`${styles.fields} ${searchValueError ? styles.error : ''}`}>
+          <div className={styles.search}>
+            <input
+              type="text"
+              value={keyword}
+              onChange={this.handleInput}
+              onKeyUp={this.handleKeyUp}
+              placeholder="Account Address, Tx Hash, Block Hash or Height"
+            />
+            <button onClick={this.handleSearch}>
+              <SearchIcon />
+            </button>
+          </div>
+          {searchValueError ? (
+            <div className={styles.errormessage}>
+              Please enter Address or Transaction Hash or Block Hash or Block Height
+            </div>
+          ) : null}
         </div>
+
         {block.hash ? <BlockDisplay block={block} /> : null}
         {transaction.hash ? <TransactionDisplay tx={transaction} /> : null}
         {balance !== '' ? <AccountDisplay balance={balance} txCount={+txCount} addr={keyword} /> : null}
+        {searched && !searchValueError && !block.hash && !transaction.hash && !balance ? <NotFound /> : null}
       </div>
     )
   }

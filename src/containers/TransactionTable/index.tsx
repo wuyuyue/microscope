@@ -13,6 +13,7 @@ import { rangeSelectorText } from '../../utils/searchTextGen'
 import toText from '../../utils/toText'
 import { fromNow } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
+import check, { errorMessages } from '../../utils/check'
 
 interface AdvancedSelectors {
   selectorsValue: {
@@ -45,12 +46,18 @@ message: string
     {
       type: SelectorType.SINGLE,
       key: 'from',
-      text: 'Address From'
+      text: 'Address From',
+      check: check.address,
+      format: check.format0x,
+      errorMessage: errorMessages.address
     },
     {
       type: SelectorType.SINGLE,
       key: 'to',
-      text: 'Address To'
+      text: 'Address To',
+      check: check.address,
+      format: check.format0x,
+      errorMessage: errorMessages.address
     }
   ],
   selectorsValue: {
@@ -65,9 +72,14 @@ message: string
   }
 }
 
+interface setTransactionsCount {
+  (count: string | number): undefined
+}
+
 interface TransactionTableProps extends IContainerProps {
   inset?: boolean
   showInOut?: boolean
+  setTransactionsCount?: setTransactionsCount
 }
 type TransactionTableState = typeof initialState
 class TransactionTable extends React.Component<TransactionTableProps, TransactionTableState> {
@@ -120,7 +132,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
       params[key] = value
     })
     if (this.props.match.params.account) {
-      params.account = this.props.match.params.account
+      params.account = check.format0x(this.props.match.params.account)
     }
 
     const selectorsValue = {}
@@ -136,28 +148,30 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     })
   }
 
-  private fetchTransactions = (params: { [index: string]: string | number } = {}) => {
+  private fetchTransactions = (paramsInput: { [index: string]: string | number } = {}) => {
     // NOTICE: async
+    const params = {}
     this.setState(state => ({ loading: state.loading + 1 })) // for get transactions
+    Object.keys(paramsInput).forEach(key => (params[key] = check.format0x(paramsInput[key])))
     return fetchTransactions(paramsFilter(params))
-      .then(({ result }: { result: { transactions: TransactionFromServer[]; count: number } }) =>
-        this.setState(state =>
-          Object.assign({}, state, {
-            loading: state.loading - 1,
-            count: result.count,
-            items: result.transactions.map(tx => ({
-              key: tx.hash,
-              blockNumber: `${+tx.blockNumber}`,
-              hash: tx.hash,
-              from: tx.from,
-              to: toText(tx.to),
-              age: `${fromNow(tx.timestamp)} ago`,
-              value: valueFormatter(+tx.value),
-              gasUsed: `${+tx.gasUsed}`
-            }))
-          })
-        )
-      )
+      .then(({ result }: { result: { transactions: TransactionFromServer[]; count: number } }) => {
+        if (this.props.setTransactionsCount) this.props.setTransactionsCount(result.count)
+        this.setState(state => ({
+          ...state,
+          loading: state.loading - 1,
+          count: result.count,
+          items: result.transactions.map(tx => ({
+            key: tx.hash,
+            blockNumber: `${+tx.blockNumber}`,
+            hash: tx.hash,
+            from: tx.from,
+            to: toText(tx.to),
+            age: `${fromNow(tx.timestamp)} ago`,
+            value: valueFormatter(+tx.value),
+            gasUsed: `${+tx.gasUsed}`
+          }))
+        }))
+      })
       .catch(err => {
         this.handleError(err)
       })

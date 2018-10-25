@@ -1,34 +1,65 @@
 @import '../../styles/color.scss';
 $sidebar-padding: 29px;
+
 .fields {
-  display: flex;
-  padding: $sidebar-padding;
-  height: 34px;
-  box-sizing: content-box;
+  & {
+    display: flex;
+    padding: 29px;
+    box-sizing: content-box;
+    position: relative;
+    flex-flow: column;
+  }
+
+  .search {
+    display: flex;
+    height: 34px;
+    margin-bottom: 10px;
+  }
+
   input {
     border: 1px solid #ccc;
     border-right-color: transparent;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     flex: 1;
+
     &:hover,
     &:focus {
-      border-color: $active;
+      border-color: $form-focus;
+      box-shadow: 0 0 4px 0 $form-focus;
       border-right-color: transparent;
     }
   }
+
   button {
     border: none;
     border-radius: 0;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
     background-color: $active;
-    color: #FFF;
+    color: #fff;
     padding: 4px 25px;
   }
 }
 
-@media(min-width: 800px) {
+.fields.error {
+  input {
+
+    &:hover,
+    &:focus {
+      border-color: $form-error;
+      box-shadow: 0 0 4px 0 $form-error;
+    }
+  }
+
+  .errormessage {
+    color: $form-error;
+    width: 416px;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 800px) {
   .fields {
     input {
       min-width: 320px;
@@ -49,13 +80,16 @@ $sidebar-padding: 29px;
   padding: $sidebar-padding;
   padding-top: 34px;
   padding-bottom: 43px;
+
   tr {
     font-size: 0.875rem;
     line-height: 3;
     height: 3em;
+
     td:first-child:after {
       content: ':';
     }
+
     td:last-child {
       max-width: 30vw;
       overflow: hidden;
@@ -81,4 +115,17 @@ $sidebar-padding: 29px;
 
 .display {
   text-transform: capitalize;
+}
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 16px;
+  color: #6c7184;
+
+  img {
+    width: 150px;
+    margin-bottom: 20px;
+  }
 }

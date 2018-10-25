@@ -13,6 +13,7 @@ import { LocalAccount } from './components/LocalAccounts'
 import { SelectorType } from './components/TableWithSelector'
 import LOCAL_STORAGE, { PanelConfigs } from './config/localstorage'
 import { getServerList, getPrivkeyList, getPanelConfigs } from './utils/accessLocalstorage'
+import check, { errorMessages } from './utils/check'
 
 const isDesktop = widerThan(800)
 export const initHeader: IBlockHeader = {
@@ -113,6 +114,7 @@ export const initAccountState = {
   type: AccountType.NORMAL,
   addr: '',
   abi: [] as ABI,
+  code: '0x',
   contract: { _jsonInterface: [], methods: [] } as Contract,
   balance: '',
   txCount: 0,
@@ -125,7 +127,7 @@ export const initAccountState = {
   normals: [] as LocalAccount[],
   erc20s: [] as LocalAccount[],
   erc721s: [] as LocalAccount[],
-  panelOn: false,
+  panelOn: 'tx',
   addrsOn: false,
   normalsAdd: {
     name: '',
@@ -188,13 +190,35 @@ export const initBlockTableState = {
       type: SelectorType.RANGE,
       key: 'number',
       text: 'height selector',
-      items: [{ key: 'numberFrom', text: 'Height From' }, { key: 'numberTo', text: 'Height To' }]
+      items: [
+        {
+          key: 'numberFrom',
+          text: 'Height From'
+        },
+        {
+          key: 'numberTo',
+          text: 'Height To'
+        }
+      ],
+      check: check.digitsDec,
+      errorMessage: errorMessages.digits
     },
     {
       type: SelectorType.RANGE,
       key: 'transaction',
-      text: 'transactions selector',
-      items: [{ key: 'transactionFrom', text: 'Transaction From' }, { key: 'transactionTo', text: 'Transaction To' }]
+      text: 'transactions counts',
+      items: [
+        {
+          key: 'transactionFrom',
+          text: 'From'
+        },
+        {
+          key: 'transactionTo',
+          text: 'To',
+        }
+      ],
+      check: check.digitsDec,
+      errorMessage: errorMessages.digits
     }
   ],
   selectorsValue: {

@@ -23,6 +23,8 @@ import { handleError, dismissError } from '../../utils/handleError'
 const layout = require('../../styles/layout.scss')
 const styles = require('./graph.scss')
 
+const PRICE = 1
+
 const initState = {
   blocks: [] as IBlock[],
   transactions: [] as TransactionFromServer[],
@@ -50,7 +52,7 @@ const getBlockSource = ({ blocks = this.state.blocks }) => {
       `${+(curr as IBlock).header.number}`, // height
       +(curr as IBlock).header.timestamp - +(prev as IBlock).header.timestamp, // interval
       (curr as IBlock).body.transactions.length, // tx count
-      `${+(curr as IBlock).header.gasUsed / 1e9}`
+      `${+(curr as IBlock).header.gasUsed / PRICE}`
     ])
     return curr
   })
@@ -204,7 +206,9 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
             )}...${param.value[0].slice(-4)} : ${param.value[1]}</span>`
             return label
           },
-          dataset: { source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1] / 1e9] : [item[0], item[1]])) }
+          dataset: {
+            source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1] / 1e9] : [item[0], item[1]]))
+          }
         }
         if (this.props.config.panelConfigs.graphGasUsedTx) {
           this.updateGraph({
@@ -221,9 +225,10 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   private handleNewBlock = block => {
     const { panelConfigs } = this.props.config
     this.setState(state => {
-      // console.log(+block.header.number)
       const blocks = [...state.blocks, block].slice(-this.state.maxCount)
-      if (this.blockGraph && blocks.length > 1) {
+      // if (this.blockGraph && blocks.length > 1) {
+      // 这里先注释, 以免有预期外的 bug 出现
+      if (blocks.length > 1) {
         const source = getBlockSource({ blocks })
         const timeCostOption = {
           title: {
@@ -258,13 +263,13 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
           ...BarOption,
           dataset: { source: source.map(item => [item[0], item[3]]) }
         }
-        if (panelConfigs.graphIPB) {
+        if (this.blockGraph && panelConfigs.graphIPB) {
           this.updateGraph({ graph: this.blockGraph, option: timeCostOption })
         }
-        if (panelConfigs.graphTPB) {
+        if (this.txCountGraph && panelConfigs.graphTPB) {
           this.updateGraph({ graph: this.txCountGraph, option: txCountOption })
         }
-        if (panelConfigs.graphGasUsedBlock) {
+        if (this.gasUsedGraph && panelConfigs.graphGasUsedBlock) {
           this.updateGraph({ graph: this.gasUsedGraph, option: gasUsedOption })
         }
       }
