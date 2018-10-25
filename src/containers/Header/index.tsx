@@ -24,22 +24,22 @@ import Image from '../../images'
 const styles = require('./header.scss')
 const layout = require('../../styles/layout')
 
-const BlockOvertimeAlert = ({ metadata, block }) => {
-  const { timestamp } = block.header
-  const now = Date.now()
-  const space = now - Number(timestamp)
+const BlockOvertimeAlert = ({ metadata, overtime}) => {
+  // const { timestamp } = block.header
+  // const now = Date.now()
+  // const space = now - Number(timestamp)
   const { blockInterval: interval } = metadata
 
   let openAlert = false
   let openHardAlert = false
-  if (space > 3 * interval) {
+  if (overtime > 3 * interval) {
     openAlert = true
     openHardAlert = true
-  } else if (space > 2 * interval) {
+  } else if (overtime > 2 * interval) {
     openAlert = true
   }
 
-  if (!openAlert || timestamp === '') {
+  if (!openAlert) {
     return null
   }
   return (
@@ -56,7 +56,7 @@ const BlockOvertimeAlert = ({ metadata, block }) => {
       }}
     >
       Notice：No blocks loaded in
-      {openHardAlert ? Math.floor(space / 1000) : Math.floor(space / 100) / 10}s
+      {openHardAlert ? Math.floor(overtime / 1000) : Math.floor(overtime / 100) / 10}s
     </div>
   )
 }
@@ -82,6 +82,7 @@ const initState = {
     code: '',
     message: ''
   },
+  overtime: 0,
   serverList: [] as ServerList
 }
 type HeaderState = typeof initState
@@ -108,6 +109,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
     // fetch data of metadata panel
     this.fetchMetaDataPanel()
+
+    this.checkFetchBlockOvertime()
   }
 
   public componentWillReceiveProps (nextProps: HeaderProps) {
@@ -118,6 +121,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   public componentDidCatch (err) {
     this.handleError(err)
+  }
+
+  public componentWillUnmount () {
+    clearInterval(this.checkOvertimeNumber)
   }
 
   private onSearch$: Subject<any>
@@ -133,6 +140,19 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         })
       })
       .catch(this.handleError)
+  }
+
+  private checkOvertimeNumber = -1 as any
+
+  private checkFetchBlockOvertime = () => {
+    clearInterval(this.checkOvertimeNumber)
+    this.checkOvertimeNumber = setInterval(() => {
+      const {block} = this.state
+      const { timestamp } = block.header
+      const now = Date.now()
+      const overtime = now - Number(timestamp)
+      this.setState({overtime})
+    }, 100)
   }
 
   private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
@@ -305,7 +325,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   public render () {
-    const { anchorEl, lngOpen, error, metadata, block } = this.state
+    const { anchorEl, lngOpen, error, metadata, overtime } = this.state
     const {
       location: { pathname },
       t
@@ -316,7 +336,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     return createPortal(
       <React.Fragment>
         <AppBar position="fixed" elevation={0}>
-          <BlockOvertimeAlert metadata={metadata} block={block} />
+          <BlockOvertimeAlert metadata={metadata} overtime={overtime} />
           <Toolbar
             className={layout.center}
             classes={{
