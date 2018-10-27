@@ -33,7 +33,7 @@ Microscope is a blockchain explorer built with [React](https://reactjs.org/) for
 1.  clone the repo
 
 ```shell
-git clone https://github.com/cryptape/Microscope/
+git clone https://github.com/cryptape/microscope/
 ```
 
 2.  Install Dependencies
@@ -84,7 +84,7 @@ At first, you should install docker and learn how to use it.
 1. Clone the repo
 
 ```shell
-git clone https://github.com/cryptape/Microscope/
+git clone https://github.com/cryptape/microscope/
 ```
 
 2. Add Config
@@ -106,13 +106,13 @@ DEBUG_ACCOUNTS= # built-in debug account's private key, e.g. 0xaeeeeeeeeeeeeeeee
 
 Change nginx config in `./nginx.conf.example`
 
-4. Start Docker Compose. This step may be a long time.
+4. Start Docker Compose. This step may take a long time.
 
 ```shell
 yarn docker:init
 ```
 
-If success, you can use Microscope in [0.0.0.0:8089](0.0.0.0:8089).
+If success, you can use Microscope at [0.0.0.0:8089](0.0.0.0:8089).
 
 Next time, use:
 
@@ -124,9 +124,9 @@ to reload it.
 
 # Usage
 
-## Set appchain
+## Set AppChain
 
-If you visit the explorer first time, the side panel will pop up to set appchain address you want to listen to.
+If you visit the explorer for the first time, the side panel will pop up asking to set AppChain address you want to listen to.
 
 ## Data in Microscope
 
@@ -134,11 +134,11 @@ The main sections consists of **homepage**, **block**, **transaction**, **accoun
 
 ### Homepage
 
-Homeage includes `Latest 10 Blocks` and `Latest 10 Transactions`
+On homeage it displays `Latest 10 Blocks` and `Latest 10 Transactions`.
 
 ### Block
 
-> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/re-birth), the server caching appchain.
+> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/re-birth), the Nervos AppChain cache server.
 
 **Block Page** show list of blocks, the table items can be specified in **Config Page**
 
