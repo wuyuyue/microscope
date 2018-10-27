@@ -77,6 +77,51 @@ yarn start
 yarn run build:prod
 ```
 
+## Use Docker
+
+At first, you should install docker and learn how to use it.
+
+1. Clone the repo
+
+```shell
+git clone https://github.com/cryptape/Microscope/
+```
+
+2. Add Config
+
+```shell
+cp ./.env.example ./.env
+```
+
+set env variables in `./.env`
+
+```
+PUBLIC=  # public content server address
+CHAIN_SERVERS= # default appchain addresses
+APP_NAME= # explorer name
+DEBUG_ACCOUNTS= # built-in debug account's private key, e.g. 0xaeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee,0xaeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeea
+```
+
+> NOTICE: Our CDN for static assets is available at `https://cdn.cryptape.com/`, namely icons and images can be added by setting `PUBLIC=https://cdn.cryptape.com/` on `.env`.
+
+Change nginx config in `./nginx.conf.example`
+
+4. Start Docker Compose. This step may be a long time.
+
+```shell
+yarn docker:init
+```
+
+If success, you can use Microscope in [0.0.0.0:8089](0.0.0.0:8089).
+
+Next time, use:
+
+```shell
+yarn docker:start
+```
+
+to reload it.
+
 # Usage
 
 ## Set appchain
