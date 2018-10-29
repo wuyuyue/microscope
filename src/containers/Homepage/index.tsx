@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { LinearProgress, Grid } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { translate } from 'react-i18next'
 import { Chain } from '@nervos/plugin'
 
+import { LinearProgress } from '../../components'
 import { IContainerProps, TransactionFromServer } from '../../typings'
 import { withObservables } from '../../contexts/observables'
 import { fetch10Transactions } from '../../utils/fetcher'
@@ -15,8 +16,6 @@ import { handleError, dismissError } from '../../utils/handleError'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./homepage.scss')
-
-const HomeLinearProgress = ({ loading, root }) => (loading ? <LinearProgress classes={{ root }} /> : null)
 
 const HomePageList = ({ icon, title, list: List, page }) => (
   <Grid item md={6} sm={12} xs={12}>
@@ -123,7 +122,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
     const { blocks, transactions, loading } = this.state
     return (
       <React.Fragment>
-        <HomeLinearProgress loading={loading} root="linearProgressRoot" />
+        <LinearProgress loading={loading} />
         <div className={layout.main}>
           <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
             <HomeBlockList blocks={blocks} />
