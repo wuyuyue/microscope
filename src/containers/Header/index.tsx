@@ -127,7 +127,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   public componentWillUnmount () {
-    clearInterval(this.checkOvertimeNumber)
+    clearInterval(this.intervalCheckOvertime)
   }
 
   private onSearch$: Subject<any>
@@ -145,7 +145,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       .catch(this.handleError)
   }
 
-  private checkOvertimeNumber = -1 as any
+  private intervalCheckOvertime = -1 as any
 
   private initBlockTimestamp = () => {
     const { timestamp } = this.state.block.header
@@ -165,17 +165,34 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   private checkFetchBlockOvertime = () => {
-    clearInterval(this.checkOvertimeNumber)
-    this.checkOvertimeNumber = setInterval(() => {
+    clearInterval(this.intervalCheckOvertime)
+    this.intervalCheckOvertime = setInterval(() => {
       const { timestamp } = this.state.block.header
       const now = Date.now()
       const overtime = now - Number(timestamp)
       this.setState({ overtime })
+      this.props.CITAObservables.newBlockByNumberSubject.connect()
     }, 100)
   }
 
   private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
     this.setState({ sidebarNavs: open })
+  }
+
+  private intervalNewBlockByNumber = -1 as any
+
+  private fetchNewBlockLoop = () => {
+    const { newBlockByNumberSubject } = this.props.CITAObservables
+
+    // fetch Block Number and Block
+    clearInterval(this.intervalNewBlockByNumber)
+    this.intervalNewBlockByNumber = setInterval(() => {
+      newBlockByNumberSubject.subscribe(block => {
+        this.setState({
+          block
+        })
+      }, this.handleError)
+    }, 1000)
   }
 
   /**
@@ -189,18 +206,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       })
       .catch(this.handleError)
     // fetch peer Count
-    const { peerCount, newBlockByNumberSubject } = this.props.CITAObservables
+    const { peerCount } = this.props.CITAObservables
     peerCount(60000).subscribe(
       (count: string) => this.setState((state: any) => ({ ...state, peerCount: +count })),
       this.handleError
     )
-    // fetch Block Number and Block
-    newBlockByNumberSubject.subscribe(block => {
-      this.setState({
-        block
-      })
-    }, this.handleError)
-    newBlockByNumberSubject.connect()
+    this.fetchNewBlockLoop()
     // fetch server list
     fetchServerList()
       .then(servers => {
