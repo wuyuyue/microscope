@@ -171,7 +171,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       const now = Date.now()
       const overtime = now - Number(timestamp)
       this.setState({ overtime })
-      this.props.CITAObservables.newBlockByNumberSubject.connect()
     }, 100)
   }
 
@@ -182,12 +181,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   private intervalNewBlockByNumber = -1 as any
 
   private fetchNewBlockLoop = () => {
-    const { newBlockByNumberSubject } = this.props.CITAObservables
+    const { newBlockByNumber } = this.props.CITAObservables
 
     // fetch Block Number and Block
     clearInterval(this.intervalNewBlockByNumber)
     this.intervalNewBlockByNumber = setInterval(() => {
-      newBlockByNumberSubject.subscribe(block => {
+      newBlockByNumber(0, false).subscribe(block => {
         this.setState({
           block
         })
