@@ -16,6 +16,9 @@ const tGen = (n, unit) => {
 
 export const fromNow = time => {
   let r = (new Date().getTime() - time) / 1000
+  if (r < 0) {
+    return 'Time Error'
+  }
   const d = Math.floor(r / day)
   const dText = tGen(d, 'day')
   r -= d * day
