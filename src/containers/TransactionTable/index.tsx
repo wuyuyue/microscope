@@ -187,8 +187,6 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
   private handlePageChanged = newPage => {
     const offset = newPage * this.state.pageSize
     const limit = this.state.pageSize
-    console.log('offset, limit', offset, limit)
-    console.log('this.state.selectorsValue', this.state.selectorsValue)
     this.fetchTransactions({
       offset,
       limit,
