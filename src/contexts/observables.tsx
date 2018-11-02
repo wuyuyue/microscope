@@ -38,6 +38,16 @@ const handleCallback = block => {
   })
 }
 
+const fetchBlockByNumber = (number, time = 10) => {
+  initObservables.blockByNumber(number, false).subscribe(handleCallback, error => {
+    const t = time - 1
+    if (t > -1) {
+      fetchBlockByNumber(number, t)
+    }
+    handleError(error)
+  })
+}
+
 initObservables.newBlockSubjectStart = () => {
   clearInterval(newBlockCallbackInterval)
   let current = 0
@@ -50,11 +60,11 @@ initObservables.newBlockSubjectStart = () => {
       if (latest <= +current) return
       if (latest === current + 1) {
         current = latest
-        initObservables.blockByNumber(latest, false).subscribe(handleCallback, handleError)
+        fetchBlockByNumber(latest)
       } else {
         while (current < latest) {
           current++
-          initObservables.blockByNumber(current, false).subscribe(handleCallback, handleError)
+          fetchBlockByNumber(current)
         }
       }
     }, handleError)

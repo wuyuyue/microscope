@@ -286,7 +286,9 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     this.setState(state => ({
       ...state,
       [key]: value,
-      otherMetadata: initMetadata
+      otherMetadata: initMetadata,
+      inputChainError: false,
+      waitingMetadata: false
     }))
   }
 
@@ -305,7 +307,18 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `https://${ip}`)
     const chainIp = ip.startsWith('http') ? ip : `https://${ip}`
     window.localStorage.setItem('chainIp', chainIp)
-    window.location.reload()
+    let i = 0
+    const reload = () => {
+      if (i++ > 20) return
+      setTimeout(() => {
+        if (window.localStorage.getItem('chainIp') === chainIp) {
+          window.location.reload()
+        } else {
+          reload()
+        }
+      }, 100)
+    }
+    reload()
   }
 
   private switchChain = (chain: string = '', immediate = false) => (e?: any) => {
