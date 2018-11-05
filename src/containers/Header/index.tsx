@@ -9,7 +9,6 @@ import containers from '../../Routes/containers'
 import HeaderNavs from '../../components/HeaderNavs'
 import SidebarNavs from '../../components/SidebarNavs'
 import ErrorNotification from '../../components/ErrorNotification'
-import { IContainerProps } from '../../typings'
 import RightSidebar from '../../components/RightSidebar'
 import MetadataPanel, { ServerList } from '../../components/MetadataPanel'
 import BriefStatisticsPanel from '../../components/BriefStatistics'
@@ -17,17 +16,15 @@ import SearchPanel from '../../components/SearchPanel'
 import { withConfig } from '../../contexts/config'
 import { withObservables } from '../../contexts/observables'
 import { fetchStatistics, fetchServerList, fetchMetadata } from '../../utils/fetcher'
-import { initBlock, initMetadata } from '../../initValues'
+import { initMetadata } from '../../initValues'
 import { handleError, dismissError } from '../../utils/handleError'
+import { initState, HeaderState, HeaderProps } from './init'
 import Image from '../../images'
 
 const styles = require('./header.scss')
 const layout = require('../../styles/layout')
 
 const BlockOvertimeAlert = ({ metadata, overtime }) => {
-  // const { timestamp } = block.header
-  // const now = Date.now()
-  // const space = now - Number(timestamp)
   let { blockInterval: interval } = metadata
   if (interval === 0) {
     interval = 3000
@@ -61,33 +58,6 @@ const BlockOvertimeAlert = ({ metadata, overtime }) => {
     </div>
   )
 }
-
-const initState = {
-  keyword: '',
-  metadata: initMetadata,
-  sidebarNavs: false,
-  activePanel: window.urlParamChain || window.localStorage.getItem('chainIp') ? '' : 'metadata',
-  searchIp: '',
-  otherMetadata: initMetadata,
-  tps: 0,
-  tpb: 0,
-  ipb: 0,
-  peerCount: 0,
-  block: initBlock,
-  anchorEl: undefined,
-  lngOpen: false,
-  lng: window.localStorage.getItem('i18nextLng'),
-  inputChainError: false,
-  waitingMetadata: false,
-  error: {
-    code: '',
-    message: ''
-  },
-  overtime: 0,
-  serverList: [] as ServerList
-}
-type HeaderState = typeof initState
-interface HeaderProps extends IContainerProps {}
 
 class Header extends React.Component<HeaderProps, HeaderState> {
   state = initState
@@ -191,7 +161,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   private fetchNewBlockLoop = () => {
-    const { newBlockSubjectAdd, newBlockSubjectStart } = this.props.CITAObservables as any
+    const { newBlockSubjectAdd } = this.props.CITAObservables
     newBlockSubjectAdd(
       'header',
       block => {
@@ -201,7 +171,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       },
       this.handleError
     )
-    newBlockSubjectStart()
   }
 
   /**
@@ -221,6 +190,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       this.handleError
     )
     this.fetchNewBlockLoop()
+    this.fetchServerList()
+  }
+
+  private fetchServerList = () => {
     // fetch server list
     fetchServerList()
       .then(servers => {
@@ -250,20 +223,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       })
     }, this.handleError)
 
-    // fetch server list
-    fetchServerList()
-      .then(servers => {
-        if (!servers) return
-        const serverList = [] as ServerList
-        Object.keys(servers).forEach(serverName => {
-          serverList.push({
-            serverName,
-            serverIp: servers[serverName]
-          })
-        })
-        this.setState({ serverList })
-      })
-      .catch(this.handleError)
+    this.fetchServerList()
   }
 
   private togglePanel = (panel: string) => (e?: any) => {

@@ -69,6 +69,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
 
   public componentDidMount () {
     hideLoader()
+    this.subjectNewBlock()
   }
 
   public componentDidCatch (err) {
@@ -112,6 +113,25 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
         }))
       })
       .catch(this.handleError)
+  }
+
+  private subjectNewBlock = () => {
+    const { newBlockSubjectAdd } = this.props.CITAObservables
+    newBlockSubjectAdd(
+      'homepage',
+      block => {
+        this.setState(state => {
+          const blocks = [...state.blocks, block].sort((b1, b2) => b2.header.number - b1.header.number).slice(0, 10)
+          if (block.header.transactions) {
+            console.log(block.header.transactions)
+          }
+          return {
+            blocks
+          }
+        })
+      },
+      this.handleError
+    )
   }
 
   private handleError = handleError(this)
