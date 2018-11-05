@@ -48,7 +48,7 @@ const fetchBlockByNumber = (number, time = 10) => {
   })
 }
 
-initObservables.newBlockSubjectStart = () => {
+export const startSubjectNewBlock = () => {
   clearInterval(newBlockCallbackInterval)
   let current = 0
   newBlockCallbackInterval = setInterval(() => {
