@@ -203,54 +203,68 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
       .catch(this.handleError)
   }
 
-  private handleNewBlock = block => {
+  private updateGraphBlock = source => {
     const { panelConfigs } = this.props.config
+    if (this.blockGraph && panelConfigs.graphIPB) {
+      const timeCostOption = {
+        title: {
+          text: `Interval (in ms) for the Latest ${this.state.maxCount} Blocks`,
+          textStyle: {
+            fontSize: 16
+          }
+        },
+        color: ['#415dfc'],
+        ...BarOption,
+        dataset: { source: source.map(item => [item[0], item[1]]) }
+      }
+      this.updateGraph({ graph: this.blockGraph, option: timeCostOption })
+    }
+  }
+
+  private updateGraphTxCount = source => {
+    const { panelConfigs } = this.props.config
+    if (this.txCountGraph && panelConfigs.graphTPB) {
+      const txCountOption = {
+        title: {
+          text: `Transaction Count in the Latest ${this.state.maxCount} Blocks`,
+          textStyle: {
+            fontSize: 16
+          }
+        },
+        color: ['#fca441'],
+        ...BarOption,
+        dataset: { source: source.map(item => [item[0], item[2]]) }
+      }
+      this.updateGraph({ graph: this.txCountGraph, option: txCountOption })
+    }
+  }
+
+  private updateGasUsed = source => {
+    const { panelConfigs } = this.props.config
+    if (this.gasUsedGraph && panelConfigs.graphGasUsedBlock) {
+      const gasUsedOption = {
+        title: {
+          text: `Quota Used in Latest ${this.state.maxCount} Blocks`,
+          textStyle: {
+            fontSize: 16
+          }
+        },
+        color: ['#4db7f8'],
+        ...BarOption,
+        dataset: { source: source.map(item => [item[0], item[3]]) }
+      }
+      this.updateGraph({ graph: this.gasUsedGraph, option: gasUsedOption })
+    }
+  }
+
+  private handleNewBlock = block => {
     this.setState(state => {
       const blocks = [...state.blocks, block].slice(-(this.state.maxCount + 1))
       if (blocks.length > 1) {
         const source = getBlockSource({ blocks })
-        const timeCostOption = {
-          title: {
-            text: `Interval (in ms) for the Latest ${this.state.maxCount} Blocks`,
-            textStyle: {
-              fontSize: 16
-            }
-          },
-          color: ['#415dfc'],
-          ...BarOption,
-          dataset: { source: source.map(item => [item[0], item[1]]) }
-        }
-        const txCountOption = {
-          title: {
-            text: `Transaction Count in the Latest ${this.state.maxCount} Blocks`,
-            textStyle: {
-              fontSize: 16
-            }
-          },
-          color: ['#fca441'],
-          ...BarOption,
-          dataset: { source: source.map(item => [item[0], item[2]]) }
-        }
-        const gasUsedOption = {
-          title: {
-            text: `Quota Used in Latest ${this.state.maxCount} Blocks`,
-            textStyle: {
-              fontSize: 16
-            }
-          },
-          color: ['#4db7f8'],
-          ...BarOption,
-          dataset: { source: source.map(item => [item[0], item[3]]) }
-        }
-        if (this.blockGraph && panelConfigs.graphIPB) {
-          this.updateGraph({ graph: this.blockGraph, option: timeCostOption })
-        }
-        if (this.txCountGraph && panelConfigs.graphTPB) {
-          this.updateGraph({ graph: this.txCountGraph, option: txCountOption })
-        }
-        if (this.gasUsedGraph && panelConfigs.graphGasUsedBlock) {
-          this.updateGraph({ graph: this.gasUsedGraph, option: gasUsedOption })
-        }
+        this.updateGraphBlock(source)
+        this.updateGraphTxCount(source)
+        this.updateGasUsed(source)
       }
       return { blocks }
     })
