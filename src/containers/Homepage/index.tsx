@@ -122,9 +122,6 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
       block => {
         this.setState(state => {
           const blocks = [...state.blocks, block].sort((b1, b2) => b2.header.number - b1.header.number).slice(0, 10)
-          if (block.header.transactions) {
-            console.log(block.header.transactions)
-          }
           return {
             blocks
           }

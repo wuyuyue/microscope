@@ -71,29 +71,6 @@ export const startSubjectNewBlock = () => {
   }, 1000)
 }
 
-// initObservables.newBlockSubjectStart = () => {
-//   clearInterval(newBlockCallbackInterval)
-//   let current = 0
-//   newBlockCallbackInterval = setInterval(() => {
-//     initObservables.newBlockNumber(0, false).subscribe(blockNumber => {
-//       const latest = +blockNumber
-//       if (current === 0) {
-//         current = latest - 1
-//       }
-//       if (latest <= +current) return
-//       if (latest === current + 1) {
-//         current = latest
-//         fetchBlockByNumber(latest)
-//       } else {
-//         while (current < latest) {
-//           current++
-//           fetchBlockByNumber(current)
-//         }
-//       }
-//     }, handleError)
-//   }, 1000)
-// }
-
 initObservables.newBlockSubjectAdd = (key, callback, error, { ...params }) => {
   newBlockCallbackTable[key] = {
     callback,
