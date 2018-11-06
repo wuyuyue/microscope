@@ -15,6 +15,7 @@ import { IContainerProps, DetailedTransaction } from '../../typings/'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
 import bytesToHex from '../../utils/bytesToHex'
+import { timeFormatter } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
 import { format0x } from '../../utils/check'
 import Images from '../../images'
@@ -72,7 +73,7 @@ const Timestamp = (timestamp, gasUsed) => (
         <span>
           <Icon name="time" />
           <span className={styles.attrTitle}>Time: </span>
-          {new Date(timestamp).toLocaleString()}
+          {timeFormatter(timestamp, true)}
         </span>
         {gasUsed ? (
           <span>

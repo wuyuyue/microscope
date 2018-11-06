@@ -224,7 +224,7 @@ class Account extends React.Component<AccountProps, AccountState> {
           return { ...state, abi, loading: state.loading - 1 }
         })
       } catch (err) {
-        console.log(err)
+        console.warn(err)
         this.handleError(err)
       }
     }, this.handleError)
