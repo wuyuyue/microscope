@@ -141,10 +141,16 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
                               value={selectorsValue[item.key]}
                               placeholder={t(item.text)}
                               onChange={this.handleSelectorInput(item.key)}
-                              onBlur={this.handleSelectorBlur(item.key, item.check || selector.check, item.format || selector.format)}
+                              onBlur={this.handleSelectorBlur(
+                                item.key,
+                                item.check || selector.check,
+                                item.format || selector.format
+                              )}
                             />
                             {selectorsError[item.key] ? (
-                              <div className={`${styles.errormessage}`}>{item.errorMessage || selector.errorMessage}</div>
+                              <div className={`${styles.errormessage}`}>
+                                {item.errorMessage || selector.errorMessage}
+                              </div>
                             ) : null}
                           </div>
                         ))}

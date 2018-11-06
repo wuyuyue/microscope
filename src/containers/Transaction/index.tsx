@@ -9,13 +9,15 @@ import Banner from '../../components/Banner'
 import Icon from '../../components/Icons'
 import ErrorNotification from '../../components/ErrorNotification'
 
+import { withConfig } from '../../contexts/config'
 import { withObservables } from '../../contexts/observables'
 import { IContainerProps, DetailedTransaction } from '../../typings/'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
 import bytesToHex from '../../utils/bytesToHex'
+import { timeFormatter } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
-import {format0x} from '../../utils/check'
+import { format0x } from '../../utils/check'
 import Images from '../../images'
 
 const layouts = require('../../styles/layout.scss')
@@ -71,7 +73,7 @@ const Timestamp = (timestamp, gasUsed) => (
         <span>
           <Icon name="time" />
           <span className={styles.attrTitle}>Time: </span>
-          {new Date(timestamp).toLocaleString()}
+          {timeFormatter(timestamp, true)}
         </span>
         {gasUsed ? (
           <span>
@@ -191,7 +193,7 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
 
     const hexData = bytesToHex(data as any)
     data = hexData === '0x' ? 'null' : hexData
-    value = valueFormatter(bytesToHex(value as any))
+    value = valueFormatter(bytesToHex(value as any), this.props.config.symbol)
     from = `0x${from}`
     to = to ? `0x${to}` : 'Contract Creation'
 
@@ -236,16 +238,6 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
         loading: state.loading - 1
       })
     )
-    // this.setState(state => ({
-    //   ...state,
-    //   basicInfo: {
-    //     ...state.basicInfo,
-    //     errorMessage,
-    //     quotaUsed,
-    //     createdContractAddress
-    //   },
-    //   loading: state.loading - 1
-    // }))
   }
 
   private infos = [
@@ -298,4 +290,4 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
   }
 }
 
-export default withObservables(Transaction)
+export default withConfig(withObservables(Transaction))

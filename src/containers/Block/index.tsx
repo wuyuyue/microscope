@@ -28,6 +28,7 @@ import { withObservables } from '../../contexts/observables'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
 import bytesToHex from '../../utils/bytesToHex'
+import { timeFormatter } from '../../utils/timeFormatter'
 import Image from '../../images'
 
 const layouts = require('../../styles/layout')
@@ -94,7 +95,7 @@ const InfoContent = ({ header, transactions, toggleTransaction }) => {
       <CardContent>
         <List className={styles.items}>
           <InfoCell name="TimeStamp">
-            <span>{new Date(header.timestamp).toLocaleString()}</span>
+            <span>{timeFormatter(header.timestamp, true)}</span>
           </InfoCell>
 
           <InfoCell

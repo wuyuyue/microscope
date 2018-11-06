@@ -11,7 +11,15 @@ const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
 
 export default translate('microscope')(
-  ({ transactions, t }: { transactions: TransactionFromServer[]; t: (key: string) => string }) => (
+  ({
+    transactions,
+    t,
+    symbol
+  }: {
+  transactions: TransactionFromServer[]
+  t: (key: string) => string
+  symbol?: string
+  }) => (
     <List
       classes={{
         padding: styles.listPadding
@@ -64,7 +72,7 @@ export default translate('microscope')(
                 <span className={texts.ellipsis}>
                   {t('value')}:{' '}
                   <span className={styles.value} title={`${+tx.value}`}>
-                    {valueFormatter(+tx.value)}
+                    {valueFormatter(+tx.value, symbol)}
                   </span>
                 </span>
               </span>

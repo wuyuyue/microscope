@@ -187,7 +187,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
             return label
           },
           dataset: {
-            source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1] / 1e9] : [item[0], item[1]]))
+            source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1]] : [item[0], item[1]]))
           }
         }
         if (this.props.config.panelConfigs.graphGasUsedTx) {
