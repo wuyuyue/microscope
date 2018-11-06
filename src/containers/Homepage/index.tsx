@@ -5,6 +5,7 @@ import { Chain } from '@nervos/plugin'
 
 import { LinearProgress } from '../../components'
 import { IContainerProps, TransactionFromServer } from '../../typings'
+import { withConfig } from '../../contexts/config'
 import { withObservables } from '../../contexts/observables'
 import { fetch10Transactions } from '../../utils/fetcher'
 import StaticCard from '../../components/StaticCard'
@@ -34,12 +35,12 @@ const HomeBlockList = ({ blocks }) => (
   />
 )
 
-const HomeTransactionList = ({ transactions }) => (
+const HomeTransactionList = ({ transactions, symbol }) => (
   <HomePageList
     icon="/microscopeIcons/transactions.png"
     title="Latest 10 Transactions"
     page="transactions"
-    list={() => <TransactionList transactions={transactions} />}
+    list={() => <TransactionList transactions={transactions} symbol={symbol} />}
   />
 )
 
@@ -143,7 +144,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
         <div className={layout.main}>
           <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
             <HomeBlockList blocks={blocks} />
-            <HomeTransactionList transactions={transactions} />
+            <HomeTransactionList transactions={transactions} symbol={this.props.config.symbol} />
           </Grid>
         </div>
         <ErrorNotification error={this.state.error} dismissError={this.dismissError} />
@@ -152,4 +153,4 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
   }
 }
 
-export default translate('microscope')(withObservables(Homepage))
+export default translate('microscope')(withConfig(withObservables(Homepage)))

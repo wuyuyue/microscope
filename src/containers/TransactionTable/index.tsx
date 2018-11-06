@@ -172,7 +172,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
             from: tx.from,
             to: toText(tx.to),
             age: formatedAgeString(tx.timestamp),
-            value: valueFormatter(+tx.value),
+            value: valueFormatter(+tx.value, this.props.config.symbol),
             gasUsed: `${+tx.gasUsed}`
           }))
         }))
@@ -203,6 +203,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     const { inset = false, showInOut = false } = this.props
     const activeParams = paramsFilter(selectorsValue) as any
     const searchText = rangeSelectorText('Transaction', activeParams.from, activeParams.to)
+    const { symbol } = this.props.config
     return (
       <React.Fragment>
         {loading ? (

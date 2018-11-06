@@ -21,6 +21,12 @@ const ConfigContext = React.createContext<Config>({
 
 class ConfigProvider extends React.Component<any, Config> {
   readonly state = initConfigContext
+  protected setSymbol = (symbol: string) => {
+    console.log('hahaha')
+    console.log(symbol)
+    this.setState({ symbol })
+    return true
+  }
   protected addServer = (server: string): boolean => {
     const serverList = [...this.state.serverList]
     if (!serverList.includes(server)) {
@@ -84,7 +90,8 @@ class ConfigProvider extends React.Component<any, Config> {
           deleteServer: this.deleteServer,
           addPrivkey: this.addPrivkey,
           deletePrivkey: this.deletePrivkey,
-          changePanelConfig: this.changePanelConfig
+          changePanelConfig: this.changePanelConfig,
+          setSymbol: this.setSymbol
         }}
       >
         {this.props.children}

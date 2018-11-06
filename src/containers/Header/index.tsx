@@ -60,12 +60,11 @@ const BlockOvertimeAlert = ({ metadata, overtime }) => {
 }
 
 class Header extends React.Component<HeaderProps, HeaderState> {
-  state = initState
+  public readonly state = initState
 
   public componentWillMount () {
     this.onSearch$ = new Subject()
     this.initBlockTimestamp()
-    // hide TPS in header
   }
 
   public componentDidMount () {
@@ -221,6 +220,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           genesisTimestamp: new Date(metadata.genesisTimestamp).toLocaleString()
         }
       })
+      this.props.config.setSymbol(metadata.tokenSymbol)
     }, this.handleError)
 
     this.fetchServerList()

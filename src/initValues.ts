@@ -214,7 +214,7 @@ export const initBlockTableState = {
         },
         {
           key: 'transactionTo',
-          text: 'To',
+          text: 'To'
         }
       ],
       check: check.digitsDec,
@@ -238,6 +238,8 @@ export const initConfigContext = {
   serverList: getServerList(),
   privkeyList: getPrivkeyList(),
   panelConfigs: getPanelConfigs(),
+  symbol: '',
+  setSymbol: (symbol: string) => false,
   addServer: server => false,
   deleteServer: server => false,
   addPrivkey: privkey => false,
