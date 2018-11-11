@@ -6,36 +6,37 @@
  */
 
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { Card, CardContent, List, ListItem } from '@material-ui/core'
+import { Link, } from 'react-router-dom'
+import { Card, CardContent, List, ListItem, } from '@material-ui/core'
 
-import { unsigner } from '@nervos/signer'
-import { RpcResult, Chain } from '@nervos/plugin/lib/typings/index.d'
-import { IContainerProps, IBlock } from '../../typings'
+import { unsigner, } from '@nervos/signer'
+import { RpcResult, Chain, } from '@nervos/plugin/lib/typings/index.d'
+import { IContainerProps, IBlock, } from '../../typings'
 
-import { initBlockState } from '../../initValues'
+import { initBlockState, } from '../../initValues'
 
 import Dialog from '../Dialog/'
-import { LinearProgress } from '../../components'
+import { LinearProgress, } from '../../components'
 import Banner from '../../components/Banner'
 import TransactionList from '../../components/TransactionList/'
 import ErrorNotification from '../../components/ErrorNotification'
 import Icon from '../../components/Icons'
 
-import { withConfig } from '../../contexts/config'
-import { withObservables } from '../../contexts/observables'
+import { withConfig, } from '../../contexts/config'
+import { withObservables, } from '../../contexts/observables'
 
 import hideLoader from '../../utils/hideLoader'
-import { handleError, dismissError } from '../../utils/handleError'
+import { handleError, dismissError, } from '../../utils/handleError'
 import bytesToHex from '../../utils/bytesToHex'
-import { timeFormatter } from '../../utils/timeFormatter'
+import { timeFormatter, } from '../../utils/timeFormatter'
+import valueFormatter from '../../utils/valueFormatter'
 import Image from '../../images'
 
 const layouts = require('../../styles/layout')
 const texts = require('../../styles/text.scss')
 const styles = require('./block.scss')
 
-const BlockBanner = ({ header }) => (
+const BlockBanner = ({ header, }) => (
   <Banner bg={Image.banner.block}>
     <div>Block</div>
     <div className={styles.height}>
@@ -50,16 +51,16 @@ const BlockBanner = ({ header }) => (
         to={`/height/0x${(+header.number + 1).toString(16)}`}
         href={`/height/0x${(+header.number + 1).toString(16)}`}
       >
-        <Icon name="left" style={{ transform: 'rotate(180deg)' }} />
+        <Icon name="left" style={{ transform: 'rotate(180deg)', }} />
       </Link>
     </div>
   </Banner>
 )
 
-const InfoHead = ({ hash }) => (
+const InfoHead = ({ hash, }) => (
   <Card
     classes={{
-      root: styles.hashCardRoot
+      root: styles.hashCardRoot,
     }}
   >
     <CardContent>
@@ -76,22 +77,22 @@ const InfoCell = ({ name, children, ...props }) => (
   </ListItem>
 )
 
-const InfoList = ({ headerInfo, header }) =>
+const InfoList = ({ headerInfo, header, }) =>
   headerInfo.map(item => (
     <InfoCell key={item.key} name={item.label}>
       <span>{header[item.key]}</span>
     </InfoCell>
   ))
 
-const InfoContent = ({ header, transactions, toggleTransaction }) => {
+const InfoContent = ({ header, transactions, toggleTransaction, quotaPrice, fee, }) => {
   const headerInfo = [
-    { key: 'gasUsed', label: 'Quota Used' },
-    { key: 'receiptsRoot', label: 'Receipts Root' },
-    { key: 'stateRoot', label: 'State Root' },
-    { key: 'transactionsRoot', label: 'Transactions Root' }
+    { key: 'gasUsed', label: 'Quota Used', },
+    { key: 'receiptsRoot', label: 'Receipts Root', },
+    { key: 'stateRoot', label: 'State Root', },
+    { key: 'transactionsRoot', label: 'Transactions Root', },
   ]
   return (
-    <Card classes={{ root: layouts.cardContainer }}>
+    <Card classes={{ root: layouts.cardContainer, }}>
       <CardContent>
         <List className={styles.items}>
           <InfoCell name="TimeStamp">
@@ -101,9 +102,9 @@ const InfoContent = ({ header, transactions, toggleTransaction }) => {
           <InfoCell
             name="TimeStamp"
             onClick={transactions.length ? toggleTransaction(true) : undefined}
-            style={transactions.length ? { cursor: 'pointer' } : undefined}
+            style={transactions.length ? { cursor: 'pointer', } : undefined}
           >
-            <span style={transactions.length ? { color: '#2647fdcc' } : undefined}>{transactions.length}</span>
+            <span style={transactions.length ? { color: '#2647fdcc', } : undefined}>{transactions.length}</span>
           </InfoCell>
 
           <InfoCell name="Proposer">
@@ -117,6 +118,8 @@ const InfoContent = ({ header, transactions, toggleTransaction }) => {
               </Link>
             </span>
           </InfoCell>
+          <InfoCell name="Quota Price">{quotaPrice}</InfoCell>
+          <InfoCell name="Fee">{fee}</InfoCell>
 
           <InfoList headerInfo={headerInfo} header={header} />
         </List>
@@ -125,10 +128,16 @@ const InfoContent = ({ header, transactions, toggleTransaction }) => {
   )
 }
 
-const BlockInfo = ({ hash, header, transactions, toggleTransaction }) => (
+const BlockInfo = ({ hash, header, transactions, toggleTransaction, quotaPrice, fee, }) => (
   <div className={layouts.main}>
     <InfoHead hash={hash} />
-    <InfoContent header={header} transactions={transactions} toggleTransaction={toggleTransaction} />
+    <InfoContent
+      header={header}
+      transactions={transactions}
+      toggleTransaction={toggleTransaction}
+      quotaPrice={quotaPrice}
+      fee={fee}
+    />
   </div>
 )
 
@@ -139,17 +148,14 @@ interface IBlockProps extends IContainerProps {}
 class Block extends React.Component<IBlockProps, IBlockState> {
   readonly state = initState
 
-  public componentWillMount () {
+  public componentDidMount () {
+    hideLoader()
     this.onMount(this.props.match.params)
   }
 
-  public componentDidMount () {
-    hideLoader()
-  }
-
   public componentWillReceiveProps (nextProps: IBlockProps) {
-    const { blockHash, height } = nextProps.match.params
-    const { blockHash: oldBlockHash, height: oldHeight } = this.props.match.params
+    const { blockHash, height, } = nextProps.match.params
+    const { blockHash: oldBlockHash, height: oldHeight, } = this.props.match.params
     if ((blockHash && blockHash !== oldBlockHash) || (height && height !== oldHeight)) {
       this.onMount(nextProps.match.params)
     }
@@ -160,9 +166,9 @@ class Block extends React.Component<IBlockProps, IBlockState> {
   }
 
   private onMount = params => {
-    const { blockHash, height } = params
+    const { blockHash, height, } = params
     if (blockHash) {
-      this.setState(state => ({ loading: state.loading + 1 }))
+      this.setState(state => ({ loading: state.loading + 1, }))
       // NOTICE: async
       this.props.CITAObservables.blockByHash(blockHash).subscribe(
         (block: RpcResult.BlockByHash) => this.handleReturnedBlock(block),
@@ -171,11 +177,22 @@ class Block extends React.Component<IBlockProps, IBlockState> {
     }
     if (height) {
       // NOTICE: async
-      this.setState(state => ({ loading: state.loading + 1 }))
+      this.setState(state => ({ loading: state.loading + 1, }))
       this.props.CITAObservables.blockByNumber(height).subscribe((block: RpcResult.BlockByNumber) => {
         this.handleReturnedBlock(block)
       }, this.handleError)
     }
+  }
+  private handleQuotaPriceAndFee = (blockNumber: string, quotaUsed: string) => {
+    this.props.CITAObservables.getQuotaPrice(blockNumber).subscribe((price: string) => {
+      const _price = price === '0x' ? 0 : +price
+      console.log(_price)
+      this.setState(state => ({
+        ...state,
+        quotaPrice: `${_price}`,
+        fee: valueFormatter(+quotaUsed * _price, this.props.config.symbol),
+      }))
+    }, this.handleError)
   }
 
   private handleReturnedBlock = (block: Chain.Block<Chain.TransactionInBlock>) => {
@@ -183,8 +200,8 @@ class Block extends React.Component<IBlockProps, IBlockState> {
       return this.handleError({
         error: {
           message: 'Block Not Found',
-          code: '-1'
-        }
+          code: '-1',
+        },
       })
     }
     /* eslint-disable */
@@ -196,18 +213,20 @@ class Block extends React.Component<IBlockProps, IBlockState> {
       }
       return {
         ...tx,
-        timestamp: `${block.header.timestamp}`
+        timestamp: `${block.header.timestamp}`,
       }
     })
     block.header.gasUsed = `${+block.header.gasUsed}`
+    // get quota price
+    this.handleQuotaPriceAndFee(block.header.number, block.header.gasUsed)
     /* eslint-enable */
-    return this.setState(state => Object.assign({}, state, { ...block, loading: state.loading - 1 }))
+    return this.setState(state => Object.assign({}, state, { ...block, loading: state.loading - 1, }))
   }
 
   private toggleTransaction = (on: boolean = false) => e => {
     this.setState(state => ({
       ...state,
-      transactionsOn: on
+      transactionsOn: on,
     }))
   }
 
@@ -217,17 +236,26 @@ class Block extends React.Component<IBlockProps, IBlockState> {
   public render () {
     const {
       loading,
-      body: { transactions },
+      body: { transactions, },
       hash,
       header,
       transactionsOn,
-      error
+      error,
+      quotaPrice,
+      fee,
     } = this.state
     return (
       <React.Fragment>
         <LinearProgress loading={loading} />
         <BlockBanner header={header} />
-        <BlockInfo hash={hash} header={header} transactions={transactions} toggleTransaction={this.toggleTransaction} />
+        <BlockInfo
+          hash={hash}
+          header={header}
+          transactions={transactions}
+          toggleTransaction={this.toggleTransaction}
+          fee={fee}
+          quotaPrice={quotaPrice}
+        />
         <Dialog on={transactionsOn} onClose={this.toggleTransaction()} dialogTitle="Transactions List">
           <TransactionList transactions={transactions} />
         </Dialog>
