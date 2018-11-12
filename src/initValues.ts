@@ -172,6 +172,8 @@ export const initBlockState = {
   version: 0,
   transactionsOn: false,
   error: initError,
+  quotaPrice: '',
+  fee: '',
 }
 
 export const initBlockTableState = {

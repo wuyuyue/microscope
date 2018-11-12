@@ -1,40 +1,40 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { Card, CardContent, List, ListSubheader, ListItem, ListItemText, Divider } from '@material-ui/core'
-import { unsigner } from '@nervos/signer'
-import { Chain } from '@nervos/plugin/lib/typings/index.d'
+import { Link, } from 'react-router-dom'
+import { Card, CardContent, List, ListSubheader, ListItem, ListItemText, Divider, } from '@material-ui/core'
+import { unsigner, } from '@nervos/signer'
+import { Chain, } from '@nervos/plugin/lib/typings/index.d'
 
-import { LinearProgress } from '../../components'
+import { LinearProgress, } from '../../components'
 import Banner from '../../components/Banner'
 import Icon from '../../components/Icons'
 import ErrorNotification from '../../components/ErrorNotification'
 
-import { withConfig } from '../../contexts/config'
-import { withObservables } from '../../contexts/observables'
-import { IContainerProps, DetailedTransaction } from '../../typings/'
+import { withConfig, } from '../../contexts/config'
+import { withObservables, } from '../../contexts/observables'
+import { IContainerProps, DetailedTransaction, } from '../../typings/'
 import hideLoader from '../../utils/hideLoader'
-import { handleError, dismissError } from '../../utils/handleError'
+import { handleError, dismissError, } from '../../utils/handleError'
 import bytesToHex from '../../utils/bytesToHex'
-import { timeFormatter } from '../../utils/timeFormatter'
+import { timeFormatter, } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
-import { format0x } from '../../utils/check'
+import { format0x, } from '../../utils/check'
 import Images from '../../images'
 
 const layouts = require('../../styles/layout.scss')
 const texts = require('../../styles/text.scss')
 const styles = require('./transaction.scss')
 
-const InfoList = ({ infos, details }) =>
+const InfoList = ({ infos, details, }) =>
   infos.map(info => (
     <ListItem key={info.key}>
       <ListItemText
         classes={{
           primary: styles.infoTitle,
-          secondary: styles.infoValue
+          secondary: styles.infoValue,
         }}
         primary={info.label}
         secondary={
-          info.type && !['Contract Creation'].includes(details[info.key]) ? (
+          info.type && !['Contract Creation', ].includes(details[info.key]) ? (
             <Link
               to={`/${info.type}/${details[info.key]}`}
               href={`/${info.type}/${details[info.key]}`}
@@ -50,24 +50,24 @@ const InfoList = ({ infos, details }) =>
     </ListItem>
   ))
 
-const Info = ({ title, infos, details }) => (
+const Info = ({ title, infos, details, }) => (
   <List
     subheader={
-      <ListSubheader component="div" classes={{ root: styles.listHeaderRoot }}>
+      <ListSubheader component="div" classes={{ root: styles.listHeaderRoot, }}>
         {title}
       </ListSubheader>
     }
     classes={{
-      root: styles.listRoot
+      root: styles.listRoot,
     }}
   >
-    <Divider classes={{ root: styles.divider }} light />
+    <Divider classes={{ root: styles.divider, }} light />
     <InfoList infos={infos} details={details} />
   </List>
 )
 
 const Timestamp = (timestamp, gasUsed) => (
-  <Card classes={{ root: styles.hashCardRoot }}>
+  <Card classes={{ root: styles.hashCardRoot, }}>
     <CardContent>
       <div className={styles.attrs}>
         <span>
@@ -115,22 +115,22 @@ const initState: TransactionState = {
     quotaPrice: '',
     quotaUsed: '',
     createdContractAddress: '',
-    errorMessage: ''
+    errorMessage: '',
   },
   error: {
     message: '',
-    code: ''
+    code: '',
   },
   timestamp: '',
   gasUsed: '',
-  loading: 0
+  loading: 0,
 }
 
 class Transaction extends React.Component<TransactionProps, TransactionState> {
   readonly state = initState
 
   public componentWillMount () {
-    const { transaction } = this.props.match.params
+    const { transaction, } = this.props.match.params
     if (transaction) {
       this.fetchTransactionInfo(transaction)
     }
@@ -141,7 +141,7 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
   }
 
   public componentWillReceiveProps (nextProps) {
-    const { transaction } = nextProps.match.params
+    const { transaction, } = nextProps.match.params
     if (transaction) {
       this.fetchTransactionInfo(transaction)
     }
@@ -151,14 +151,14 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
     this.handleError(err)
   }
 
-  private getQuotaPrice = () => {
-    this.props.CITAObservables.getQuotaPrice().subscribe((price: string) => {
+  private getQuotaPrice = (blockNumber: string) => {
+    this.props.CITAObservables.getQuotaPrice(blockNumber).subscribe((price: string) => {
       this.setState(state =>
         Object.assign({}, state, {
           basicInfo: {
             ...state.basicInfo,
-            quotaPrice: `${price === '0x' ? '0' : +price}`
-          }
+            quotaPrice: `${price === '0x' ? '0' : +price}`,
+          },
         })
       )
     }, this.handleError)
@@ -166,14 +166,14 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
 
   private fetchTransactionInfo = transaction => {
     const hash = format0x(transaction)
-    this.setState(state => ({ loading: state.loading + 2, hash }))
+    this.setState(state => ({ loading: state.loading + 2, hash, }))
     this.props.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.Transaction) => {
       this.handleReturnedTx(tx)
     }, this.handleError)
     this.props.CITAObservables.getTransactionReceipt(transaction).subscribe((receipt: Chain.TransactionReceipt) => {
       this.handleReturnedTxReceipt(receipt)
     }, this.handleError)
-    this.getQuotaPrice()
+    // this.getQuotaPrice()
   }
 
   private handleReturnedTx = (tx: Chain.Transaction) => {
@@ -181,15 +181,15 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       this.handleError({
         error: {
           message: 'Transaction Not Found',
-          code: '-1'
-        }
+          code: '-1',
+        },
       })
     }
     const details = unsigner(tx.content)
-    let { data, value } = details.transaction
-    const { nonce, quota: quotaLimit, validUntilBlock } = details.transaction
-    let { address: from } = details.sender
-    let { to } = tx.basicInfo as any
+    let { data, value, } = details.transaction
+    const { nonce, quota: quotaLimit, validUntilBlock, } = details.transaction
+    let { address: from, } = details.sender
+    let { to, } = tx.basicInfo as any
 
     const hexData = bytesToHex(data as any)
     data = hexData === '0x' ? 'null' : hexData
@@ -210,9 +210,9 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
           nonce,
           quotaLimit,
           validUntilBlock,
-          to
+          to,
         },
-        loading: state.loading - 1
+        loading: state.loading - 1,
       })
     )
   }
@@ -222,49 +222,51 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       this.handleError({
         error: {
           message: 'Transaction Not Found',
-          code: '-1'
-        }
+          code: '-1',
+        },
       })
     }
-    const { errorMessage, gasUsed: quotaUsed, contractAddress: createdContractAddress } = receipt
+    const { errorMessage, gasUsed: quotaUsed, contractAddress: createdContractAddress, blockNumber, } = receipt
     this.setState(state =>
       Object.assign({}, state, {
         basicInfo: {
           ...state.basicInfo,
           errorMessage,
           quotaUsed,
-          createdContractAddress
+          createdContractAddress,
         },
-        loading: state.loading - 1
+        loading: state.loading - 1,
       })
     )
+    // get quota price
+    this.getQuotaPrice(blockNumber)
   }
 
   private infos = [
-    { key: 'blockHash', label: 'Block Hash', type: 'block' },
-    { key: 'blockNumber', label: 'Height', type: 'height' },
-    { key: 'index', label: 'Index' }
+    { key: 'blockHash', label: 'Block Hash', type: 'block', },
+    { key: 'blockNumber', label: 'Height', type: 'height', },
+    { key: 'index', label: 'Index', },
   ]
 
   private basicInfo = [
-    { key: 'from', label: 'From', type: 'account' },
-    { key: 'to', label: 'To', type: 'account' },
-    { key: 'nonce', label: 'Nonce' },
-    { key: 'validUntilBlock', label: 'ValidUntilBlock' },
-    { key: 'value', label: 'Value' },
-    { key: 'data', label: 'Data' },
-    { key: 'quotaLimit', label: 'Quota Limit' },
-    { key: 'quotaPrice', label: 'Quota Price' },
-    { key: 'quotaUsed', label: 'Quota Used' },
-    { key: 'createdContractAddress', label: 'Created Contract Address' },
-    { key: 'errorMessage', label: 'Error Message' }
+    { key: 'from', label: 'From', type: 'account', },
+    { key: 'to', label: 'To', type: 'account', },
+    { key: 'nonce', label: 'Nonce', },
+    { key: 'validUntilBlock', label: 'ValidUntilBlock', },
+    { key: 'value', label: 'Value', },
+    { key: 'data', label: 'Data', },
+    { key: 'quotaLimit', label: 'Quota Limit', },
+    { key: 'quotaPrice', label: 'Quota Price', },
+    { key: 'quotaUsed', label: 'Quota Used', },
+    { key: 'createdContractAddress', label: 'Created Contract Address', },
+    { key: 'errorMessage', label: 'Error Message', },
   ]
 
   private handleError = handleError(this)
   private dismissError = dismissError(this)
 
   public render () {
-    const { hash, error, timestamp, gasUsed, loading } = this.state
+    const { hash, error, timestamp, gasUsed, loading, } = this.state
     return (
       <React.Fragment>
         <LinearProgress loading={loading} />
@@ -275,8 +277,8 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
 
         <div className={layouts.main}>
           {timestamp ? <Timestamp timestamp={timestamp} gasUsed={gasUsed} /> : null}
-          <Card classes={{ root: layouts.cardContainer }}>
-            <CardContent classes={{ root: styles.cardContentRoot }}>
+          <Card classes={{ root: layouts.cardContainer, }}>
+            <CardContent classes={{ root: styles.cardContentRoot, }}>
               <div className={styles.lists}>
                 <Info title="Transaction" infos={this.basicInfo} details={this.state.basicInfo} />
                 <Info title="Block" infos={this.infos} details={this.state} />
