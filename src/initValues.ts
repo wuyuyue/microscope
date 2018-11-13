@@ -284,6 +284,7 @@ export const initHomePageState = {
   overtime: 0,
   blocks: [] as Chain.Block<Chain.TransactionInBlock>[],
   transactions: [] as TransactionFromServer[],
+  showValidators: false,
   healthy: {
     count: '',
   },

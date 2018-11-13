@@ -44,6 +44,36 @@
   align-items: flex-end;
 }
 
+.alertContiner {
+  position: relative;
+}
+
+.alertMask {
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+.alert {
+  z-index: 1001;
+  position: absolute;
+  overflow: auto;
+  bottom: 0;
+  right: 0;
+  transform: translate(0, 100%);
+  background: white;
+  color: black;
+  box-shadow: 0 4px 16px 0 rgba(86, 129, 204, 0.1);
+  border-radius: 5px;
+  box-sizing: border-box;
+
+  div {
+    padding: 20px;
+  }
+}
+
 .mainInfoIcon {
   width: 70px;
   height: 70px;
@@ -130,7 +160,6 @@
 }
 
 @media (max-width: 600px) {
-
   .subInfoCell {
     width: 100%;
     margin-bottom: 20px;
