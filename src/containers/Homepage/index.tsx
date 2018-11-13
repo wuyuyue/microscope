@@ -291,15 +291,17 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
       <React.Fragment>
         <LinearProgress loading={loading} />
         <div className={layout.main}>
-          <MetadataTable
-            metadata={this.state.metadata}
-            lastestBlock={this.state.blocks[0]}
-            overtime={this.state.overtime}
-          />
-          <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
-            <HomeBlockList blocks={blocks} />
-            <HomeTransactionList transactions={transactions} symbol={this.props.config.symbol} />
-          </Grid>
+          <div style={{ padding: '10px', }}>
+            <MetadataTable
+              metadata={this.state.metadata}
+              lastestBlock={this.state.blocks[0]}
+              overtime={this.state.overtime}
+            />
+            <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
+              <HomeBlockList blocks={blocks} />
+              <HomeTransactionList transactions={transactions} symbol={this.props.config.symbol} />
+            </Grid>
+          </div>
         </div>
         <ErrorNotification error={this.state.error} dismissError={this.dismissError} />
       </React.Fragment>
