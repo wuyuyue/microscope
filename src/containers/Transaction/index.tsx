@@ -22,9 +22,6 @@ const layouts = require('../../styles/layout.scss')
 const texts = require('../../styles/text.scss')
 const styles = require('./transaction.scss')
 
-// ;
-
-// (window as any).hello = unsigner
 export enum TX_TYPE {
   EXCHANGE = 'Exchange',
   CONTRACT_CREATION = 'Contract Creation',
@@ -116,7 +113,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     { key: 'from', label: 'From', type: 'account', },
     { key: 'to', label: 'To', type: 'account', },
     { key: 'contractAddress', label: 'Contract', type: 'account', },
-    { key: 'blockNumber', label: 'Block Height', type: 'block', },
+    { key: 'blockNumber', label: 'Block Height', type: 'height', },
     { key: 'version', label: 'Version', },
     { key: 'nonce', label: 'Nonce', },
     { key: 'validUntilBlock', label: 'ValidUntilBlock', },
@@ -198,7 +195,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
         validUntilBlock,
         value,
         version,
-        type: !to ? TX_TYPE.CONTRACT_CREATION : data ? TX_TYPE.CONTRACT_CALL : TX_TYPE.EXCHANGE,
+        type: !to ? TX_TYPE.CONTRACT_CREATION : data.replace(/^0x/, '') ? TX_TYPE.CONTRACT_CALL : TX_TYPE.EXCHANGE,
         loading: state.loading - 1,
       }))
 
@@ -261,7 +258,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     const { symbol, } = this.props.config
     const txInfo = {
       ...this.state,
-      blockNumber: `${(+blockNumber).toLocaleString()}`,
+      blockNumber,
       quota: `${(+quotaUsed).toLocaleString()} / ${(+quotaLimit).toLocaleString()}`,
       fee: valueFormatter(+quotaUsed * +quotaPrice, symbol),
       quotaPrice: (+quotaPrice).toLocaleString(),
