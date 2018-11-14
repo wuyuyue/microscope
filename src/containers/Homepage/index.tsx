@@ -2,13 +2,14 @@ import * as React from 'react'
 import { Grid, } from '@material-ui/core'
 import { translate, } from 'react-i18next'
 import { Chain, } from '@nervos/plugin'
+import { unsigner, } from '@appchain/signer'
 
 import { LinearProgress, } from '../../components'
 import { TransactionFromServer, } from '../../typings'
 import { withConfig, } from '../../contexts/config'
 import { withObservables, } from '../../contexts/observables'
 import { fetch10Transactions, } from '../../utils/fetcher'
-import StaticCard from '../../components/StaticCard'
+import { StaticCardTitle, } from '../../components/StaticCard'
 import BlockList from '../../components/HomepageLists/BlockList'
 import TransactionList from '../../components/HomepageLists/TransactionList'
 import ErrorNotification from '../../components/ErrorNotification'
@@ -16,6 +17,7 @@ import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError, } from '../../utils/handleError'
 import { HomepageProps, HomepageState, } from './init'
 import { initHomePageState as initState, } from '../../initValues'
+import { TX_TYPE, } from '../../containers/Transaction'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./homepage.scss')
@@ -63,17 +65,17 @@ const SubInfoBlock = ({ proplist, }) => (
 const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
   const mainProplist = [
     {
-      name: '区块高度',
+      name: 'Block Height',
       icon: '',
       content: lastestBlock ? Number(lastestBlock.header.number) : 0,
     },
     {
-      name: '出块间隔',
+      name: 'Block Interval',
       icon: '',
       content: `${Math.floor(overtime / 100) / 10}s/${Math.floor(metadata.blockInterval / 1000)}s`,
     },
     {
-      name: '共识节点',
+      name: 'Validators',
       icon: '',
       content: metadata.validators.length || 0,
     },
@@ -81,32 +83,32 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
 
   const subProplist = [
     {
-      name: '名称',
+      name: 'Chain Name',
       icon: '',
       content: metadata.chainName,
     },
     {
-      name: '运营方',
+      name: 'Operator',
       icon: '',
       content: metadata.operator,
     },
     {
-      name: '经济模型',
+      name: 'Economical Model',
       icon: '',
-      content: metadata.economicalModel,
+      content: metadata.economicalModel === 0 ? 'free' : 'charge',
     },
     {
-      name: '代币名称',
+      name: 'Token Symbol',
       icon: '',
       content: `${metadata.tokenSymbol} (${metadata.tokenName})`,
     },
     {
-      name: '链 ID',
+      name: 'Chain ID',
       icon: '',
       content: metadata.chainId,
     },
     {
-      name: '版本号',
+      name: 'Version',
       icon: '',
       content: metadata.version,
     },
@@ -121,9 +123,10 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
 
 const HomePageList = ({ icon, title, list: List, page, }) => (
   <Grid item md={6} sm={12} xs={12}>
-    <StaticCard icon={icon} title={title} className={styles.card} page={page}>
-      <List />
-    </StaticCard>
+    <StaticCardTitle {...{ title, page, }} />
+    <List />
+    {/* <StaticCard icon={icon} title={title} className={styles.card} page={page}>
+    </StaticCard> */}
   </Grid>
 )
 
@@ -195,9 +198,25 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
     this.setState(state => ({ loading: state.loading + 1, })) // for transaction history
     fetch10Transactions()
       .then(({ result: { transactions, }, }: { result: { transactions: TransactionFromServer[] } }) => {
+        const txlist = transactions.map((tx: any) => {
+          const content = unsigner(tx.content)
+          const { data, value, } = content.transaction
+          const error = tx.errorMessage !== null
+          let type = TX_TYPE.CONTRACT_CALL
+          if (tx.to === '0x') {
+            type = TX_TYPE.CONTRACT_CREATION
+          } else if (data === '0x' && value !== 0) {
+            type = TX_TYPE.EXCHANGE
+          }
+          return {
+            ...tx,
+            type,
+            error,
+          }
+        })
         this.setState(state => ({
           loading: state.loading - 1,
-          transactions,
+          transactions: txlist,
         }))
       })
       .catch(this.handleError)

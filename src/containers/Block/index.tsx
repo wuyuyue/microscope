@@ -186,7 +186,6 @@ class Block extends React.Component<IBlockProps, IBlockState> {
   private handleQuotaPriceAndFee = (blockNumber: string, quotaUsed: string) => {
     this.props.CITAObservables.getQuotaPrice(blockNumber).subscribe((price: string) => {
       const _price = price === '0x' ? 0 : +price
-      console.log(_price)
       this.setState(state => ({
         ...state,
         quotaPrice: `${_price}`,
