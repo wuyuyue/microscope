@@ -114,6 +114,7 @@ export const initError = { message: '', code: '', }
 export const initHeaderState = {
   keyword: '',
   metadata: initMetadata,
+  showMetadata: false,
   sidebarNavs: false,
   activePanel: window.urlParamChain || window.localStorage.getItem('chainIp') ? '' : 'metadata',
   searchIp: '',
@@ -284,6 +285,7 @@ export const initHomePageState = {
   overtime: 0,
   blocks: [] as Chain.Block<Chain.TransactionInBlock>[],
   transactions: [] as TransactionFromServer[],
+  showValidators: false,
   healthy: {
     count: '',
   },

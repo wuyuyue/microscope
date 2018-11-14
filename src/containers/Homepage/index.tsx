@@ -15,6 +15,7 @@ import TransactionList from '../../components/HomepageLists/TransactionList'
 import ErrorNotification from '../../components/ErrorNotification'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError, } from '../../utils/handleError'
+import { stopPropagation, } from '../../utils/event'
 import { HomepageProps, HomepageState, } from './init'
 import { initHomePageState as initState, } from '../../initValues'
 import { TX_TYPE, } from '../../containers/Transaction'
@@ -22,22 +23,47 @@ import { TX_TYPE, } from '../../containers/Transaction'
 const layout = require('../../styles/layout.scss')
 const styles = require('./homepage.scss')
 
-const MainInfoCell = ({ icon, content, name, }) => (
-  <div className={styles.mainInfoCell}>
-    <div className={styles.mainInfoIcon}>
-      <img alt="" src={icon} />
+const MainInfoCell = ({ icon, content, name, validators, toggleValidators, showValidators, }) => {
+  if (validators) {
+    return (
+      <React.Fragment>
+        <div className={`${styles.mainInfoCell} ${styles.alertContiner}`} onClick={toggleValidators}>
+          <div className={styles.mainInfoIcon}>
+            <img alt={`${name} icon`} src={icon} />
+          </div>
+          <div className={styles.mainInfo}>
+            <div className={styles.mainInfoContent}>{content}</div>
+            <div className={styles.mainInfoName}>{name}</div>
+          </div>
+          {showValidators ? <div className="fullMask" onClick={toggleValidators} /> : null}
+          {showValidators ? (
+            <div className={styles.alert} onClick={stopPropagation}>
+              {validators.map(validator => (
+                <div>{validator}</div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </React.Fragment>
+    )
+  }
+  return (
+    <div className={styles.mainInfoCell}>
+      <div className={styles.mainInfoIcon}>
+        <img alt={`${name} icon`} src={icon} />
+      </div>
+      <div className={styles.mainInfo}>
+        <div className={styles.mainInfoContent}>{content}</div>
+        <div className={styles.mainInfoName}>{name}</div>
+      </div>
     </div>
-    <div className={styles.mainInfo}>
-      <div className={styles.mainInfoContent}>{content}</div>
-      <div className={styles.mainInfoName}>{name}</div>
-    </div>
-  </div>
-)
+  )
+}
 
-const MainInfoBlock = ({ proplist, }) => (
+const MainInfoBlock = ({ proplist, toggleValidators, showValidators, }) => (
   <div className={styles.mainInfoBlock}>
     {proplist.map(prop => (
-      <MainInfoCell {...prop} />
+      <MainInfoCell {...prop} {...{ toggleValidators, showValidators, }} />
     ))}
   </div>
 )
@@ -62,7 +88,7 @@ const SubInfoBlock = ({ proplist, }) => (
   </div>
 )
 
-const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
+const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, showValidators, }) => {
   const mainProplist = [
     {
       name: 'Block Height',
@@ -78,6 +104,7 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
       name: 'Validators',
       icon: '',
       content: metadata.validators.length || 0,
+      validators: metadata.validators,
     },
   ]
 
@@ -115,7 +142,7 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
   ]
   return (
     <div className={styles.metadataTable}>
-      <MainInfoBlock proplist={mainProplist} />
+      <MainInfoBlock proplist={mainProplist} {...{ toggleValidators, showValidators, }} />
       <SubInfoBlock proplist={subProplist} />
     </div>
   )
@@ -125,8 +152,6 @@ const HomePageList = ({ icon, title, list: List, page, }) => (
   <Grid item md={6} sm={12} xs={12}>
     <StaticCardTitle {...{ title, page, }} />
     <List />
-    {/* <StaticCard icon={icon} title={title} className={styles.card} page={page}>
-    </StaticCard> */}
   </Grid>
 )
 
@@ -285,21 +310,33 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
 
   private dismissError = dismissError(this)
 
+  private toggleValidators = e => {
+    stopPropagation(e)
+    this.setState(state => ({
+      ...state,
+      showValidators: !state.showValidators,
+    }))
+  }
+
   public render () {
     const { blocks, transactions, loading, } = this.state
     return (
       <React.Fragment>
         <LinearProgress loading={loading} />
         <div className={layout.main}>
-          <MetadataTable
-            metadata={this.state.metadata}
-            lastestBlock={this.state.blocks[0]}
-            overtime={this.state.overtime}
-          />
-          <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
-            <HomeBlockList blocks={blocks} />
-            <HomeTransactionList transactions={transactions} symbol={this.props.config.symbol} />
-          </Grid>
+          <div style={{ padding: '10px', }}>
+            <MetadataTable
+              metadata={this.state.metadata}
+              lastestBlock={this.state.blocks[0]}
+              overtime={this.state.overtime}
+              showValidators={this.state.showValidators}
+              toggleValidators={this.toggleValidators}
+            />
+            <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
+              <HomeBlockList blocks={blocks} />
+              <HomeTransactionList transactions={transactions} symbol={this.props.config.symbol} />
+            </Grid>
+          </div>
         </div>
         <ErrorNotification error={this.state.error} dismissError={this.dismissError} />
       </React.Fragment>

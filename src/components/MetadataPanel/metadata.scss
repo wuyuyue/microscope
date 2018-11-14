@@ -95,6 +95,28 @@ $sidebar-padding: 29px;
   }
 }
 
+.fields:focus-within {
+  .alert {
+    display: block;
+  }
+}
+
+.alert {
+    display: none;
+    position: absolute;
+    padding: 10px 20px 0px;
+    width: 500px;
+    line-height: 1;
+    bottom: 0;
+    left: 0;
+    transform: translateY(100%);
+    background: #4faaef;
+    z-index: 1;
+    box-shadow: 0 4px 16px 0 rgba(86, 129, 204, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .listItem:hover {
   cursor: pointer;
   &:hover {
