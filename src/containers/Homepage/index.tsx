@@ -15,14 +15,13 @@ import TransactionList from '../../components/HomepageLists/TransactionList'
 import ErrorNotification from '../../components/ErrorNotification'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError, } from '../../utils/handleError'
+import { stopPropagation, } from '../../utils/event'
 import { HomepageProps, HomepageState, } from './init'
 import { initHomePageState as initState, } from '../../initValues'
 import { TX_TYPE, } from '../../containers/Transaction'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./homepage.scss')
-
-const stopPropagation = e => e.stopPropagation()
 
 const MainInfoCell = ({ icon, content, name, validators, toggleValidators, showValidators, }) => {
   if (validators) {
@@ -36,7 +35,7 @@ const MainInfoCell = ({ icon, content, name, validators, toggleValidators, showV
             <div className={styles.mainInfoContent}>{content}</div>
             <div className={styles.mainInfoName}>{name}</div>
           </div>
-          {showValidators ? <div className={styles.alertMask} onClick={toggleValidators} /> : null}
+          {showValidators ? <div className="fullMask" onClick={toggleValidators} /> : null}
           {showValidators ? (
             <div className={styles.alert} onClick={stopPropagation}>
               {validators.map(validator => (

@@ -114,6 +114,7 @@ export const initError = { message: '', code: '', }
 export const initHeaderState = {
   keyword: '',
   metadata: initMetadata,
+  showMetadata: false,
   sidebarNavs: false,
   activePanel: window.urlParamChain || window.localStorage.getItem('chainIp') ? '' : 'metadata',
   searchIp: '',

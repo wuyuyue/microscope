@@ -10,7 +10,7 @@ import HeaderNavs from '../../components/HeaderNavs'
 import SidebarNavs from '../../components/SidebarNavs'
 import ErrorNotification from '../../components/ErrorNotification'
 import RightSidebar from '../../components/RightSidebar'
-import MetadataPanel, { ServerList, } from '../../components/MetadataPanel'
+import MetadataPanel, { ServerList, ChainSwitchPanel, } from '../../components/MetadataPanel'
 import BriefStatisticsPanel from '../../components/BriefStatistics'
 import SearchPanel from '../../components/SearchPanel'
 import { withConfig, } from '../../contexts/config'
@@ -18,6 +18,7 @@ import { withObservables, } from '../../contexts/observables'
 import { fetchStatistics, fetchServerList, fetchMetadata, } from '../../utils/fetcher'
 import { initMetadata, } from '../../initValues'
 import { handleError, dismissError, } from '../../utils/handleError'
+import { stopPropagation, } from '../../utils/event'
 import { initHeaderState as initState, HeaderState, HeaderProps, } from './init'
 import Image from '../../images'
 
@@ -306,6 +307,14 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     }, 1000)
   }
 
+  private toggleMetadata = e => {
+    stopPropagation(e)
+    this.setState(state => ({
+      ...state,
+      showMetadata: !state.showMetadata,
+    }))
+  }
+
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private searchSubscription: Subscription
@@ -313,21 +322,22 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private ActivePanel = () => {
     const { serverList, inputChainError, waitingMetadata, activePanel, } = this.state
-    if (activePanel === 'metadata') {
-      return (
-        <MetadataPanel
-          metadata={this.state.metadata}
-          handleInput={this.handleInput}
-          searchIp={this.state.searchIp}
-          searchResult={this.state.otherMetadata}
-          switchChain={this.switchChain}
-          handleKeyUp={this.handleKeyUp}
-          serverList={serverList}
-          inputChainError={inputChainError}
-          waitingMetadata={waitingMetadata}
-        />
-      )
-    } else if (activePanel === 'statistics') {
+    // if (activePanel === 'metadata') {
+    //   return (
+    //     <MetadataPanel
+    //       metadata={this.state.metadata}
+    //       handleInput={this.handleInput}
+    //       searchIp={this.state.searchIp}
+    //       searchResult={this.state.otherMetadata}
+    //       switchChain={this.switchChain}
+    //       handleKeyUp={this.handleKeyUp}
+    //       serverList={serverList}
+    //       inputChainError={inputChainError}
+    //       waitingMetadata={waitingMetadata}
+    //     />
+    //   )
+    // } else
+    if (activePanel === 'statistics') {
       return (
         <BriefStatisticsPanel
           peerCount={this.state.peerCount}
@@ -377,10 +387,30 @@ class Header extends React.Component<HeaderProps, HeaderState> {
               toggleSideNavs={this.toggleSideNavs}
               logo={Image.logo}
             />
-            <div className={styles.rightNavs}>
-              <Button className={styles.navItem} onClick={this.togglePanel('metadata')}>
-                {this.state.metadata.chainName || 'InvalidChain'}
-              </Button>
+            <div className={styles.rightNavs} style={{}}>
+              <div className={styles.navItem}>
+                <Button className={styles.navItem} onClick={this.toggleMetadata}>
+                  {this.state.metadata.chainName || 'InvalidChain'}
+                </Button>
+                {this.state.showMetadata ? <div className="fullMask" onClick={this.toggleMetadata} /> : null}
+                {this.state.showMetadata ? (
+                  <div className={styles.clickDown} onClick={stopPropagation}>
+                    <ChainSwitchPanel
+                      metadata={this.state.metadata}
+                      handleInput={this.handleInput}
+                      searchIp={this.state.searchIp}
+                      searchResult={this.state.otherMetadata}
+                      switchChain={this.switchChain}
+                      handleKeyUp={this.handleKeyUp}
+                      serverList={this.state.serverList}
+                      inputChainError={this.state.inputChainError}
+                      waitingMetadata={this.state.waitingMetadata}
+                      t={t}
+                    />
+                  </div>
+                ) : null}
+              </div>
+
               {/* this.props.config.panelConfigs.TPS ? (
                 <Button className={styles.navItem} onClick={this.togglePanel('statistics')}>
                   {t('TPS')}: {this.state.tps.toFixed(2)}

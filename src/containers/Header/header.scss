@@ -30,12 +30,33 @@
   text-decoration: none;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .rightNavs {
   display: flex;
   justify-content: space-between;
   align-items: center !important;
+}
+
+.clickDown {
+  text-transform: none;
+  text-align: left;
+  z-index: 1100;
+  position: absolute;
+  overflow: auto;
+  bottom: 0;
+  right: 0;
+  transform: translate(0, 100%);
+  background: white;
+  color: black;
+  box-shadow: 0 4px 16px 0 rgba(86, 129, 204, 0.1);
+  border-radius: 5px;
+  box-sizing: border-box;
+
+  div {
+    padding: 20px;
+  }
 }
 
 .activeNav {
@@ -99,7 +120,7 @@
       background: #ccc;
     }
   }
-  &+ul>li {
+  & + ul > li {
     padding-left: 0px !important;
     padding-right: 0px !important;
   }

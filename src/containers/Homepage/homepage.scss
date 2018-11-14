@@ -48,14 +48,6 @@
   position: relative;
 }
 
-.alertMask {
-  z-index: 1000;
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-}
 .alert {
   z-index: 1001;
   position: absolute;
