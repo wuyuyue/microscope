@@ -52,6 +52,14 @@
   border-bottom: none;
   font-weight: normal;
   padding: 0 0 10px 0;
+  @media (max-width:800px) {
+    background: none;
+    &:before,
+    &:after {
+      content: none;
+      background: none;
+    }
+  }
 }
 
 .more {
