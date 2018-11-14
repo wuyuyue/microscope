@@ -184,9 +184,9 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
 
   public componentDidMount () {
     hideLoader()
-    // this.subjectNewBlock()
+    this.subjectNewBlock()
     this.fetchMetaData()
-    // this.checkFetchBlockOvertime()
+    this.checkFetchBlockOvertime()
   }
 
   public componentDidCatch (err) {
