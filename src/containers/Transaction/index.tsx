@@ -289,12 +289,14 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
                   }}
                 >
                   <Divider classes={{ root: styles.divider, }} light />
-                  {Transaction.items.map(
-                    item =>
-                      txInfo[item.key] !== '' ? (
-                        <InfoItem label={item.label} type={item.type} key={item.key} detail={txInfo[item.key]} />
-                      ) : null
-                  )}
+                  {Transaction.items
+                    .filter(item => txInfo[item.key])
+                    .map(
+                      item =>
+                        txInfo[item.key] !== '' ? (
+                          <InfoItem label={item.label} type={item.type} key={item.key} detail={txInfo[item.key]} />
+                        ) : null
+                    )}
                   {data ? (
                     <InfoItem
                       label="Data"
