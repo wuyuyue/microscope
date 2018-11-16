@@ -3,6 +3,7 @@ import { Link, } from 'react-router-dom'
 import { translate, } from 'react-i18next'
 import { Search as SearchIcon, } from '@material-ui/icons'
 import { unsigner, } from '@appchain/signer'
+import { withConfig, } from '../../contexts/config'
 import { withObservables, } from '../../contexts/observables'
 import { IContainerProps, IBlock, UnsignedTransaction, } from '../../typings'
 import { initBlock, initUnsignedTransaction, } from '../../initValues'
@@ -186,7 +187,7 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
       addr: value,
       blockNumber: 'latest',
     }).subscribe(balance => {
-      this.setState(state => Object.assign({}, state, { balance, }))
+      this.setState(state => Object.assign({}, state, { balance: valueFormatter(balance, this.props.config.symbol), }))
     })
   }
   private inputSearchError = () =>
@@ -240,4 +241,4 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
     )
   }
 }
-export default withObservables(SearchPanel)
+export default withConfig(withObservables(SearchPanel))
