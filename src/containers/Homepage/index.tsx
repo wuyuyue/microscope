@@ -23,6 +23,11 @@ import { TX_TYPE, } from '../../containers/Transaction'
 const layout = require('../../styles/layout.scss')
 const styles = require('./homepage.scss')
 
+export const enum EconomicalModel {
+  QUOTA = 'quota',
+  CHARGE = 'charge',
+}
+
 const MainInfoCell = ({ icon, content, name, validators, toggleValidators, showValidators, }) => {
   if (validators) {
     return (
@@ -122,7 +127,7 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
     {
       name: 'Economical Model',
       icon: '',
-      content: metadata.economicalModel === 0 ? 'free' : 'charge',
+      content: metadata.economicalModel === 0 ? EconomicalModel.QUOTA : EconomicalModel.CHARGE,
     },
     {
       name: 'Token Symbol',
