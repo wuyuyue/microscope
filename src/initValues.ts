@@ -116,7 +116,7 @@ export const initHeaderState = {
   metadata: initMetadata,
   showMetadata: false,
   sidebarNavs: false,
-  activePanel: window.urlParamChain || window.localStorage.getItem('chainIp') ? '' : 'metadata',
+  activePanel: window.urlParamChain || '',
   searchIp: '',
   otherMetadata: initMetadata,
   tps: 0,
