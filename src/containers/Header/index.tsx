@@ -297,23 +297,27 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     reload()
   }
 
+  private pollingCheckChainAndSwitch = (maxCount, ip) => {
+    setTimeout(() => {
+      const { otherMetadata, } = this.state
+      if (otherMetadata.chainId !== -1) {
+        saveChainHistoryLocal(ip, otherMetadata.chainName)
+        this.switchChainImmediate(ip)
+      } else if (maxCount > 0) {
+        this.pollingCheckChainAndSwitch(maxCount - 1, ip)
+      } else {
+        this.setState({ inputChainError: true, waitingMetadata: false, })
+      }
+    }, 500)
+  }
+
   private switchChain = (chain: string, immediate = false) => (e?: any) => {
     const ip = chain || this.state.searchIp
     if (immediate) {
       this.switchChainImmediate(ip)
     }
-    const { otherMetadata, } = this.state
-    this.setState({ inputChainError: false, })
-    this.setState({ waitingMetadata: true, })
-    setTimeout(() => {
-      if (otherMetadata.chainId !== -1) {
-        saveChainHistoryLocal(ip, otherMetadata.chainName)
-        this.switchChainImmediate(ip)
-      } else {
-        this.setState({ inputChainError: true, })
-        this.setState({ waitingMetadata: false, })
-      }
-    }, 1500)
+    this.setState({ inputChainError: false, waitingMetadata: true, })
+    this.pollingCheckChainAndSwitch(5, ip)
   }
 
   private toggleMetadata = e => {

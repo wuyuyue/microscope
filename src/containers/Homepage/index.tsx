@@ -148,7 +148,7 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
     },
     {
       name: 'Economical Model',
-      icon: '',
+      icon: 'chainEconomicalModel',
       content: metadata.economicalModel === 0 ? EconomicalModel.QUOTA : EconomicalModel.CHARGE,
     },
     {
