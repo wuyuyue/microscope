@@ -10,7 +10,7 @@ import {
   ListItemText,
   Divider
 } from '@material-ui/core'
-import { unsigner } from '@nervos/signer'
+import { unsigner } from '@appchain/signer'
 import { Chain } from '@nervos/plugin/lib/typings/index.d'
 
 import Banner from '../../components/Banner'
@@ -168,14 +168,13 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       /* eslint-disable */
       const { data, value, nonce, quota, validUntilBlock } = details.transaction
       const { address } = details.sender
-      const hexData = bytesToHex(data as any)
-      basicInfo.data = hexData === '0x' ? 'null' : hexData
-      basicInfo.value = valueFormatter(bytesToHex(value as any))
-      basicInfo.from = '0x' + address
+      basicInfo.data = data === '0x' ? 'Empty Data' : data
+      basicInfo.value = valueFormatter(value)
+      basicInfo.from = address
       basicInfo.nonce = nonce
       basicInfo.quotaLimit = quota
       basicInfo.validUntilBlock = validUntilBlock
-      basicInfo.to = tx.basicInfo.to ? '0x' + tx.basicInfo.to : 'Contract Creation'
+      basicInfo.to = details.transaction.to || 'Contract Creation'
       /* eslint-enable */
     }
     return this.setState(state =>

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Grid } from '@material-ui/core'
 import { Chain } from '@nervos/plugin'
-import { unsigner } from '@nervos/signer'
+import { unsigner } from '@appchain/signer'
 import * as EthAccount from 'web3-eth-accounts'
 
 import StaticCard from '../../components/StaticCard'
@@ -66,7 +66,7 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
               hash: tx.hash,
               timestamp: block.header.timestamp,
               to: unsignedTx.transaction.to,
-              value: +unsignedTx.transaction.value.join('')
+              value: unsignedTx.transaction.value
             }
           })
           const transactions = [...state.transactions, ...newTransactions]

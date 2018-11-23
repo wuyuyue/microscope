@@ -53,12 +53,12 @@ export interface UnsignedTransaction {
     publicKey: string
   }
   transaction: {
-    data: number[]
+    data: string
     nonce: string
     quota: number
     to: string
     validUntilBlock: number
-    value: number[]
+    value: number
     version: number
   }
 }

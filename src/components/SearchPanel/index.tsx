@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { translate } from 'react-i18next'
 import { Search as SearchIcon } from '@material-ui/icons'
-import { unsigner } from '@nervos/signer'
+import { unsigner } from '@appchain/signer'
 import { withObservables } from '../../contexts/observables'
 import { IContainerProps, IBlock, UnsignedTransaction } from '../../typings'
 import { initBlock, initUnsignedTransaction } from '../../initValues'
@@ -96,7 +96,7 @@ const TransactionDisplay = translate('microscope')(
           </tr>
           <tr>
             <td>{t('value')}</td>
-            <td>{valueFormatter(bytesToHex(tx.transaction.value as any))}</td>
+            <td>{valueFormatter(tx.transaction.value)}</td>
           </tr>
         </tbody>
       </table>

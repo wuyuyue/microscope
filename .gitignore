@@ -19,6 +19,7 @@ Microscope
 
 # Optional npm cache directory
 .npm
+package-lock.js
 
 # Optional yarn error log
 yarn-error

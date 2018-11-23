@@ -9,7 +9,7 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { LinearProgress, Card, CardContent, List, ListItem } from '@material-ui/core'
 
-import { unsigner } from '@nervos/signer'
+import { unsigner } from '@appchain/signer'
 import { RpcResult, Chain } from '@nervos/plugin/lib/typings/index.d'
 import { IContainerProps, IBlock } from '../../typings'
 
@@ -84,8 +84,9 @@ class Block extends React.Component<IBlockProps, IBlockState> {
     block.body.transactions = block.body.transactions.map(tx => {
       const details = unsigner(tx.content)
       if (typeof tx.basicInfo !== 'string' && tx.basicInfo) {
-        tx.basicInfo.value = '' + +bytesToHex(tx.basicInfo.value as any)
-        tx.basicInfo.from = '0x' + details.sender.address
+        tx.basicInfo.value = details.transaction.value
+        tx.basicInfo.from = details.sender.address
+        tx.basicInfo.to = details.transaction.to
       }
       return {
         ...tx,
