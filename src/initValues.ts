@@ -59,12 +59,12 @@ export const initUnsignedTransaction: UnsignedTransaction = {
     publicKey: ''
   },
   transaction: {
-    data: [] as number[],
+    data: '',
     nonce: '',
     quota: 0,
     to: '',
     validUntilBlock: 0,
-    value: [] as number[],
+    value: 0,
     version: 0
   }
 }
@@ -214,7 +214,7 @@ export const initBlockTableState = {
         },
         {
           key: 'transactionTo',
-          text: 'To',
+          text: 'To'
         }
       ],
       check: check.digitsDec,
