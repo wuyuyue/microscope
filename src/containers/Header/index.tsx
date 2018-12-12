@@ -10,7 +10,7 @@ import HeaderNavs from '../../components/HeaderNavs'
 import SidebarNavs from '../../components/SidebarNavs'
 import ErrorNotification from '../../components/ErrorNotification'
 import RightSidebar from '../../components/RightSidebar'
-import MetadataPanel, { ServerList, ChainSwitchPanel, } from '../../components/MetadataPanel'
+import { ServerList, ChainSwitchPanel, } from '../../components/MetadataPanel'
 import BriefStatisticsPanel from '../../components/BriefStatistics'
 import SearchPanel from '../../components/SearchPanel'
 import { withConfig, } from '../../contexts/config'
@@ -212,7 +212,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     fetchServerList()
       .then(servers => {
         if (!servers) return
-        const history = loadedLocalStorage('chainHistory')
+        const history = loadedLocalStorage('chainHistory') || []
         const serverList = [...history, ] as ServerList
         Object.keys(servers).forEach(serverName => {
           serverList.push({
@@ -297,23 +297,30 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     reload()
   }
 
+  private pollingCheckChainAndSwitch = (maxCount, ip) => {
+    let count = maxCount
+    const timer = setInterval(() => {
+      const { otherMetadata, } = this.state
+      if (otherMetadata.chainId !== -1) {
+        clearInterval(timer)
+        saveChainHistoryLocal(ip, otherMetadata.chainName)
+        this.switchChainImmediate(ip)
+      } else if (count < 0) {
+        clearInterval(timer)
+      } else {
+        count--
+      }
+    }, 500)
+  }
+
   private switchChain = (chain: string, immediate = false) => (e?: any) => {
     const ip = chain || this.state.searchIp
     if (immediate) {
       this.switchChainImmediate(ip)
+    } else {
+      this.setState({ inputChainError: false, waitingMetadata: true, })
+      this.pollingCheckChainAndSwitch(15, ip)
     }
-    const { otherMetadata, } = this.state
-    this.setState({ inputChainError: false, })
-    this.setState({ waitingMetadata: true, })
-    setTimeout(() => {
-      if (otherMetadata.chainId !== -1) {
-        saveChainHistoryLocal(ip, otherMetadata.chainName)
-        this.switchChainImmediate(ip)
-      } else {
-        this.setState({ inputChainError: true, })
-        this.setState({ waitingMetadata: false, })
-      }
-    }, 1500)
   }
 
   private toggleMetadata = e => {
@@ -331,21 +338,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private ActivePanel = () => {
     const { serverList, inputChainError, waitingMetadata, activePanel, } = this.state
-    // if (activePanel === 'metadata') {
-    //   return (
-    //     <MetadataPanel
-    //       metadata={this.state.metadata}
-    //       handleInput={this.handleInput}
-    //       searchIp={this.state.searchIp}
-    //       searchResult={this.state.otherMetadata}
-    //       switchChain={this.switchChain}
-    //       handleKeyUp={this.handleKeyUp}
-    //       serverList={serverList}
-    //       inputChainError={inputChainError}
-    //       waitingMetadata={waitingMetadata}
-    //     />
-    //   )
-    // } else
     if (activePanel === 'statistics') {
       return (
         <BriefStatisticsPanel
