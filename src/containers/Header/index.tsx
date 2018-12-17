@@ -128,18 +128,16 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private initBlockTimestamp = () => {
     const { timestamp, } = this.state.block.header
-    if (timestamp === '') {
-      this.setState(state =>
-        Object.assign({}, state, {
-          block: {
-            ...state.block,
-            header: {
-              ...state.block.header,
-              timestamp: Date.now(),
-            },
+    if (!timestamp) {
+      this.setState(state => ({
+        block: {
+          ...state.block,
+          header: {
+            ...state.block.header,
+            timestamp: Date.now(),
           },
-        })
-      )
+        },
+      }))
     }
   }
 
@@ -412,11 +410,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 ) : null}
               </div>
 
-              {/* this.props.config.panelConfigs.TPS ? (
-                <Button className={styles.navItem} onClick={this.togglePanel('statistics')}>
-                  {t('TPS')}: {this.state.tps.toFixed(2)}
-                </Button>
-              ) : null */}
               <IconButton className={styles.navItem} onClick={this.togglePanel('search')}>
                 <svg className="icon" aria-hidden="true">
                   <use xlinkHref="#icon-magnifier" />
