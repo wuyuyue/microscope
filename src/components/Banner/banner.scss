@@ -1,7 +1,8 @@
 $overlap: 82px;
+
 .banner {
   display: flex;
-  flex-direction: column;
+  // flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100vw;
@@ -15,6 +16,7 @@ $overlap: 82px;
   background-position-x: center;
   line-height: 2;
   font-size: 24px;
+
   @media (max-width: 800px) {
     height: 117px;
     margin-bottom: 0;

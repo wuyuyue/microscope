@@ -2,7 +2,7 @@ import * as React from 'react'
 
 const styles = require('./banner.scss')
 
-const Banner = ({ bg, children }) => (
+const Banner = ({ bg, children, }) => (
   <div
     className={styles.banner}
     style={{
