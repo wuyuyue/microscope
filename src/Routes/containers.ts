@@ -5,28 +5,28 @@ export default [
     path: '/',
     name: 'Header',
     component: 'Header',
-    nav: false
+    nav: false,
   },
   {
     path: '/',
     name: 'Homepage',
     component: 'Homepage',
     exact: true,
-    nav: false
+    nav: false,
   },
   {
     path: '/block/:blockHash',
     name: 'BlockByHash',
     component: 'Block',
     exact: true,
-    nav: false
+    nav: false,
   },
   {
     path: '/height/:height',
     name: 'BlockByHeight',
     component: 'Block',
     exact: true,
-    nav: false
+    nav: false,
   },
   {
     path: '/blocks',
@@ -35,7 +35,7 @@ export default [
     exact: true,
     nav: true,
     icon: Image.icon.block,
-    iconActive: Image.iconActive.block
+    iconActive: Image.iconActive.block,
   },
   {
     path: '/transactions',
@@ -44,21 +44,21 @@ export default [
     exact: true,
     nav: true,
     icon: Image.icon.transaction,
-    iconActive: Image.iconActive.transaction
+    iconActive: Image.iconActive.transaction,
   },
   {
     path: '/transaction/:transaction',
     name: 'Transaction',
     component: 'Transaction',
     exact: true,
-    nav: false
+    nav: false,
   },
   {
     path: '/account/:account',
     name: 'Account',
     component: 'Account',
     exact: true,
-    nav: false
+    nav: false,
   },
   {
     path: '/graphs',
@@ -67,7 +67,7 @@ export default [
     exact: true,
     nav: true,
     icon: Image.icon.statistics,
-    iconActive: Image.iconActive.statistics
+    iconActive: Image.iconActive.statistics,
   },
   {
     path: '/debugger',
@@ -76,7 +76,7 @@ export default [
     exact: true,
     nav: true,
     icon: Image.icon.statistics,
-    iconActive: Image.iconActive.statistics
+    iconActive: Image.iconActive.statistics,
   },
   {
     path: '/config',
@@ -85,13 +85,13 @@ export default [
     exact: true,
     nav: true,
     icon: Image.icon.config,
-    iconActive: Image.iconActive.config
+    iconActive: Image.iconActive.config,
   },
   {
     path: '/',
     name: 'Footer',
     component: 'Footer',
     exact: false,
-    nav: false
-  }
+    nav: false,
+  },
 ]

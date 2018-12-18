@@ -98,31 +98,26 @@ export const ChainSwitchPanel = ({
         </div>
       )}
     </div>
-
-    {searchResult.chainId !== -1 ? (
-      <MetadataRender metadata={searchResult} />
-    ) : (
-      <List>
-        {serverList.map(({ serverName, serverIp, }) => (
-          <ListItem
-            key={serverName}
-            onClick={switchChain(serverIp, true)}
+    <List>
+      {serverList.map(({ serverName, serverIp, }) => (
+        <ListItem
+          key={serverName}
+          onClick={switchChain(serverIp, true)}
+          classes={{
+            root: styles.listItem,
+            gutters: styles.serverGutters,
+          }}
+        >
+          <ListItemText
             classes={{
-              root: styles.listItem,
-              gutters: styles.serverGutters,
+              primary: styles.serverPrimary,
+              secondary: styles.serverSecondary,
             }}
-          >
-            <ListItemText
-              classes={{
-                primary: styles.serverPrimary,
-                secondary: styles.serverSecondary,
-              }}
-              primary={serverName}
-              secondary={serverIp}
-            />
-          </ListItem>
-        ))}
-      </List>
-    )}
+            primary={serverName}
+            secondary={serverIp}
+          />
+        </ListItem>
+      ))}
+    </List>
   </div>
 )

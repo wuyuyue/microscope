@@ -2,9 +2,9 @@ import * as React from 'react'
 import { hexToUtf8, } from 'web3-utils'
 import * as abiCoder from 'web3-eth-abi'
 import { Link, } from 'react-router-dom'
-import { Card, CardContent, List, ListSubheader, ListItem, ListItemText, Typography, Divider, } from '@material-ui/core'
+import { Card, CardContent, List, } from '@material-ui/core'
 import { unsigner, } from '@appchain/signer'
-import { Chain, } from '@nervos/plugin/lib/typings/index.d'
+import { Chain, } from '@appchain/plugin/lib/typings/index.d'
 
 import { LinearProgress, } from '../../components'
 import Banner from '../../components/Banner'
@@ -35,48 +35,29 @@ export enum TX_STATUS {
 export enum DATA_TYPE {
   HEX = 'Hex',
   UTF8 = 'UTF-8',
+  PARAMETERS = 'Parameters',
 }
+
 const EMPTY_DATA = 'Empty Data'
 
-const InfoItem = ({
-  label,
-  type,
-  detail,
-  action,
-}: {
-label: string
-type?: string
-detail: any
-action?: {
-label: string
-cb: (e) => void
-}
-}) => (
-  <ListItem>
-    <ListItemText
-      classes={{
-        primary: styles.infoTitle,
-        secondary: styles.infoValue,
-      }}
-      primary={
-        <Typography variant="body2">
-          {label}
-          {action ? <button onClick={action.cb}>{action.label}</button> : null}
-        </Typography>
-      }
-      secondary={
-        type ? (
-          <Link to={`/${type}/${detail}`} href={`/${type}/${detail}`} className={texts.addr}>
-            {detail}
-          </Link>
-        ) : (
-          detail
-        )
-      }
-    />
-  </ListItem>
+const InfoItem = ({ label, type, detail, }: { label: string; type?: string; detail: any }) => (
+  <div key={label} className={styles.detailItem}>
+    <span>{label}</span>
+    <span>
+      {type ? (
+        <Link
+          className={texts.addr}
+          to={`/${type}/${detail}`.replace(/,/g, '')}
+          href={`/${type}/${detail}`.replace(/,/g, '')}
+        >
+          {detail}
+        </Link>
+      ) : (
+        detail
+      )}
+    </span>
+  </div>
 )
-
 interface TransactionProps extends IContainerProps {}
 
 const initState = {
@@ -89,6 +70,7 @@ const initState = {
   validUntilBlock: '',
   value: '',
   data: '',
+  errorMessage: '',
   utf8Str: '',
   quotaLimit: '',
   quotaUsed: '',
@@ -100,7 +82,7 @@ const initState = {
   quotaPrice: '',
   timestamp: '',
   loading: 0,
-  status: TX_STATUS.FAILURE as TX_STATUS | String,
+  // status: TX_STATUS.FAILURE as TX_STATUS | String,
   type: TX_TYPE.EXCHANGE,
   dataType: DATA_TYPE.HEX,
   parameters: '',
@@ -111,18 +93,18 @@ type ITransactionState = typeof initState
 class Transaction extends React.Component<TransactionProps, ITransactionState> {
   static items = [
     { key: 'type', label: 'Type', },
-    { key: 'status', label: 'Status', },
+    // { key: 'status', label: 'Status', },
     { key: 'from', label: 'From', type: 'account', },
     { key: 'to', label: 'To', type: 'account', },
     { key: 'contractAddress', label: 'Contract', type: 'account', },
-    { key: 'blockNumber', label: 'Block Height', type: 'Height', },
-    { key: 'version', label: 'Version', },
-    { key: 'nonce', label: 'Nonce', },
-    { key: 'validUntilBlock', label: 'ValidUntilBlock', },
-    { key: 'value', label: 'Value', },
-    { key: 'quota', label: 'Quota', },
-    { key: 'quotaPrice', label: 'Quota Price', },
-    { key: 'fee', label: 'Fee', },
+    { key: 'blockNumber', label: 'Block Height', type: 'height', },
+    { key: 'version', label: 'version', },
+    { key: 'nonce', label: 'nonce', },
+    { key: 'validUntilBlock', label: 'validUntilBlock', },
+    { key: 'value', label: 'value', },
+    { key: 'quota', label: 'quota', },
+    { key: 'quotaPrice', label: 'quota Price', },
+    { key: 'fee', label: 'fee', },
   ]
   readonly state = initState
 
@@ -157,7 +139,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     }, this.handleError)
   }
 
-  private parseParamters = (contractAddr, data) => {
+  private parseParamters = (contractAddr, data) =>
     this.props.CITAObservables.getAbi({
       contractAddr,
       blockNumber: 'pending',
@@ -170,7 +152,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
             const _abiHash = abiCoder.encodeFunctionSignature(_abi.name)
             if (_abi.signature === fnHash) {
               const parameters = {}
-              const p = abiCoder.decodeParameters(_abi.inputs, data)
+              const p = abiCoder.decodeParameters(_abi.inputs, data.slice(10))
               Object.keys(p).forEach(key => {
                 parameters[key] = p[key]
               })
@@ -185,7 +167,6 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
         }
       }
     }, console.warn)
-  }
 
   private fetchTransactionInfo = transaction => {
     const hash = format0x(transaction)
@@ -261,16 +242,18 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     const { errorMessage, quotaUsed, contractAddress, } = receipt as any
     this.setState(state => ({
       ...state,
-      status: errorMessage ? `${TX_STATUS.FAILURE} ${errorMessage}` : TX_STATUS.SUCCESS,
+      // status: errorMessage ? `${TX_STATUS.FAILURE} ${errorMessage}` : TX_STATUS.SUCCESS,
+      // status: errorMessage ? TX_STATUS.FAILURE : TX_STATUS.SUCCESS,
+      errorMessage,
       quotaUsed: `${+quotaUsed}`,
       contractAddress,
       loading: state.loading - 1,
     }))
   }
 
-  private switchDataType = e => {
+  private switchDataType = (dataType: DATA_TYPE) => {
     this.setState(state => ({
-      dataType: state.dataType === DATA_TYPE.HEX ? DATA_TYPE.UTF8 : DATA_TYPE.HEX,
+      dataType,
     }))
   }
 
@@ -280,6 +263,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
   public render () {
     const {
       data,
+      errorMessage,
       utf8Str,
       dataType,
       hash,
@@ -296,19 +280,26 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     const { symbol, } = this.props.config
     const txInfo = {
       ...this.state,
-      blockNumber,
+      blockNumber: `${(+blockNumber).toLocaleString()}`,
       quota: `${(+quotaUsed).toLocaleString()} / ${(+quotaLimit).toLocaleString()}`,
       fee: valueFormatter(+quotaUsed * +quotaPrice, symbol),
       quotaPrice: (+quotaPrice).toLocaleString(),
       value: valueFormatter(value, symbol),
       validUntilBlock: `${(+validUntilBlock).toLocaleString()}`,
-      data: dataType === DATA_TYPE.HEX ? data : utf8Str,
+      data: dataType === DATA_TYPE.HEX ? data : dataType === DATA_TYPE.UTF8 ? utf8Str : parameters,
+    }
+    const dataTypes = [DATA_TYPE.HEX, ]
+    if (utf8Str) {
+      dataTypes.push(DATA_TYPE.UTF8)
+    }
+    if (parameters) {
+      dataTypes.push(DATA_TYPE.PARAMETERS)
     }
     return (
       <React.Fragment>
         <LinearProgress loading={loading} />
-        <Banner bg={Images.banner.transaction}>
-          <div className={styles.hashTitle}>Transaction</div>
+        <Banner>
+          <div className={styles.hashTitle}>Transaction: </div>
           <div className={styles.hashText}>{hash}</div>
         </Banner>
 
@@ -317,16 +308,30 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
             <CardContent classes={{ root: styles.cardContentRoot, }}>
               <div className={styles.lists}>
                 <List
-                  subheader={
-                    <ListSubheader component="div" classes={{ root: styles.listHeaderRoot, }}>
-                      Transaction
-                    </ListSubheader>
-                  }
                   classes={{
                     root: styles.listRoot,
                   }}
                 >
-                  <Divider classes={{ root: styles.divider, }} light />
+                  <InfoItem
+                    label="Status"
+                    detail={
+                      errorMessage ? (
+                        <span className={styles.failure}>
+                          <svg className="icon" aria-hidden="true">
+                            <use xlinkHref="#icon-cancel-circle" />
+                          </svg>
+                          {`${TX_STATUS.FAILURE}. ${errorMessage}`}
+                        </span>
+                      ) : (
+                        <span className={styles.success}>
+                          <svg className="icon" aria-hidden="true">
+                            <use xlinkHref="#icon-check-circle" />
+                          </svg>
+                          {TX_STATUS.SUCCESS}
+                        </span>
+                      )
+                    }
+                  />
                   {Transaction.items
                     .filter(item => txInfo[item.key])
                     .map(
@@ -335,20 +340,25 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
                           <InfoItem label={item.label} type={item.type} key={item.key} detail={txInfo[item.key]} />
                         ) : null
                     )}
-                  {data ? (
-                    <InfoItem
-                      label="Data"
-                      detail={txInfo.data}
-                      action={utf8Str ? { label: 'HEX/UTF8', cb: this.switchDataType, } : undefined}
-                    />
-                  ) : null}
-                  {parameters ? (
-                    <InfoItem
-                      label="Parameters"
-                      type="Parameters"
-                      detail={<pre style={{ color: '#000', }}>{parameters}</pre>}
-                    />
-                  ) : null}
+                  <div className={styles.detailItem}>
+                    <span>data</span>
+                    <span className={styles.dataTypeSwitch}>
+                      {dataTypes.map((type: DATA_TYPE) => (
+                        <span
+                          key={type}
+                          onClick={e => this.switchDataType(type)}
+                          className={type === dataType ? styles.active : ''}
+                        >
+                          {type}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                  {dataType === DATA_TYPE.PARAMETERS ? (
+                    <pre className={styles.parameters}>{parameters}</pre>
+                  ) : (
+                    <textarea className={styles.hexData} disabled value={txInfo.data} />
+                  )}
                 </List>
               </div>
             </CardContent>

@@ -1,4 +1,5 @@
 @import '../../styles/common.scss';
+
 .subheader {
   word-wrap: break-word;
   word-break: break-all;
@@ -29,9 +30,11 @@
   a {
     margin: 0 12px;
     color: #FFF;
+
     &:last-child {
       margin-right: 0
     }
+
     &:first-child {
       margin-left: 0
     }
@@ -40,18 +43,19 @@
 
 .items {
   width: 850px;
-  margin: 0 auto !important;
   color: #4a546c;
+
   li {
-    border-bottom: 1px solid #e2e9f2;
     padding: 30px 0 10px;
   }
+
   .itemTitle {
     display: flex;
     width: 200px;
     justify-content: flex-start;
     align-items: center;
     color: $plainText;
+
     &:after {
       content: ':'
     }
@@ -65,18 +69,46 @@
   }
 }
 
-.hashCardRoot {
+.card {
   @include boxShadow;
-  padding-top: 48px;
-  padding-bottom: 48px;
-  margin-bottom: 20px;
-  line-height: 2;
-  text-align: center;
-  .hashTitle {
-    font-size: 24px;
-  }
-  .hashText {
+  display: flex;
+  font-size: 16px;
+  margin: 0;
+  padding: 35px 62px;
+  margin-bottom: 40px;
+  background: #fff;
+  border-radius: 4px;
+
+  .numberTitle {
+    display: inline-block;
     font-size: 16px;
-    color: $plainText;
+    min-width: 200px;
+  }
+
+}
+
+.blockNavs {
+  display: flex;
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(to left, #4eadf1, #6a96f0);
+    border-radius: 50%;
+    margin-right: 20px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      transform-origin: center center;
+      transform: scale(0.8);
+    }
+
+    &:last-child {
+      transform: rotate(180deg);
+    }
   }
 }
