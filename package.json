@@ -27,16 +27,15 @@
     ]
   },
   "dependencies": {
+    "@appchain/observables": "^0.20.2",
     "@appchain/signer": "^2.0.4",
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
-    "@nervos/observables": "^0.20.0",
     "@reactivex/rxjs": "^5.5.6",
     "axios": "^0.18.0",
     "echarts": "^4.0.4",
     "i18next": "^10.3.0",
     "i18next-browser-languagedetector": "^2.1.0",
-    "i18next-xhr-backend": "^1.5.1",
     "normalize.css": "^7.0.0",
     "react": "16.3",
     "react-dom": "16.3",
@@ -47,7 +46,6 @@
     "web3": "^1.0.0-beta.33"
   },
   "devDependencies": {
-    "@nervos/plugin": "^0.18.4",
     "@types/echarts": "^0.0.12",
     "@types/node": "^9.4.0",
     "@types/react": "^16.0.35",

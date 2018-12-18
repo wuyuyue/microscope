@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Link, } from 'react-router-dom'
 import { translate, } from 'react-i18next'
 import { List, ListItem, ListItemText, } from '@material-ui/core'
-import { Chain, } from '@nervos/plugin'
+import { Chain, } from '@appchain/plugin'
 import { formatedAgeString, } from '../../utils/timeFormatter'
 
 const texts = require('../../styles/text.scss')

@@ -4,7 +4,7 @@ import { translate, } from 'react-i18next'
 import { Subject, Subscription, } from '@reactivex/rxjs'
 import { AppBar, Toolbar, Menu, MenuItem, Typography, Button, IconButton, } from '@material-ui/core'
 import { Translate as TranslateIcon, Close as CloseIcon, } from '@material-ui/icons'
-import { Chain, } from '@nervos/plugin'
+import { Chain, } from '@appchain/plugin'
 import containers from '../../Routes/containers'
 import HeaderNavs from '../../components/HeaderNavs'
 import SidebarNavs from '../../components/SidebarNavs'
@@ -128,18 +128,16 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private initBlockTimestamp = () => {
     const { timestamp, } = this.state.block.header
-    if (timestamp === '') {
-      this.setState(state =>
-        Object.assign({}, state, {
-          block: {
-            ...state.block,
-            header: {
-              ...state.block.header,
-              timestamp: Date.now(),
-            },
+    if (!timestamp) {
+      this.setState(state => ({
+        block: {
+          ...state.block,
+          header: {
+            ...state.block.header,
+            timestamp: Date.now(),
           },
-        })
-      )
+        },
+      }))
     }
   }
 
@@ -412,11 +410,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 ) : null}
               </div>
 
-              {/* this.props.config.panelConfigs.TPS ? (
-                <Button className={styles.navItem} onClick={this.togglePanel('statistics')}>
-                  {t('TPS')}: {this.state.tps.toFixed(2)}
-                </Button>
-              ) : null */}
               <IconButton className={styles.navItem} onClick={this.togglePanel('search')}>
                 <svg className="icon" aria-hidden="true">
                   <use xlinkHref="#icon-magnifier" />

@@ -1,19 +1,19 @@
 import * as React from 'react'
-import { LinearProgress } from '@material-ui/core'
-import TableWithSelector, { TableWithSelectorProps, SelectorType } from '../../components/TableWithSelector'
+import { LinearProgress, } from '@material-ui/core'
+import TableWithSelector, { TableWithSelectorProps, SelectorType, } from '../../components/TableWithSelector'
 import ErrorNotification from '../../components/ErrorNotification'
 import Banner from '../../components/Banner'
-import { fetchTransactions } from '../../utils/fetcher'
-import { withConfig } from '../../contexts/config'
-import { TransactionFromServer, IContainerProps } from '../../typings'
+import { fetchTransactions, } from '../../utils/fetcher'
+import { withConfig, } from '../../contexts/config'
+import { TransactionFromServer, IContainerProps, } from '../../typings'
 import paramsFilter from '../../utils/paramsFilter'
 import hideLoader from '../../utils/hideLoader'
-import { handleError, dismissError } from '../../utils/handleError'
-import { rangeSelectorText } from '../../utils/searchTextGen'
+import { handleError, dismissError, } from '../../utils/handleError'
+import { rangeSelectorText, } from '../../utils/searchTextGen'
 import toText from '../../utils/toText'
-import { formatedAgeString } from '../../utils/timeFormatter'
+import { formatedAgeString, } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
-import check, { errorMessages } from '../../utils/check'
+import check, { errorMessages, } from '../../utils/check'
 
 interface AdvancedSelectors {
   selectorsValue: {
@@ -30,13 +30,13 @@ message: string
 }
 } = {
   headers: [
-    { key: 'hash', text: 'hash', href: '/transaction/' },
-    { key: 'from', text: 'from', href: '/account/' },
-    { key: 'to', text: 'to', href: '/account/' },
-    { key: 'value', text: 'value' },
-    { key: 'blockNumber', text: 'height', href: '/height/' },
-    { key: 'gasUsed', text: 'quota used' },
-    { key: 'age', text: 'age' }
+    { key: 'hash', text: 'hash', href: '/transaction/', },
+    { key: 'from', text: 'from', href: '/account/', },
+    { key: 'to', text: 'to', href: '/account/', },
+    { key: 'value', text: 'value', },
+    { key: 'blockNumber', text: 'height', href: '/height/', },
+    { key: 'gasUsed', text: 'quota used', },
+    { key: 'age', text: 'age', },
   ],
   items: [] as any[],
   count: 0,
@@ -49,7 +49,7 @@ message: string
       text: 'Address From',
       check: check.address,
       format: check.format0x,
-      errorMessage: errorMessages.address
+      errorMessage: errorMessages.address,
     },
     {
       type: SelectorType.SINGLE,
@@ -57,19 +57,19 @@ message: string
       text: 'Address To',
       check: check.address,
       format: check.format0x,
-      errorMessage: errorMessages.address
-    }
+      errorMessage: errorMessages.address,
+    },
   ],
   selectorsValue: {
     from: '',
     to: '',
-    account: ''
+    account: '',
   },
   loading: 0,
   error: {
     code: '',
-    message: ''
-  }
+    message: '',
+  },
 }
 
 interface setTransactionsCount {
@@ -94,29 +94,29 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     this.fetchTransactions({
       ...this.state.selectorsValue,
       offset: this.state.pageNo * this.state.pageSize,
-      limit: this.state.pageSize
+      limit: this.state.pageSize,
     })
   }
   componentDidCatch (err) {
     this.handleError(err)
   }
   onSearch = params => {
-    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 0 }))
+    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 0, }))
     this.fetchTransactions(params)
   }
   private setPageSize = () => {
-    const { transactionPageSize: pageSize } = this.props.config.panelConfigs
-    this.setState({ pageSize })
+    const { transactionPageSize: pageSize, } = this.props.config.panelConfigs
+    this.setState({ pageSize, })
   }
   private setVisibleHeaders = () => {
     // hide invisible header
     this.setState(state => {
-      const { headers } = state
+      const { headers, } = state
       const visibleHeaders = headers.filter(
         header =>
           this.props.config.panelConfigs[`transaction${header.key[0].toUpperCase()}${header.key.slice(1)}`] !== false
       )
-      return { headers: visibleHeaders }
+      return { headers: visibleHeaders, }
     })
   }
   private setParamsFromUrl = () => {
@@ -125,7 +125,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
       from: '',
       to: '',
       pageNo: '',
-      account: ''
+      account: '',
     }
     Object.keys(params).forEach(key => {
       const value = actParams.get(key)
@@ -144,7 +144,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
 
     this.setState({
       selectorsValue,
-      pageNo
+      pageNo,
     })
   }
 
@@ -152,14 +152,14 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     // NOTICE: async
     // const params = {}
     const params = paramsFilter(paramsInput)
-    this.setState(state => ({ loading: state.loading + 1 })) // for get transactions
+    this.setState(state => ({ loading: state.loading + 1, })) // for get transactions
     Object.keys(paramsInput).forEach(key => {
       if (key === 'from' || key === 'to') {
         params[key] = check.format0x(paramsInput[key])
       }
     })
     return fetchTransactions(params)
-      .then(({ result }: { result: { transactions: TransactionFromServer[]; count: number } }) => {
+      .then(({ result, }: { result: { transactions: TransactionFromServer[]; count: number } }) => {
         if (this.props.setTransactionsCount) this.props.setTransactionsCount(result.count)
         this.setState(state => ({
           ...state,
@@ -173,8 +173,8 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
             to: toText(tx.to),
             age: formatedAgeString(tx.timestamp),
             value: valueFormatter(+tx.value, this.props.config.symbol),
-            gasUsed: `${+tx.gasUsed}`
-          }))
+            gasUsed: `${+tx.gasUsed}`,
+          })),
         }))
       })
       .catch(err => {
@@ -190,34 +190,29 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     this.fetchTransactions({
       offset,
       limit,
-      ...this.state.selectorsValue
+      ...this.state.selectorsValue,
     })
       .then(() => {
-        this.setState({ pageNo: newPage })
+        this.setState({ pageNo: newPage, })
       })
       .catch(this.handleError)
   }
 
   public render () {
-    const { headers, items, selectors, selectorsValue, count, pageSize, pageNo, loading, error } = this.state
-    const { inset = false, showInOut = false } = this.props
+    const { headers, items, selectors, selectorsValue, count, pageSize, pageNo, loading, error, } = this.state
+    const { inset = false, showInOut = false, } = this.props
     const activeParams = paramsFilter(selectorsValue) as any
     const searchText = rangeSelectorText('Transaction', activeParams.from, activeParams.to)
-    const { symbol } = this.props.config
     return (
       <React.Fragment>
         {loading ? (
           <LinearProgress
             classes={{
-              root: 'linearProgressRoot'
+              root: 'linearProgressRoot',
             }}
           />
         ) : null}
-        {!inset ? (
-          <Banner bg={`${process.env.PUBLIC}/banner/banner-Transaction.png`}>
-            {searchText ? `Current Search: ${searchText}` : 'Transactions'}
-          </Banner>
-        ) : null}
+        {!inset ? <Banner>{searchText ? `Current Search: ${searchText}` : 'Transactions'}</Banner> : null}
         <TableWithSelector
           headers={headers}
           items={items}

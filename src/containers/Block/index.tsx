@@ -7,10 +7,10 @@
 
 import * as React from 'react'
 import { Link, } from 'react-router-dom'
-import { Card, CardContent, List, ListItem, } from '@material-ui/core'
+import { List, ListItem, } from '@material-ui/core'
 
 import { unsigner, } from '@appchain/signer'
-import { RpcResult, Chain, } from '@nervos/plugin/lib/typings/index.d'
+import { Chain, } from '@appchain/plugin/lib/typings/index.d'
 import { IContainerProps, } from '../../typings'
 
 import { initBlockState, } from '../../initValues'
@@ -20,7 +20,6 @@ import { LinearProgress, } from '../../components'
 import Banner from '../../components/Banner'
 import TransactionList from '../../components/TransactionList/'
 import ErrorNotification from '../../components/ErrorNotification'
-import Icon from '../../components/Icons'
 
 import { withConfig, } from '../../contexts/config'
 import { withObservables, } from '../../contexts/observables'
@@ -30,44 +29,33 @@ import { handleError, dismissError, } from '../../utils/handleError'
 import bytesToHex from '../../utils/bytesToHex'
 import { timeFormatter, } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
-import Image from '../../images'
 
 const layouts = require('../../styles/layout')
 const texts = require('../../styles/text.scss')
 const styles = require('./block.scss')
 
-const BlockBanner = ({ header, }) => (
-  <Banner bg={Image.banner.block}>
-    <div>Block</div>
-    <div className={styles.height}>
+const InfoHead = ({ header, }) => (
+  <div className={styles.card}>
+    <span className={styles.numberTitle}>Block: #{+header.number}</span>
+    <span className={styles.blockNavs}>
       <Link
         to={`/height/0x${(+header.number - 1).toString(16)}`}
         href={`/height/0x${(+header.number - 1).toString(16)}`}
       >
-        <Icon name="left" />
+        <svg aria-hidden="true">
+          <use xlinkHref="#icon-left-arrow" />
+        </svg>
       </Link>
-      Height: {+header.number}
       <Link
         to={`/height/0x${(+header.number + 1).toString(16)}`}
         href={`/height/0x${(+header.number + 1).toString(16)}`}
       >
-        <Icon name="left" style={{ transform: 'rotate(180deg)', }} />
+        <svg aria-hidden="true">
+          <use xlinkHref="#icon-left-arrow" />
+        </svg>
       </Link>
-    </div>
-  </Banner>
-)
-
-const InfoHead = ({ hash, }) => (
-  <Card
-    classes={{
-      root: styles.hashCardRoot,
-    }}
-  >
-    <CardContent>
-      <div className={styles.hashTitle}>Block Hash</div>
-      <div className={styles.hashText}>{hash}</div>
-    </CardContent>
-  </Card>
+    </span>
+  </div>
 )
 
 const InfoCell = ({ name, children, ...props }) => (
@@ -80,57 +68,55 @@ const InfoCell = ({ name, children, ...props }) => (
 const InfoList = ({ headerInfo, header, }) =>
   headerInfo.map(item => (
     <InfoCell key={item.key} name={item.label}>
-      <span>{header[item.key]}</span>
+      <span className={`${header[item.key]}`.startsWith('0x') ? texts.hash : ''}>{header[item.key]}</span>
     </InfoCell>
   ))
 
 const InfoContent = ({ header, transactions, toggleTransaction, quotaPrice, fee, }) => {
   const headerInfo = [
-    { key: 'gasUsed', label: 'Quota Used', },
+    { key: 'quotaUsed', label: 'Quota Used', },
     { key: 'receiptsRoot', label: 'Receipts Root', },
     { key: 'stateRoot', label: 'State Root', },
     { key: 'transactionsRoot', label: 'Transactions Root', },
   ]
   return (
-    <Card classes={{ root: layouts.cardContainer, }}>
-      <CardContent>
-        <List className={styles.items}>
-          <InfoCell name="Timestamp">
-            <span>{timeFormatter(header.timestamp, true)}</span>
-          </InfoCell>
+    <div className={styles.card}>
+      <List className={styles.items}>
+        <InfoCell name="Timestamp">
+          <span>{timeFormatter(header.timestamp, true)}</span>
+        </InfoCell>
 
-          <InfoCell
-            name="Transactions"
-            onClick={transactions.length ? toggleTransaction(true) : undefined}
-            style={transactions.length ? { cursor: 'pointer', } : undefined}
-          >
-            <span style={transactions.length ? { color: '#2647fdcc', } : undefined}>{transactions.length}</span>
-          </InfoCell>
+        <InfoCell
+          name="Transactions"
+          onClick={transactions.length ? toggleTransaction(true) : undefined}
+          style={transactions.length ? { cursor: 'pointer', } : undefined}
+        >
+          <span style={transactions.length ? { color: '#2647fdcc', } : undefined}>{transactions.length}</span>
+        </InfoCell>
 
-          <InfoCell name="Proposer">
-            <span className={texts.hash}>{header.proposer}</span>{' '}
-          </InfoCell>
+        <InfoCell name="Proposer">
+          <span className={texts.hash}>{header.proposer}</span>{' '}
+        </InfoCell>
 
-          <InfoCell name="Parent Hash">
-            <span>
-              <Link to={`/block/${header.prevHash}`} href={`/block/${header.prevHash}`} className={texts.addr}>
-                {header.prevHash}
-              </Link>
-            </span>
-          </InfoCell>
-          <InfoCell name="Quota Price">{quotaPrice}</InfoCell>
-          <InfoCell name="Fee">{fee}</InfoCell>
+        <InfoCell name="Parent Hash">
+          <span>
+            <Link to={`/block/${header.prevHash}`} href={`/block/${header.prevHash}`} className={texts.addr}>
+              {header.prevHash}
+            </Link>
+          </span>
+        </InfoCell>
+        <InfoCell name="Quota Price">{quotaPrice}</InfoCell>
+        <InfoCell name="Fee">{fee}</InfoCell>
 
-          <InfoList headerInfo={headerInfo} header={header} />
-        </List>
-      </CardContent>
-    </Card>
+        <InfoList headerInfo={headerInfo} header={header} />
+      </List>
+    </div>
   )
 }
 
-const BlockInfo = ({ hash, header, transactions, toggleTransaction, quotaPrice, fee, }) => (
+const BlockInfo = ({ header, transactions, toggleTransaction, quotaPrice, fee, }) => (
   <div className={layouts.main}>
-    <InfoHead hash={hash} />
+    <InfoHead header={header} />
     <InfoContent
       header={header}
       transactions={transactions}
@@ -193,7 +179,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
       this.setState(state => ({
         ...state,
         quotaPrice: `${_price}`,
-        fee: valueFormatter(+quotaUsed * _price, this.props.config.symbol),
+        fee: valueFormatter(+quotaUsed * +_price, this.props.config.symbol),
       }))
     }, this.handleError)
   }
@@ -212,16 +198,16 @@ class Block extends React.Component<IBlockProps, IBlockState> {
       const details = unsigner(tx.content)
       if (typeof tx.basicInfo !== 'string' && tx.basicInfo) {
         tx.basicInfo.value = '' + +bytesToHex(tx.basicInfo.value as any)
-        tx.basicInfo.from = '0x' + details.sender.address
+        tx.basicInfo.from = details.sender.address
       }
       return {
         ...tx,
         timestamp: `${block.header.timestamp}`,
       }
     })
-    block.header.gasUsed = `${+block.header.gasUsed}`
+    block.header.quotaUsed = `${+block.header.quotaUsed}`
     // get quota price
-    this.handleQuotaPriceAndFee(block.header.number, block.header.gasUsed)
+    this.handleQuotaPriceAndFee(block.header.number, block.header.quotaUsed)
     /* eslint-enable */
     return this.setState(state => Object.assign({}, state, { ...block, loading: state.loading - 1, }))
   }
@@ -250,9 +236,8 @@ class Block extends React.Component<IBlockProps, IBlockState> {
     return (
       <React.Fragment>
         <LinearProgress loading={loading} />
-        <BlockBanner header={header} />
+        <Banner />
         <BlockInfo
-          hash={hash}
           header={header}
           transactions={transactions}
           toggleTransaction={this.toggleTransaction}

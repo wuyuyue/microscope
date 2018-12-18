@@ -5,7 +5,7 @@
 }
 
 %hash {
-  font-family: Rotobo, Helvetica, monospace !important;
+  font-family: monospace, Rotobo, Helvetica !important;
   font-size: inherit !important;
   text-decoration: none;
   word-break: break-all;
@@ -20,7 +20,7 @@
 
 .addr {
   @extend %hash; // color: $primaryText;
-  color: #2647fdcc;
+  color: #5b8ee6;
 }
 
 .addrStart {

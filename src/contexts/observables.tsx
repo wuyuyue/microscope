@@ -2,7 +2,7 @@
 /// <reference path="../typings/react/index.d.ts" />
 /* eslint-enable */
 import * as React from 'react'
-import CITAObservables from '@nervos/observables'
+import CITAObservables from '@appchain/observables'
 
 declare global {
   interface Window {

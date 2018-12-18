@@ -290,7 +290,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   public render () {
     return (
       <React.Fragment>
-        <Banner bg={Image.banner.statistics}>Statistics</Banner>
+        <Banner>Statistics</Banner>
         <div className={layout.center}>
           <div className={styles.graphs}>{this.renderGraphList()}</div>
         </div>

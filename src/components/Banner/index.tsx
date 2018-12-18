@@ -2,12 +2,16 @@ import * as React from 'react'
 
 const styles = require('./banner.scss')
 
-const Banner = ({ bg, children }) => (
+const Banner = ({ bg, children, }: { bg?: string; children?: any }) => (
   <div
     className={styles.banner}
-    style={{
-      backgroundImage: `url(${bg})`,
-    }}
+    style={
+      bg
+        ? {
+          backgroundImage: `url(${bg})`,
+        }
+        : {}
+    }
   >
     {children}
   </div>

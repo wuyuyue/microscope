@@ -5,7 +5,7 @@
  * @Last Modified time: 2018-11-06 16:01:15
  */
 
-import { Chain, } from '@nervos/plugin'
+import { Chain, } from '@appchain/plugin'
 import { IBlock, IBlockHeader, Transaction, Metadata, ABI, UnsignedTransaction, TransactionFromServer, } from './typings'
 import widerThan from './utils/widerThan'
 import { Contract, AccountType, } from './typings/account'
