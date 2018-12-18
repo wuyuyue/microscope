@@ -46,6 +46,7 @@
     "web3": "^1.0.0-beta.33"
   },
   "devDependencies": {
+    "@appchain/plugin": "^0.20.1",
     "@types/echarts": "^0.0.12",
     "@types/node": "^9.4.0",
     "@types/react": "^16.0.35",
