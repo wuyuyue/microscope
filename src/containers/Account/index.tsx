@@ -15,9 +15,7 @@ import { Card, CardHeader, CardContent, Tabs, Tab, Button, Divider, LinearProgre
 import ERCPanel from '../../components/ERCPanel'
 import TransactionTable from '../../containers/TransactionTable'
 import Banner from '../../components/Banner'
-import Dialog from '../Dialog'
 import ErrorNotification from '../../components/ErrorNotification'
-import LocalAccounts from '../../components/LocalAccounts'
 import ContractInfoPanel from '../../components/ContractInfoPanel'
 
 import { AccountType, } from '../../typings/account'
@@ -279,7 +277,7 @@ class Account extends React.Component<AccountProps, AccountState> {
           />
         ) : null}
 
-        <Banner bg={`${process.env.PUBLIC}/banner/banner-Account.png`}>
+        <Banner>
           <div className={text.bannerText}>
             Account: <span style={{ fontWeight: 100, }}>{addr}</span>
           </div>

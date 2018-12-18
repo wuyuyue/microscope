@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Grid, } from '@material-ui/core'
 import { translate, } from 'react-i18next'
-import { Chain, } from '@nervos/plugin'
+import { Chain, } from '@appchain/plugin'
 import { unsigner, } from '@appchain/signer'
 
 import { LinearProgress, } from '../../components'

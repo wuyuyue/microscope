@@ -1,4 +1,4 @@
-import CITAObservables from '@nervos/observables'
+import CITAObservables from '@appchain/observables'
 import { Config, } from '../contexts/config'
 import i18n from '../config/i18n'
 import './block'

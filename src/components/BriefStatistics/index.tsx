@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Timestamp } from '../../typings'
+import { Timestamp, } from '../../typings'
 
 const styles = require('./briefStatistics.scss')
 
@@ -15,15 +15,7 @@ interface BriefStatistics {
 }
 /* eslint-enable no-use-before-define */
 
-const BriefStatistics: React.SFC<BriefStatistics> = ({
-  peerCount,
-  number,
-  timestamp,
-  proposal,
-  tps,
-  tpb,
-  ipb,
-}) => (
+const BriefStatistics: React.SFC<BriefStatistics> = ({ peerCount, number, timestamp, proposal, tps, tpb, ipb, }) => (
   <div className={styles.briefStatistics}>
     <div>
       peerCount: <span>{peerCount}</span>
@@ -35,7 +27,11 @@ const BriefStatistics: React.SFC<BriefStatistics> = ({
       time: <span>{new Date(timestamp).toLocaleString()}</span>
     </div>
     <div>
-      validators: <span>{proposal.slice(0, 20)}...</span>
+      validators:{' '}
+      <span>
+        {proposal.slice(0, 20)}
+        ...
+      </span>
     </div>
     <div>
       TPS: <span>{tps}</span>

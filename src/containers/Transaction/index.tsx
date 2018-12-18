@@ -2,9 +2,9 @@ import * as React from 'react'
 import { hexToUtf8, } from 'web3-utils'
 import * as abiCoder from 'web3-eth-abi'
 import { Link, } from 'react-router-dom'
-import { Card, CardContent, List, ListSubheader, ListItem, ListItemText, Typography, Divider, } from '@material-ui/core'
+import { Card, CardContent, List, } from '@material-ui/core'
 import { unsigner, } from '@appchain/signer'
-import { Chain, } from '@nervos/plugin/lib/typings/index.d'
+import { Chain, } from '@appchain/plugin/lib/typings/index.d'
 
 import { LinearProgress, } from '../../components'
 import Banner from '../../components/Banner'
@@ -298,7 +298,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     return (
       <React.Fragment>
         <LinearProgress loading={loading} />
-        <Banner bg={Images.banner.transaction}>
+        <Banner>
           <div className={styles.hashTitle}>Transaction: </div>
           <div className={styles.hashText}>{hash}</div>
         </Banner>
@@ -320,7 +320,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
                           <svg className="icon" aria-hidden="true">
                             <use xlinkHref="#icon-cancel-circle" />
                           </svg>
-                          {`${TX_STATUS.FAILURE} ${errorMessage}`}
+                          {`${TX_STATUS.FAILURE}. ${errorMessage}`}
                         </span>
                       ) : (
                         <span className={styles.success}>

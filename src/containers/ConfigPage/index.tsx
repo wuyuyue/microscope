@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { translate } from 'react-i18next'
+import { translate, } from 'react-i18next'
 
 import {
   List,
@@ -12,16 +12,16 @@ import {
   ExpansionPanelSummary,
   ExpansionPanelDetails,
   Divider,
-  Switch
+  Switch,
 } from '@material-ui/core'
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons'
+import { ExpandMore as ExpandMoreIcon, } from '@material-ui/icons'
 
 import Banner from '../../components/Banner'
-import Icon, {Loading} from '../../components/Icons'
+import Icon, { Loading, } from '../../components/Icons'
 
-import { withConfig } from '../../contexts/config'
+import { withConfig, } from '../../contexts/config'
 import hideLoader from '../../utils/hideLoader'
-import { ConfigPageProps, ConfigPageState, ConfigDetailType, ConfigType, ConfigPageDefault} from './init'
+import { ConfigPageProps, ConfigPageState, ConfigDetailType, ConfigType, ConfigPageDefault, } from './init'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./config.scss')
@@ -34,7 +34,7 @@ const ConfigDetail = translate('microscope')(
     handleInput,
     controlInputScope,
     saving,
-    t
+    t,
   }: {
   config: ConfigDetailType
   value: number | string | boolean | undefined
@@ -60,7 +60,7 @@ const ConfigDetail = translate('microscope')(
               checked: styles.switchChecked,
               colorPrimary: styles.switchColorPrimary,
               colorSecondary: styles.switchColorSecondary,
-              icon: styles.iOSIcon
+              icon: styles.iOSIcon,
             }}
             onChange={handleSwitch(config.key)}
             checked={!!value}
@@ -85,7 +85,7 @@ const ConfigItem = translate('microscope')(
     handleInput,
     controlInputScope,
     saving,
-    t
+    t,
   }: {
   title: any
   configs: any
@@ -96,15 +96,15 @@ const ConfigItem = translate('microscope')(
   saving: any
   t: any
   }) => (
-    <ExpansionPanel defaultExpanded classes={{ root: styles.panel }} elevation={0}>
+    <ExpansionPanel defaultExpanded classes={{ root: styles.panel, }} elevation={0}>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="caption" classes={{ caption: styles.panelTitle }}>
+        <Typography variant="caption" classes={{ caption: styles.panelTitle, }}>
           {t(title)} {t('config')}
         </Typography>
       </ExpansionPanelSummary>
       <Divider />
       <ExpansionPanelDetails>
-        <List style={{ width: '100%' }}>
+        <List style={{ width: '100%', }}>
           {configs.map((config, idx) => (
             <ConfigDetail
               key={config.key}
@@ -132,7 +132,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
     this.state = {
       configs: props.config.panelConfigs,
       inputTimeout: null,
-      saving: false
+      saving: false,
     }
   }
 
@@ -142,37 +142,37 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
 
   private handleSwitch = key => (e?: any) => {
     this.setState(state => {
-      const { configs } = this.state
-      const newConfig = { ...configs, [key]: !configs[key] }
+      const { configs, } = this.state
+      const newConfig = { ...configs, [key]: !configs[key], }
       if (this.props.config.changePanelConfig(newConfig)) {
-        return { configs: newConfig }
+        return { configs: newConfig, }
       }
       return state
     })
   }
 
   private handleInput = key => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.currentTarget
+    const { value, } = e.currentTarget
     this.setState(state => {
-      const { configs } = state
-      const newConfig = { ...configs, [key]: value }
+      const { configs, } = state
+      const newConfig = { ...configs, [key]: value, }
       if (this.props.config.changePanelConfig(newConfig)) {
-        return { configs: newConfig }
+        return { configs: newConfig, }
       }
       return state
     })
   }
 
   private controlInputScope = key => e => {
-    const { configs, inputTimeout } = this.state
-    const { value } = e.currentTarget
+    const { configs, inputTimeout, } = this.state
+    const { value, } = e.currentTarget
     let v = Number(value)
-    this.setState({ configs: { ...configs, [key]: v }, saving: true })
+    this.setState({ configs: { ...configs, [key]: v, }, saving: true, })
 
     clearTimeout(inputTimeout)
     if (Math.round(v) === v && v >= 10 && v <= 100) {
-      this.props.config.changePanelConfig({ ...configs, [key]: v })
-      this.setState({ saving: false })
+      this.props.config.changePanelConfig({ ...configs, [key]: v, })
+      this.setState({ saving: false, })
     } else {
       const t = setTimeout(() => {
         if (v < 10) {
@@ -180,17 +180,17 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
         } else {
           v = 100
         }
-        this.props.config.changePanelConfig({ ...configs, [key]: v })
-        this.setState({ configs: { ...configs, [key]: v }, saving: false })
+        this.props.config.changePanelConfig({ ...configs, [key]: v, })
+        this.setState({ configs: { ...configs, [key]: v, }, saving: false, })
       }, 1000)
-      this.setState({ inputTimeout: t, saving: true })
+      this.setState({ inputTimeout: t, saving: true, })
     }
   }
 
   public render () {
     return (
       <React.Fragment>
-        <Banner bg={`${process.env.PUBLIC}/banner/banner-Setting.png`}>Config</Banner>
+        <Banner>Config</Banner>
         <div className={`${styles.main} ${layout.center}`}>
           {ConfigPage.panels.map(panel => (
             <ConfigItem
