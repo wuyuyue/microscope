@@ -159,7 +159,7 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
     {
       name: 'Chain ID',
       icon: 'chainId',
-      content: metadata.chainId,
+      content: metadata.version ? metadata[`chainIdV${metadata.version}`] : metadata.chainId,
     },
     {
       name: 'Version',
