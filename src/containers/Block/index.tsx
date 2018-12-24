@@ -74,7 +74,7 @@ const InfoList = ({ headerInfo, header, }) =>
 
 const InfoContent = ({ hash, header, transactions, toggleTransaction, quotaPrice, fee, }) => {
   const headerInfo = [
-    { key: 'quotaUsed', label: 'Quota Used', },
+    // { key: 'quotaUsed', label: 'Quota Used', },
     { key: 'receiptsRoot', label: 'Receipts Root', },
     { key: 'stateRoot', label: 'State Root', },
     { key: 'transactionsRoot', label: 'Transactions Root', },
@@ -85,6 +85,7 @@ const InfoContent = ({ hash, header, transactions, toggleTransaction, quotaPrice
         <InfoCell name="Block Hash">
           <span className={texts.hash}>{hash}</span>
         </InfoCell>
+
         <InfoCell name="Timestamp">
           <span>{timeFormatter(header.timestamp, true)}</span>
         </InfoCell>
@@ -101,6 +102,12 @@ const InfoContent = ({ hash, header, transactions, toggleTransaction, quotaPrice
           <span className={texts.hash}>{header.proposer}</span>{' '}
         </InfoCell>
 
+        <InfoCell name="Quota Used">{header.quotaUsed}</InfoCell>
+
+        <InfoCell name="Quota Price">{quotaPrice}</InfoCell>
+
+        <InfoCell name="Total Handling Fee">{fee}</InfoCell>
+
         <InfoCell name="Parent Hash">
           <span>
             <Link to={`/block/${header.prevHash}`} href={`/block/${header.prevHash}`} className={texts.addr}>
@@ -108,8 +115,6 @@ const InfoContent = ({ hash, header, transactions, toggleTransaction, quotaPrice
             </Link>
           </span>
         </InfoCell>
-        <InfoCell name="Quota Price">{quotaPrice}</InfoCell>
-        <InfoCell name="Fee">{fee}</InfoCell>
 
         <InfoList headerInfo={headerInfo} header={header} />
       </List>

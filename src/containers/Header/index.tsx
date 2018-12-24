@@ -14,7 +14,7 @@ import { ServerList, ChainSwitchPanel, } from '../../components/MetadataPanel'
 import BriefStatisticsPanel from '../../components/BriefStatistics'
 import SearchPanel from '../../components/SearchPanel'
 import { withConfig, } from '../../contexts/config'
-import { withObservables, stopSubjectNewBlock, } from '../../contexts/observables'
+import { withObservables, } from '../../contexts/observables'
 import { fetchStatistics, fetchServerList, fetchMetadata, } from '../../utils/fetcher'
 import { initMetadata, } from '../../initValues'
 import { handleError, dismissError, } from '../../utils/handleError'
@@ -25,50 +25,6 @@ import Image from '../../images'
 
 const styles = require('./header.scss')
 const layout = require('../../styles/layout')
-
-const BlockOvertimeAlert = ({ metadata, overtime, stopCheckOvertime, }) => {
-  let { blockInterval: interval, } = metadata
-  if (interval === 0) {
-    interval = 3000
-  }
-  let openAlert = false
-  let openHardAlert = false
-  let notice = ''
-  if (overtime > 5 * 60 * 1000) {
-    openAlert = true
-    openHardAlert = true
-    notice = `Notice：No blocks loaded in 5 minutes, please check network connection.`
-    stopSubjectNewBlock()
-    stopCheckOvertime()
-  } else if (overtime > 5 * interval) {
-    openAlert = true
-    openHardAlert = true
-    notice = `Notice：No blocks loaded in ${Math.floor(overtime / 1000)}s`
-  } else if (overtime > 2 * interval) {
-    openAlert = true
-    notice = `Notice：No blocks loaded in ${Math.floor(overtime / 100) / 10}s`
-  }
-
-  if (!openAlert) {
-    return null
-  }
-  return (
-    <div
-      style={{
-        maxHeight: openAlert ? '100vh' : '0',
-        lineHeight: '1rem',
-        padding: openAlert ? '1rem 0' : '0',
-        fontSize: '1rem',
-        overflow: 'hidden',
-        background: openHardAlert ? '#fc4141' : '#f5a623',
-        textAlign: 'center',
-        transition: 'height 0.5s ease 0s, padding 0.5s ease 0s',
-      }}
-    >
-      {notice}
-    </div>
-  )
-}
 
 class Header extends React.Component<HeaderProps, HeaderState> {
   public readonly state = initState
@@ -91,8 +47,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
     // fetch data of metadata panel
     this.fetchMetaDataPanel()
-
-    this.checkFetchBlockOvertime()
   }
 
   public componentWillReceiveProps (nextProps: HeaderProps) {
@@ -103,10 +57,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   public componentDidCatch (err) {
     this.handleError(err)
-  }
-
-  public componentWillUnmount () {
-    clearInterval(this.intervalCheckOvertime)
   }
 
   private onSearch$: Subject<any>
@@ -124,8 +74,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       .catch(this.handleError)
   }
 
-  private intervalCheckOvertime = -1 as any
-
   private initBlockTimestamp = () => {
     const { timestamp, } = this.state.block.header
     if (!timestamp) {
@@ -139,33 +87,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         },
       }))
     }
-  }
-
-  private stopCheckOvertime = () => {
-    clearInterval(this.intervalCheckOvertime)
-  }
-
-  private checkFetchBlockOvertime = () => {
-    this.stopCheckOvertime()
-    let prevBlockTime = 0
-    let prevFetchTime = 0
-    const ms = 100
-    this.intervalCheckOvertime = setInterval(() => {
-      const { timestamp, } = this.state.block.header
-      if (prevBlockTime === +timestamp) {
-        this.setState(state => ({
-          ...state,
-          overtime: Date.now() - prevFetchTime,
-        }))
-      } else {
-        prevBlockTime = +timestamp
-        prevFetchTime = Date.now()
-        this.setState(state => ({
-          ...state,
-          overtime: 0,
-        }))
-      }
-    }, ms)
   }
 
   private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
@@ -353,7 +274,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   public render () {
-    const { anchorEl, lngOpen, error, metadata, overtime, } = this.state
+    const { anchorEl, lngOpen, error, } = this.state
     const {
       location: { pathname, },
       t,
@@ -364,7 +285,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     return createPortal(
       <React.Fragment>
         <AppBar position="fixed" elevation={0}>
-          <BlockOvertimeAlert metadata={metadata} overtime={overtime} stopCheckOvertime={this.stopCheckOvertime} />
           <Toolbar
             className={layout.center}
             classes={{
