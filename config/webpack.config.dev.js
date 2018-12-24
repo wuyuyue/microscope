@@ -69,6 +69,7 @@ const devConfig = {
       template: path.resolve(__dirname, '../src/templates/index.html'),
       react: `../lib/${manifest['react.js']}`,
       styledComponents: `../lib/${manifest['styledComponents.js']}`,
+      apikey: JSON.stringify(process.env.API_KEY),
     }),
   ],
   devServer: {

@@ -17,7 +17,6 @@ import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError, } from '../../utils/handleError'
 import valueFormatter from '../../utils/valueFormatter'
 import { format0x, } from '../../utils/check'
-import Images from '../../images'
 
 const layouts = require('../../styles/layout.scss')
 const texts = require('../../styles/text.scss')
@@ -93,18 +92,17 @@ type ITransactionState = typeof initState
 class Transaction extends React.Component<TransactionProps, ITransactionState> {
   static items = [
     { key: 'type', label: 'Type', },
-    // { key: 'status', label: 'Status', },
     { key: 'from', label: 'From', type: 'account', },
     { key: 'to', label: 'To', type: 'account', },
     { key: 'contractAddress', label: 'Contract', type: 'account', },
     { key: 'blockNumber', label: 'Block Height', type: 'height', },
-    { key: 'version', label: 'version', },
-    { key: 'nonce', label: 'nonce', },
-    { key: 'validUntilBlock', label: 'validUntilBlock', },
-    { key: 'value', label: 'value', },
-    { key: 'quota', label: 'quota', },
-    { key: 'quotaPrice', label: 'quota Price', },
-    { key: 'fee', label: 'fee', },
+    { key: 'version', label: 'Version', },
+    { key: 'nonce', label: 'Nonce', },
+    { key: 'validUntilBlock', label: 'ValidUntilBlock', },
+    { key: 'value', label: 'Value', },
+    { key: 'quota', label: 'Quota', },
+    { key: 'quotaPrice', label: 'Quota Price', },
+    // { key: 'fee', label: 'Fee', },
   ]
   readonly state = initState
 
