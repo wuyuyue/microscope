@@ -72,9 +72,9 @@ const InfoList = ({ headerInfo, header, }) =>
     </InfoCell>
   ))
 
-const InfoContent = ({ header, transactions, toggleTransaction, quotaPrice, fee, }) => {
+const InfoContent = ({ hash, header, transactions, toggleTransaction, quotaPrice, fee, }) => {
   const headerInfo = [
-    { key: 'quotaUsed', label: 'Quota Used', },
+    // { key: 'quotaUsed', label: 'Quota Used', },
     { key: 'receiptsRoot', label: 'Receipts Root', },
     { key: 'stateRoot', label: 'State Root', },
     { key: 'transactionsRoot', label: 'Transactions Root', },
@@ -82,6 +82,10 @@ const InfoContent = ({ header, transactions, toggleTransaction, quotaPrice, fee,
   return (
     <div className={styles.card}>
       <List className={styles.items}>
+        <InfoCell name="Block Hash">
+          <span className={texts.hash}>{hash}</span>
+        </InfoCell>
+
         <InfoCell name="Timestamp">
           <span>{timeFormatter(header.timestamp, true)}</span>
         </InfoCell>
@@ -98,6 +102,12 @@ const InfoContent = ({ header, transactions, toggleTransaction, quotaPrice, fee,
           <span className={texts.hash}>{header.proposer}</span>{' '}
         </InfoCell>
 
+        <InfoCell name="Quota Used">{header.quotaUsed}</InfoCell>
+
+        <InfoCell name="Quota Price">{quotaPrice}</InfoCell>
+
+        <InfoCell name="Total Handling Fee">{fee}</InfoCell>
+
         <InfoCell name="Parent Hash">
           <span>
             <Link to={`/block/${header.prevHash}`} href={`/block/${header.prevHash}`} className={texts.addr}>
@@ -105,8 +115,6 @@ const InfoContent = ({ header, transactions, toggleTransaction, quotaPrice, fee,
             </Link>
           </span>
         </InfoCell>
-        <InfoCell name="Quota Price">{quotaPrice}</InfoCell>
-        <InfoCell name="Fee">{fee}</InfoCell>
 
         <InfoList headerInfo={headerInfo} header={header} />
       </List>
@@ -114,10 +122,11 @@ const InfoContent = ({ header, transactions, toggleTransaction, quotaPrice, fee,
   )
 }
 
-const BlockInfo = ({ header, transactions, toggleTransaction, quotaPrice, fee, }) => (
+const BlockInfo = ({ hash, header, transactions, toggleTransaction, quotaPrice, fee, }) => (
   <div className={layouts.main}>
     <InfoHead header={header} />
     <InfoContent
+      hash={hash}
       header={header}
       transactions={transactions}
       toggleTransaction={toggleTransaction}
@@ -238,6 +247,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
         <LinearProgress loading={loading} />
         <Banner />
         <BlockInfo
+          hash={hash}
           header={header}
           transactions={transactions}
           toggleTransaction={this.toggleTransaction}
