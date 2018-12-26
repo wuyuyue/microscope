@@ -1,5 +1,5 @@
 const Image = {
-  logo: `${process.env.PUBLIC}/images/microscopeLogo.svg`,
+  logo: `${process.env.PUBLIC}/images/microscope_logo_gradient.png`,
   extend: `${process.env.PUBLIC}/microscopeIcons/expand.png`,
   gas: `${process.env.PUBLIC}/microscopeIcons/petrol_barrel.svg`,
   banner: {
