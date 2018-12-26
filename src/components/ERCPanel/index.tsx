@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { List, Divider } from '@material-ui/core'
-import { ABI, ABIElement } from '../../typings'
+import { List, Divider, } from '@material-ui/core'
+import { ABI, ABIElement, } from '../../typings'
 
 const styles = require('./styles.scss')
 
-const Item = ({ label, fields }) => (
+const Item = ({ label, fields, }) => (
   <div className={styles.method}>
     <div className={styles.title}>{label}</div>
     <Divider />
@@ -14,9 +14,7 @@ const Item = ({ label, fields }) => (
 /* eslint-disable no-restricted-globals */
 interface ErcPanel {
   abi: ABI
-  handleAbiValueChange: (
-    index: number,
-  ) => (inputIndex: number) => (e: any) => void
+  handleAbiValueChange: (index: number) => (inputIndex: number) => (e: any) => void
   handleEthCall: (index: number) => (e: any) => void
 }
 /* eslint-enable no-restricted-globals */
@@ -54,14 +52,7 @@ handleEthCall: (e: any) => void
           {abiEl.outputs && abiEl.outputs.length ? (
             abiEl.outputs.map(output => {
               if (output.value && output.value.match(/jpg|png|gif/)) {
-                return (
-                  <img
-                    src={output.value}
-                    key={output.name}
-                    alt="img"
-                    style={{ height: '100px' }}
-                  />
-                )
+                return <img src={output.value} key={output.name} alt="img" style={{ height: '100px', }} />
               }
               return (
                 <input

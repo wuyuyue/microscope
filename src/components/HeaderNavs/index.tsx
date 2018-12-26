@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { translate } from 'react-i18next'
-import { Typography } from '@material-ui/core'
+import { Link, } from 'react-router-dom'
+import { translate, } from 'react-i18next'
+import { Typography, } from '@material-ui/core'
 
 const styles = require('../../containers/Header/header.scss')
 
-const HeaderNavs = ({ containers, pathname, logo, t }) => (
+const HeaderNavs = ({ containers, pathname, logo, t, }) => (
   <React.Fragment>
     <Link to="/" href="/" className={styles.headerNavIcon}>
       <Typography variant="title" color="inherit">
@@ -18,9 +18,7 @@ const HeaderNavs = ({ containers, pathname, logo, t }) => (
           <Link
             to={container.path}
             href={container.path}
-            className={`${styles.navItem} ${
-              pathname === container.path ? styles.activeNav : ''
-            }`}
+            className={`${styles.navItem} ${pathname === container.path ? styles.activeNav : ''}`}
           >
             <span>{t(container.name)}</span>
           </Link>

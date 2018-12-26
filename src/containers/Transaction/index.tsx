@@ -240,8 +240,6 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     const { errorMessage, quotaUsed, contractAddress, } = receipt as any
     this.setState(state => ({
       ...state,
-      // status: errorMessage ? `${TX_STATUS.FAILURE} ${errorMessage}` : TX_STATUS.SUCCESS,
-      // status: errorMessage ? TX_STATUS.FAILURE : TX_STATUS.SUCCESS,
       errorMessage,
       quotaUsed: `${+quotaUsed}`,
       contractAddress,

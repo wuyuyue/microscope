@@ -1,4 +1,5 @@
-$overlap: 82px;
+$height: 151px;
+$overlap: 101px;
 
 .banner {
   display: flex;
@@ -6,7 +7,7 @@ $overlap: 82px;
   justify-content: center;
   align-items: center;
   width: 100vw;
-  height: 155px;
+  height: $height;
   margin-bottom: -$overlap;
   padding-bottom: 38px;
   box-sizing: border-box;

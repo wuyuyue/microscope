@@ -5,7 +5,7 @@
 }
 
 header {
-  background: #FFF !important; // box-shadow: 0 5px 6px 0 rgba(170, 170, 170, 0.07);
+  background: #fff !important; // box-shadow: 0 5px 6px 0 rgba(170, 170, 170, 0.07);
   box-shadow: 0 5px 6px 0 rgba(170, 170, 170, 0.07) !important;
 }
 
@@ -45,7 +45,7 @@ input {
 
 footer {
   background-color: #0d101f;
-  color: #FFF;
+  color: #fff;
   font-size: 0.875rem;
   padding-top: 34px;
   padding-bottom: 61px;
@@ -73,8 +73,11 @@ footer {
   }
 
   .active {
-    background-color: $primary;
-    border-color: $primary;
+    // background-color: $primary;
+    // border-color: $primary;
+
+    background: $gradient1;
+    border-color: transparent !important;
     color: #fff !important;
   }
 

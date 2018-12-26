@@ -107,9 +107,7 @@ const SubInfoCell = ({ icon, content, name, }) => (
 
 const SubInfoBlock = ({ proplist, }) => (
   <div className={styles.subInfoBlock}>
-    {proplist.map(prop => (
-      <SubInfoCell {...prop} />
-    ))}
+    {proplist[4].content < 0 ? null : proplist.map(prop => <SubInfoCell {...prop} />)}
   </div>
 )
 
@@ -175,7 +173,7 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
   )
 }
 
-const HomePageList = ({ icon, title, list: List, page, }) => (
+const HomePageList = ({ title, list: List, page, }) => (
   <Grid item md={6} sm={12} xs={12}>
     <StaticCardTitle {...{ title, page, }} />
     <List />
@@ -184,7 +182,6 @@ const HomePageList = ({ icon, title, list: List, page, }) => (
 
 const HomeBlockList = ({ blocks, }) => (
   <HomePageList
-    icon="/microscopeIcons/blocks.png"
     title="Latest 10 Blocks"
     page="blocks"
     list={() => <BlockList blocks={blocks} />}
@@ -193,7 +190,6 @@ const HomeBlockList = ({ blocks, }) => (
 
 const HomeTransactionList = ({ transactions, symbol, }) => (
   <HomePageList
-    icon="/microscopeIcons/transactions.png"
     title="Latest 10 Transactions"
     page="transactions"
     list={() => <TransactionList transactions={transactions} symbol={symbol} />}
@@ -298,7 +294,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
     // fetch metadata
     this.props.CITAObservables.metaData({
       blockNumber: 'latest',
-    }).subscribe((metadata: Chain.MetaData) => {
+    }).retry(2).subscribe((metadata: Chain.MetaData) => {
       this.setState({
         metadata: {
           ...metadata,
