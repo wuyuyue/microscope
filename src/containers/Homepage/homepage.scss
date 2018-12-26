@@ -1,3 +1,5 @@
+@import '../../styles/color.scss';
+
 .card {
   border-radius: 2px;
   box-shadow: 0 0 10px 0 rgba(170, 170, 170, 0.2) !important;
@@ -38,7 +40,7 @@
   padding: 45px 0 35px 40px;
   margin-bottom: 30px;
   border-radius: 6px;
-  background-image: linear-gradient(to left, #4eadf1, #5d87dd);
+  background: $gradient1;
   color: #fff;
   display: flex;
   align-items: flex-end;
@@ -72,6 +74,7 @@
   background-color: #699be5;
   margin-right: 20px;
   border-radius: 50%;
+
   svg {
     margin: (70 - 34px) / 2;
     width: 34px;
@@ -112,6 +115,7 @@
   width: 22px;
   height: 22px;
   margin-right: 18px;
+
   svg {
     width: 22px;
     height: 22px;
@@ -132,8 +136,7 @@
 }
 
 .firstChart,
-.secondChart {
-}
+.secondChart {}
 
 @media (max-width: 960px) {
   .mainInfoBlock {

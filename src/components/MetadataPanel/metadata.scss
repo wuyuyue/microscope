@@ -63,7 +63,6 @@ $sidebar-padding: 29px;
   box-sizing: content-box;
   position: relative;
 
-
   input {
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -111,7 +110,7 @@ $sidebar-padding: 29px;
   padding: 10px 20px;
   box-shadow: 0 4px 16px 0 rgba(86, 129, 204, 0.1);
   color: #fff;
-  background: linear-gradient(to left, #4eadf1, #6a96f0);
+  background: $gradient1;
   border-radius: 4px;
   line-height: 1.2;
   opacity: 0.8;
@@ -121,7 +120,6 @@ $sidebar-padding: 29px;
     color: #fff;
   }
 }
-
 
 .chainerror {
   @extend .alert;
