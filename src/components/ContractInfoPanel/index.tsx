@@ -1,74 +1,54 @@
 import * as React from 'react'
-import { List, Divider } from '@material-ui/core'
-import { ABI, ABIElement } from '../../typings'
-import { withObservables } from '../../contexts/observables'
-import { copyToClipboard } from '../../utils/copyToClipboard'
-import { handleError, dismissError } from '../../utils/handleError'
+import { withObservables, } from '../../contexts/observables'
+import { copyToClipboard, } from '../../utils/copyToClipboard'
 
 const styles = require('./styles.scss')
 
-const Infoblock = ({ title, code }) => (
+const Infoblock = ({ title, code, copied, copy, }) => (
   <div className={styles.infoblock}>
     <div className={styles.header}>
       <span className={styles.title}>{title}</span>
-      <button className={styles.button} onClick={() => copyToClipboard(code)}>
-        Copy
+      <button className={copied ? styles.copied : ''} onClick={copy} disabled={copied}>
+        {copied ? 'Copied' : 'Copy'}
       </button>
     </div>
-    <div className={styles.code}>{code}</div>
+    <pre className={styles.code}>{code}</pre>
   </div>
 )
 
 interface PanelProps {
-  CITAObservables: any
-  // account: string
-  abi: any
+  abi: string
   code: string
+  copiedIdx: number
+  updateCopiedIdx: (idx: number) => void
 }
-
-interface PanelState {
-  // abi: string
-  // code: string
-}
-
-// class Panel extends React.Component<PanelProps, PanelState> {
-//   state = {
-//     abi: JSON.stringify(this.props.abi),
-//     code: ''
-//   }
-//   public componentWillMount () {
-//     // this.getabi()
-//     this.getcode()
-//   }
-//   // private getabi = () => this.props.CITAObservables.getAbi(this.citaParams).subscribe((abi) => this.setState({ abi }))
-//   private getcode = () => this.props.CITAObservables.getCode(this.citaParams).subscribe(code => this.setState({ code }))
-//   private citaParams = {
-//     contractAddr: this.props.account,
-//     blockNumber: 'latest'
-//   }
-//   public render () {
-//     // const { abi, code } = this.state
-//     const abi = JSON.stringify(this.props.abi)
-//     const { code } = this.props
-//     return (
-//       <div>
-//         <Infoblock title="Contract Abi" code={abi} />
-//         <Infoblock title="Contract Creation Code" code={code} />
-//       </div>
-//     )
-//   }
-// }
 
 const Panel = (props: PanelProps) => {
-  // const { abi, code } = this.state
-  const abi = JSON.stringify(props.abi)
-  const { code } = props
+  const abi = JSON.stringify(props.abi, null, 2)
+  const { code, } = props
   return (
     <div>
-      <Infoblock title="Contract Abi" code={abi} />
-      <Infoblock title="Contract Creation Code" code={code} />
+      <Infoblock
+        title="Contract Abi"
+        code={abi}
+        copied={props.copiedIdx === 0}
+        copy={e => {
+          if (props.copiedIdx === 0) return
+          copyToClipboard(abi)
+          props.updateCopiedIdx(0)
+        }}
+      />
+      <Infoblock
+        title="Contract Creation Code"
+        code={code}
+        copied={props.copiedIdx === 1}
+        copy={e => {
+          if (props.copiedIdx === 1) return
+          copyToClipboard(code)
+          props.updateCopiedIdx(1)
+        }}
+      />
     </div>
   )
 }
-
 export default withObservables(Panel)

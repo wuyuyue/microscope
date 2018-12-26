@@ -255,7 +255,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
           quotaPrice={quotaPrice}
         />
         <Dialog on={transactionsOn} onClose={this.toggleTransaction()} dialogTitle="Transactions List">
-          <TransactionList transactions={transactions} />
+          <TransactionList transactions={transactions} symbol={this.props.config.symbol} />
         </Dialog>
         <ErrorNotification error={error} dismissError={this.dismissError} />
       </React.Fragment>

@@ -44,7 +44,7 @@ const Secondary = ({ tx, t, symbol, }) => (
           {tx.from}
         </Link>
       </span>
-      {(tx.type === TX_TYPE.CONTRACT_CREATION || tx.to === '0x') ? null : (
+      {tx.type === TX_TYPE.CONTRACT_CREATION || tx.to === '0x' ? null : (
         <span className={texts.ellipsis}>
           <div>To</div>
           <Link to={`/account/${tx.to}`} href={`/account/${tx.to}`} className={texts.addr}>
@@ -65,8 +65,7 @@ const Secondary = ({ tx, t, symbol, }) => (
 const TransactionCell = ({ tx, t, symbol, }) => (
   <ListItem key={tx.hash} classes={{ root: styles.listItemContainer, }}>
     <div>
-      <img src={TransactionTypeInfo[tx.type].icon} alt='' />
-      {tx.error ? <div>error</div> : null}
+      <img src={TransactionTypeInfo[tx.type].icon} alt="" />
     </div>
     <ListItemText
       classes={{ primary: styles.primary, root: styles.listItemTextRoot, }}
