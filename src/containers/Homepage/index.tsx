@@ -107,9 +107,7 @@ const SubInfoCell = ({ icon, content, name, }) => (
 
 const SubInfoBlock = ({ proplist, }) => (
   <div className={styles.subInfoBlock}>
-    {proplist.map(prop => (
-      <SubInfoCell {...prop} />
-    ))}
+    {proplist[4].content < 0 ? null : proplist.map(prop => <SubInfoCell {...prop} />)}
   </div>
 )
 
