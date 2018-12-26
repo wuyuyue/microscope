@@ -10,7 +10,7 @@ import * as web3Utils from 'web3-utils'
 import * as Web3Contract from 'web3-eth-contract'
 import * as web3Abi from 'web3-eth-abi'
 
-import { Card, CardHeader, CardContent, Tabs, Tab, Button, Divider, LinearProgress, } from '@material-ui/core'
+import { Card, CardContent, Tabs, Tab, Divider, LinearProgress, } from '@material-ui/core'
 
 import ERCPanel from '../../components/ERCPanel'
 import TransactionTable from '../../containers/TransactionTable'
@@ -29,6 +29,7 @@ import valueFormatter from '../../utils/valueFormatter'
 
 const layouts = require('../../styles/layout.scss')
 const text = require('../../styles/text.scss')
+const styles = require('./styles.scss')
 
 const accountFormatter = (addr: string) => (/^0x/i.test(addr) ? addr : `0x${addr}`)
 interface AccountProps extends IContainerProps {}
@@ -90,13 +91,6 @@ class Account extends React.Component<AccountProps, AccountState> {
         (balance: string) => this.setState(state => ({ loading: state.loading - 1, balance: `${+balance}`, })),
         this.handleError
       )
-    // this.props.CITAObservables.getTransactionCount({
-    //   addr,
-    //   blockNumber: 'latest'
-    // }).subscribe(
-    //   (count: string) => this.setState(state => ({ txCount: +count, loading: state.loading - 1 })),
-    //   this.handleError
-    // )
 
     this.props.CITAObservables.getAbi({
       contractAddr: addr,
@@ -123,58 +117,11 @@ class Account extends React.Component<AccountProps, AccountState> {
   private updateBasicInfo = account => {
     if (account) {
       const addr = accountFormatter(account)
-      let type = AccountType.NORMAL
-      type = this.state.erc20s.map(erc => erc.addr).includes(addr) ? AccountType.ERC20 : type
-      type = this.state.erc721s.map(erc => erc.addr).includes(addr) ? AccountType.ERC721 : type
       this.setState({
         addr,
-        type,
       })
       this.fetchInfo(addr)
     }
-  }
-  private toggleAddrs = (addrsOn = false) => e => {
-    this.setState({ addrsOn, })
-  }
-  private addAddr = group => e => {
-    this.setState(state => {
-      const { name, addr, } = this.state[`${group}Add`]
-      const newList = [...state[group], { name, addr, }, ]
-      // side effect
-      window.localStorage.setItem(group, JSON.stringify(newList))
-      return {
-        ...state,
-        [group]: newList,
-        [`${group}Add`]: {
-          name: '',
-          addr: '',
-        },
-      }
-    })
-  }
-  private handleAddrInput = (group, label) => e => {
-    const { value, } = e.target
-    this.setState(state => ({
-      ...state,
-      [`${group}Add`]: {
-        ...state[`${group}Add`],
-        [label]: value,
-      },
-    }))
-  }
-  private handleAddrDelete = (group, idx) => e => {
-    this.setState(state => {
-      const newList = [...state[group], ].splice(idx, 1)
-      window.localStorage.setItem(group, JSON.stringify(newList))
-      return {
-        ...state,
-        [group]: newList,
-        [`${group}Add`]: {
-          name: '',
-          addr: '',
-        },
-      }
-    })
   }
   private handleAbiValueChange = (index: number) => (inputIndex: number) => e => {
     const { value, } = e.target
@@ -201,10 +148,6 @@ class Account extends React.Component<AccountProps, AccountState> {
      * @method eth_call
      */
     this.props.CITAObservables.ethCall({
-      // callObject({
-      //   to: this.state.addr,
-      //   data,
-      // }),
       callObject: {
         to: this.state.addr,
         data,
@@ -249,23 +192,7 @@ class Account extends React.Component<AccountProps, AccountState> {
     return table[panelOn]
   }
   render () {
-    const {
-      loading,
-      addr,
-      balance,
-      txCount,
-      panelOn,
-      addrsOn,
-      normals,
-      erc20s,
-      erc721s,
-      normalsAdd,
-      erc20sAdd,
-      erc721sAdd,
-      abi,
-      code,
-      error,
-    } = this.state
+    const { loading, addr, balance, txCount, panelOn, abi, code, error, } = this.state
 
     return (
       <React.Fragment>
@@ -277,17 +204,19 @@ class Account extends React.Component<AccountProps, AccountState> {
           />
         ) : null}
 
-        <Banner>
-          <div className={text.bannerText}>
-            Account: <span style={{ fontWeight: 100, }}>{addr}</span>
-          </div>
-          <div className={text.bannerText}>
-            Balance: <span style={{ fontWeight: 100, }}>{valueFormatter(balance)}</span>
-          </div>
-        </Banner>
+        <Banner />
         <div className={layouts.main}>
+          <div className={styles.basicInfo}>
+            <div className={text.bannerText}>
+              Account:
+              <span>{addr}</span>
+            </div>
+            <div className={text.bannerText}>
+              Balance:
+              <span>{valueFormatter(balance)}</span>
+            </div>
+          </div>
           <Card classes={{ root: layouts.cardContainer, }} elevation={0}>
-            <CardHeader action={<Button onClick={this.toggleAddrs(true)}>管理本地账户</Button>} />
             <CardContent>
               <Tabs value={panelOn} onChange={this.onTabClick}>
                 <Tab value="tx" label={`Transactions(${txCount || 0})`} />
@@ -299,22 +228,6 @@ class Account extends React.Component<AccountProps, AccountState> {
             </CardContent>
           </Card>
         </div>
-        {/*
-        <Dialog fullScreen on={addrsOn} dialogTitle="Saved Accounts" onClose={this.toggleAddrs()}>
-          <LocalAccounts
-            addrGroups={this.addrGroups}
-            normals={normals}
-            erc20s={erc20s}
-            erc721s={erc721s}
-            normalsAdd={normalsAdd}
-            erc20sAdd={erc20sAdd}
-            erc721sAdd={erc721sAdd}
-            handleAddrInput={this.handleAddrInput}
-            handleAddrDelete={this.handleAddrDelete}
-            addAddr={this.addAddr}
-          />
-        </Dialog>
-         */}
         <ErrorNotification error={error} dismissError={this.dismissError} />
       </React.Fragment>
     )
