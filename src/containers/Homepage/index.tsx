@@ -296,7 +296,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
     // fetch metadata
     this.props.CITAObservables.metaData({
       blockNumber: 'latest',
-    }).subscribe((metadata: Chain.MetaData) => {
+    }).retry(2).subscribe((metadata: Chain.MetaData) => {
       this.setState({
         metadata: {
           ...metadata,
