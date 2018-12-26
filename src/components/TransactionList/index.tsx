@@ -1,17 +1,18 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { List, ListItem, ListItemText } from '@material-ui/core'
-import { Transaction } from '../../typings/'
+import { Link, } from 'react-router-dom'
+import { List, ListItem, ListItemText, } from '@material-ui/core'
+import { Transaction, } from '../../typings/'
+import valueFormatter from '../../utils/valueFormatter'
 
 const texts = require('../../styles/text.scss')
 const styles = require('./styles.scss')
 
-export default ({ transactions }: { transactions: Transaction[] }) => (
+export default ({ transactions, symbol, }: { transactions: Transaction[]; symbol: string }) => (
   <List>
     {transactions.map(tx => (
       <ListItem key={tx.hash}>
         <ListItemText
-          classes={{ primary: styles.primary }}
+          classes={{ primary: styles.primary, }}
           primary={
             <React.Fragment>
               <Link to={`/transaction/${tx.hash}`} href={`/transaction/${tx.hash}`}>
@@ -34,7 +35,7 @@ export default ({ transactions }: { transactions: Transaction[] }) => (
                   {tx.basicInfo.from || 'null'}
                 </Link>
                 {' To: '}
-                {['Contract Creation'].includes(tx.basicInfo.to) ? (
+                {['Contract Creation', ].includes(tx.basicInfo.to) ? (
                   tx.basicInfo.to
                 ) : (
                   <Link to={`/account/${tx.basicInfo.to}`} href={`/account/${tx.basicInfo.to}`} className={texts.addr}>
@@ -42,7 +43,7 @@ export default ({ transactions }: { transactions: Transaction[] }) => (
                   </Link>
                 )}
                 Value
-                {': '} <span className={texts.highlight}>{tx.basicInfo.value || '0'}</span>
+                {': '} <span className={texts.highlight}>{valueFormatter(tx.basicInfo.value || '0', symbol)}</span>
               </div>
             ) : (
               <div>{tx.content}</div>
