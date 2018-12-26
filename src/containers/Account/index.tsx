@@ -142,39 +142,44 @@ class Account extends React.Component<AccountProps, AccountState> {
     const jsonInterface = this.state.contract._jsonInterface[index]
     /* eslint-enable no-underscore-dangle */
     // send transform data
-    const data = web3Abi.encodeFunctionCall(jsonInterface, inputs.map(input => input.value))
-    this.setState(state => ({ loading: state.loading + 1, })) // for eth call
-    /**
-     * @method eth_call
-     */
-    this.props.CITAObservables.ethCall({
-      callObject: {
-        to: this.state.addr,
-        data,
-      },
-      blockNumber: 'latest',
-    }).subscribe(result => {
-      try {
-        const outputTypes = this.state.abi[index].outputs.map(o => o.type)
-        const outputs = web3Abi.decodeParameters(outputTypes, result) as { [index: string]: any; __length__: number }
-        this.setState(state => {
-          const abi = JSON.parse(JSON.stringify(state.abi))
-          for (let i = 0; i < outputs.__length__; i++) {
-            abi[index].outputs[i].value = outputs[i]
-          }
-          return { ...state, abi, loading: state.loading - 1, }
-        })
-      } catch (err) {
-        console.warn(err)
-        this.handleError(err)
-      }
-    }, this.handleError)
+
+    try {
+      const data = web3Abi.encodeFunctionCall(jsonInterface, inputs.map(input => input.value))
+      this.setState(state => ({ loading: state.loading + 1, })) // for eth call
+      /**
+       * @method eth_call
+       */
+      this.props.CITAObservables.ethCall({
+        callObject: {
+          to: this.state.addr,
+          data,
+        },
+        blockNumber: 'latest',
+      }).subscribe(result => {
+        try {
+          const outputTypes = this.state.abi[index].outputs.map(o => o.type)
+          const outputs = web3Abi.decodeParameters(outputTypes, result) as { [index: string]: any; __length__: number }
+          this.setState(state => {
+            const abi = JSON.parse(JSON.stringify(state.abi))
+            for (let i = 0; i < outputs.__length__; i++) {
+              abi[index].outputs[i].value = outputs[i].toString()
+            }
+            return { ...state, abi, loading: state.loading - 1, }
+          })
+        } catch (err) {
+          console.warn(err)
+          this.handleError(err)
+        }
+      }, this.handleError)
+    } catch (err) {
+      console.warn(err)
+      this.handleError(err)
+    }
   }
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private renderPanelByTab = () => {
     const { abi, addr, panelOn, code, } = this.state
-    // const { account } = this.props.match.params
     const erc = (
       <ERCPanel
         abi={abi.filter(abiEl => abiEl.type === 'function')}
