@@ -8,16 +8,6 @@
     margin-top: 102px;
   }
 
-  // input {
-  //   border: 1px solid #d3ddec;
-  //   width: 120px;
-  //   height: 34px;
-  //   line-height: 34px;
-  //   border-radius: 4px;
-  //   padding: 7px;
-  //   margin: 8px;
-  //   box-sizing: border-box;
-  // }
   .header {
     display: flex;
     justify-content: space-between;
@@ -32,14 +22,25 @@
     color: #2e313e;
   }
 
-  .button {
+  button {
     padding: 8px 20px;
     border: none;
     border-radius: 4px;
-    background: $active;
+    background: $gradient1;
     color: #fff;
     font-size: 0.875rem;
+    cursor: pointer;
   }
+
+  button.copied {
+    background: $gradient2;
+    color: #aaa;
+  }
+
+  button[disabled] {
+    cursor: default;
+  }
+
 
   .code {
     font-size: 0.875rem;

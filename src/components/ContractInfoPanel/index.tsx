@@ -1,18 +1,15 @@
 import * as React from 'react'
-// import { List, Divider, } from '@material-ui/core'
-// import { ABI, ABIElement, } from '../../typings'
 import { withObservables, } from '../../contexts/observables'
 import { copyToClipboard, } from '../../utils/copyToClipboard'
-// import { handleError, dismissError, } from '../../utils/handleError'
 
 const styles = require('./styles.scss')
 
-const Infoblock = ({ title, code, }) => (
+const Infoblock = ({ title, code, copied, copy, }) => (
   <div className={styles.infoblock}>
     <div className={styles.header}>
       <span className={styles.title}>{title}</span>
-      <button className={styles.button} onClick={() => copyToClipboard(code)}>
-        Copy
+      <button className={copied ? styles.copied : ''} onClick={copy} disabled={copied}>
+        {copied ? 'Copied' : 'Copy'}
       </button>
     </div>
     <pre className={styles.code}>{code}</pre>
@@ -20,22 +17,38 @@ const Infoblock = ({ title, code, }) => (
 )
 
 interface PanelProps {
-  CITAObservables: any
-  // account: string
-  abi: any
+  abi: string
   code: string
+  copiedIdx: number
+  updateCopiedIdx: (idx: number) => void
 }
 
 const Panel = (props: PanelProps) => {
-  // const { abi, code } = this.state
   const abi = JSON.stringify(props.abi, null, 2)
   const { code, } = props
   return (
     <div>
-      <Infoblock title="Contract Abi" code={abi} />
-      <Infoblock title="Contract Creation Code" code={code} />
+      <Infoblock
+        title="Contract Abi"
+        code={abi}
+        copied={props.copiedIdx === 0}
+        copy={e => {
+          if (props.copiedIdx === 0) return
+          copyToClipboard(abi)
+          props.updateCopiedIdx(0)
+        }}
+      />
+      <Infoblock
+        title="Contract Creation Code"
+        code={code}
+        copied={props.copiedIdx === 1}
+        copy={e => {
+          if (props.copiedIdx === 1) return
+          copyToClipboard(code)
+          props.updateCopiedIdx(1)
+        }}
+      />
     </div>
   )
 }
-
 export default withObservables(Panel)

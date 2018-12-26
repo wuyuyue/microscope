@@ -63,6 +63,7 @@ class Account extends React.Component<AccountProps, AccountState> {
   }
 
   private setTransactionsCount = count => this.setState({ txCount: count, })
+  private copyPending: any
   private fetchContractCode = account =>
     this.props.CITAObservables.getCode({
       contractAddr: account,
@@ -176,6 +177,13 @@ class Account extends React.Component<AccountProps, AccountState> {
       this.handleError(err)
     }
   }
+  private updateCopiedIdx = (copiedIdx: number) => {
+    this.setState({ copiedIdx, })
+    this.copyPending = setTimeout(() => {
+      clearTimeout(this.copyPending)
+      this.setState({ copiedIdx: -1, })
+    }, 3000)
+  }
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private renderPanelByTab = () => {
@@ -188,7 +196,14 @@ class Account extends React.Component<AccountProps, AccountState> {
       />
     )
     const tx = <TransactionTable {...this.props} key={addr} setTransactionsCount={this.setTransactionsCount} inset />
-    const info = <ContractInfoPanel code={code} abi={abi} />
+    const info = (
+      <ContractInfoPanel
+        code={code}
+        abi={abi}
+        updateCopiedIdx={this.updateCopiedIdx}
+        copiedIdx={this.state.copiedIdx}
+      />
+    )
     const table = {
       tx,
       abi: erc,

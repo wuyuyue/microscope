@@ -173,6 +173,7 @@ export const initAccountState = {
     code: '',
     message: '',
   },
+  copiedIdx: -1,
 }
 
 export const initBlockState = {
