@@ -35,7 +35,7 @@ message: string
     { key: 'to', text: 'to', href: '/account/', },
     { key: 'value', text: 'value', },
     { key: 'blockNumber', text: 'height', href: '/height/', },
-    { key: 'gasUsed', text: 'quota used', },
+    { key: 'quotaUsed', text: 'quota used', },
     { key: 'age', text: 'age', },
   ],
   items: [] as any[],
@@ -173,7 +173,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
             to: toText(tx.to),
             age: formatedAgeString(tx.timestamp),
             value: valueFormatter(+tx.value, this.props.config.symbol),
-            gasUsed: `${+tx.gasUsed}`,
+            quotaUsed: `${+tx.quotaUsed}`,
           })),
         }))
       })

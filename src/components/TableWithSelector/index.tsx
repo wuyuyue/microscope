@@ -1,13 +1,12 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { translate } from 'react-i18next'
-import { Paper } from '@material-ui/core'
+import { Link, } from 'react-router-dom'
+import { translate, } from 'react-i18next'
+import { Paper, } from '@material-ui/core'
 import Pager from 'react-pager'
-import { KeyboardArrowLeft, KeyboardArrowRight, SkipNext, SkipPrevious } from '@material-ui/icons'
-import { ContractCreation } from '../../initValues'
+import { KeyboardArrowLeft, KeyboardArrowRight, SkipNext, SkipPrevious, } from '@material-ui/icons'
+import { ContractCreation, } from '../../initValues'
 
 import Dialog from '../../containers/Dialog'
-import paramsFilter from '../../utils//paramsFilter'
 
 const text = require('../../styles/text.scss')
 const layout = require('../../styles/layout.scss')
@@ -16,7 +15,7 @@ const styles = require('./tableWithSelector.scss')
 export enum SelectorType {
   SINGLE,
   MULTIPLE,
-  RANGE
+  RANGE,
 }
 
 export interface TableHeaderWithSelector {
@@ -57,31 +56,31 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
   state = {
     on: false,
     selectorsValue: this.props.selectorsValue,
-    selectorsError: {} as any
+    selectorsError: {} as any,
   }
 
   showDialog = (on: boolean = false) => (e?: any) => {
     this.setState(state => ({
-      on
+      on,
     }))
   }
 
   handleSelectorInput = (selector: string) => e => {
     e.persist()
-    const { value } = e.target
+    const { value, } = e.target
     this.setState(state => ({
       selectorsValue: {
         ...state.selectorsValue,
-        [selector]: value
+        [selector]: value,
       },
       selectorsError: {
         ...state.selectorsError,
-        [selector]: false
-      }
+        [selector]: false,
+      },
     }))
   }
   handleSubmit = e => {
-    const { selectorsError } = this.state
+    const { selectorsError, } = this.state
     let allright = true
     Object.keys(selectorsError).forEach(key => {
       const error = selectorsError[key]
@@ -96,27 +95,26 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
   }
   handleSelectorBlur = (selector: string, check: any = () => false, format: any = v => v) => e => {
     e.persist()
-    const { value } = e.target
+    const { value, } = e.target
     const valueError = value ? !check(value) : false
     this.setState(state => {
-      const { selectorsValue, selectorsError } = state
+      const { selectorsValue, selectorsError, } = state
       return {
         selectorsValue: {
           ...selectorsValue,
-          [selector]: value
+          [selector]: value,
         },
         selectorsError: {
           ...selectorsError,
-          [selector]: valueError
-        }
+          [selector]: valueError,
+        },
       }
     })
   }
   render () {
-    const { on, selectorsValue, selectorsError } = this.state
-    const { headers, items, selectors, pageSize, pageNo, count, t, inset, searchText } = this.props
+    const { on, selectorsValue, selectorsError, } = this.state
+    const { headers, items, selectors, pageSize, pageNo, count, t, inset, searchText, } = this.props
     const total = Math.ceil(count / pageSize)
-    // const activeParams = paramsFilter(this.props.selectorsValue)
     return (
       <Paper className={`${layout.center} ${inset ? styles.insetContainer : styles.container}`} elevation={0}>
         <Dialog on={!!on} dialogTitle={t('advanced selector')} onClose={this.showDialog(false)} maxWidth="md">
@@ -195,7 +193,7 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
               <tr key={item.key}>
                 {headers.map(header => (
                   <td key={header.key} className={text.ellipsis} title={item[header.key]}>
-                    {header.href === undefined || (header.key === 'to' && [ContractCreation].includes(item.to)) ? (
+                    {header.href === undefined || (header.key === 'to' && [ContractCreation, ].includes(item.to)) ? (
                       item[header.key] === null ? (
                         '/'
                       ) : (
@@ -224,7 +222,7 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
             first: <SkipPrevious />,
             last: <SkipNext />,
             prev: <KeyboardArrowLeft />,
-            next: <KeyboardArrowRight />
+            next: <KeyboardArrowRight />,
           }}
           className={styles.pager}
           onPageChanged={this.props.handlePageChanged}

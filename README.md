@@ -172,7 +172,7 @@ Account Detail can be inspected via `from` and `to`.
 
 **Statistics Page** show list of diagrams, the displaying items can be specified in **Config Page**
 
-For now, **Statistics Page** includes `Interval/Block`, `Transactions/Block`, `Gas Used/Block`, `Gas Used/Transaction`, `Proposals/Validator` diagrams.
+For now, **Statistics Page** includes `Interval/Block`, `Transactions/Block`, `Quota Used/Block`, `Quota Used/Transaction`, `Proposals/Validator` diagrams.
 
 ### Account
 

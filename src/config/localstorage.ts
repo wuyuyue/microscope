@@ -2,7 +2,7 @@ export enum LOCAL_STORAGE {
   SERVER_LIST = 'server_list',
   PRIV_KEY_LIST = 'privkey_list',
   PANEL_CONFIGS = 'panel_configs',
-  LOCAL_DEBUG_ACCOUNTS = 'localDebugAccounts'
+  LOCAL_DEBUG_ACCOUNTS = 'localDebugAccounts',
 }
 export interface PanelConfigs {
   logo: string
@@ -11,20 +11,20 @@ export interface PanelConfigs {
   blockHash: boolean
   blockAge: boolean
   blockTransactions: boolean
-  blockGasUsed: boolean
+  blockQuotaUsed: boolean
   blockPageSize: number
   transactionHash: boolean
   transactionFrom: boolean
   transactionTo: boolean
   transactionValue: boolean
   transactionAge: boolean
-  transactionGasUsed: boolean
+  transactionQuotaUsed: boolean
   transactionBlockNumber: boolean
   transactionPageSize: number
   graphIPB: true
   graphTPB: true
-  graphGasUsedBlock: true
-  graphGasUsedTx: true
+  graphQuotaUsedBlock: true
+  graphQuotaUsedTx: true
   graphProposals: true
   graphMaxCount: number
 }

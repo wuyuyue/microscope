@@ -70,7 +70,7 @@ const BlockDisplay = translate('microscope')(({ block, t, }: { block: IBlock; t:
         </tr>
         <tr>
           <td>{t('quota used')}</td>
-          <td>{block.header.gasUsed}</td>
+          <td>{block.header.quotaUsed}</td>
         </tr>
       </tbody>
     </table>
