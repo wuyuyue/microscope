@@ -1,7 +1,7 @@
 const Image = {
   logo: `${process.env.PUBLIC}/images/microscope_logo_gradient.png`,
   extend: `${process.env.PUBLIC}/microscopeIcons/expand.png`,
-  gas: `${process.env.PUBLIC}/microscopeIcons/petrol_barrel.svg`,
+  quota: `${process.env.PUBLIC}/microscopeIcons/petrol_barrel.svg`,
   banner: {
     block: `${process.env.PUBLIC}/banner/banner-Block.png`,
     transaction: `${process.env.PUBLIC}/banner/banner-Transaction.png`,

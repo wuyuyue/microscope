@@ -62,7 +62,7 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
               blockNumber: block.number,
               content: tx.content,
               from: unsignedTx.sender.address,
-              gasUsed: '',
+              quotaUsed: '',
               hash: tx.hash,
               timestamp: block.header.timestamp,
               to: unsignedTx.transaction.to,

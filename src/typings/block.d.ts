@@ -8,7 +8,7 @@ export interface IBlockHeader {
   stateRoot: string
   transactionsRoot: string
   receiptsRoot: string
-  gasUsed: string
+  quotaUsed: string
   proposer: string
   proof: {
     Bft: {
@@ -68,7 +68,7 @@ export interface TransactionFromServer {
   blockNumber: string
   content: string
   from: string
-  gasUsed: string
+  quotaUsed: string
   hash: string
   timestamp: number
   to: string
@@ -90,7 +90,7 @@ export interface BlockFromServer {
     }
     prevHash: string
     number: string
-    gasUsed: string
+    quotaUsed: string
   }
   hash: string
 }

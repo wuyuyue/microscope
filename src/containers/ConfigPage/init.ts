@@ -1,11 +1,11 @@
-import { PanelConfigs } from '../../config/localstorage'
-import { withConfig, Config } from '../../contexts/config'
+import { PanelConfigs, } from '../../config/localstorage'
+import { withConfig, Config, } from '../../contexts/config'
 
 enum ConfigType {
   DISPLAY,
   COUNT,
   ITEMS,
-  VALUE
+  VALUE,
 }
 
 enum ConfigPanel {
@@ -14,7 +14,7 @@ enum ConfigPanel {
   BLOCK = 'block',
   TRANSACTION = 'transaction',
   GRAPH = 'graph',
-  DEBUGGER = 'debugger'
+  DEBUGGER = 'debugger',
 }
 
 /* eslint-disable no-use-before-define */
@@ -32,7 +32,7 @@ const panels = [
   ConfigPanel.BLOCK,
   ConfigPanel.TRANSACTION,
   ConfigPanel.GRAPH,
-  ConfigPanel.DEBUGGER
+  ConfigPanel.DEBUGGER,
 ]
 
 const configs = [
@@ -40,145 +40,145 @@ const configs = [
     panel: ConfigPanel.GENERAL,
     type: ConfigType.VALUE,
     key: 'logo',
-    title: 'logo'
+    title: 'logo',
   },
   {
     panel: ConfigPanel.HEADER,
     type: ConfigType.DISPLAY,
     key: 'TPS',
-    title: 'TPS'
+    title: 'TPS',
   },
   {
     panel: ConfigPanel.BLOCK,
     type: ConfigType.DISPLAY,
     key: 'blockHeight',
-    title: 'height'
+    title: 'height',
   },
   {
     panel: ConfigPanel.BLOCK,
     type: ConfigType.DISPLAY,
     key: 'blockHash',
-    title: 'hash'
+    title: 'hash',
   },
   {
     panel: ConfigPanel.BLOCK,
     type: ConfigType.DISPLAY,
     key: 'blockAge',
-    title: 'age'
+    title: 'age',
   },
   {
     panel: ConfigPanel.BLOCK,
     type: ConfigType.DISPLAY,
     key: 'blockTransactions',
-    title: 'transactions'
+    title: 'transactions',
   },
   {
     panel: ConfigPanel.BLOCK,
     type: ConfigType.DISPLAY,
-    key: 'blockGasUsed',
-    title: 'quota used'
+    key: 'blockQuotaUsed',
+    title: 'quota used',
   },
   {
     panel: ConfigPanel.BLOCK,
     type: ConfigType.VALUE,
     key: 'blockPageSize',
-    title: 'page size'
+    title: 'page size',
   },
   {
     panel: ConfigPanel.TRANSACTION,
     type: ConfigType.DISPLAY,
     key: 'transactionHash',
-    title: 'hash'
+    title: 'hash',
   },
   {
     panel: ConfigPanel.TRANSACTION,
     type: ConfigType.DISPLAY,
     key: 'transactionFrom',
-    title: 'from'
+    title: 'from',
   },
   {
     panel: ConfigPanel.TRANSACTION,
     type: ConfigType.DISPLAY,
     key: 'transactionTo',
-    title: 'to'
+    title: 'to',
   },
   {
     panel: ConfigPanel.TRANSACTION,
     type: ConfigType.DISPLAY,
     key: 'transactionValue',
-    title: 'value'
+    title: 'value',
   },
   {
     panel: ConfigPanel.TRANSACTION,
     type: ConfigType.DISPLAY,
     key: 'transactionAge',
-    title: 'age'
+    title: 'age',
   },
   {
     panel: ConfigPanel.TRANSACTION,
     type: ConfigType.DISPLAY,
     key: 'transactionBlockNumber',
-    title: 'block height'
+    title: 'block height',
   },
   {
     panel: ConfigPanel.TRANSACTION,
     type: ConfigType.DISPLAY,
-    key: 'transactionGasUsed',
-    title: 'quota used'
+    key: 'transactionQuotaUsed',
+    title: 'quota used',
   },
   {
     panel: ConfigPanel.TRANSACTION,
     type: ConfigType.VALUE,
     key: 'transactionPageSize',
-    title: 'page size'
+    title: 'page size',
   },
   {
     panel: ConfigPanel.GRAPH,
     type: ConfigType.DISPLAY,
     key: 'graphIPB',
-    title: 'Interval/Block'
+    title: 'Interval/Block',
   },
   {
     panel: ConfigPanel.GRAPH,
     type: ConfigType.DISPLAY,
     key: 'graphTPB',
-    title: 'Transactions/Block'
+    title: 'Transactions/Block',
   },
   {
     panel: ConfigPanel.GRAPH,
     type: ConfigType.DISPLAY,
-    key: 'graphGasUsedBlock',
-    title: 'Quota Used/Block'
+    key: 'graphQuotaUsedBlock',
+    title: 'Quota Used/Block',
   },
   {
     panel: ConfigPanel.GRAPH,
     type: ConfigType.DISPLAY,
-    key: 'graphGasUsedTx',
-    title: 'Quota Used/Transaction'
+    key: 'graphQuotaUsedTx',
+    title: 'Quota Used/Transaction',
   },
   {
     panel: ConfigPanel.GRAPH,
     type: ConfigType.DISPLAY,
     key: 'graphProposals',
-    title: 'Proposals/Validator'
+    title: 'Proposals/Validator',
   },
   {
     panel: ConfigPanel.GRAPH,
     type: ConfigType.VALUE,
     key: 'graphMaxCount',
-    title: 'MaxCount'
+    title: 'MaxCount',
   },
   {
     panel: ConfigPanel.DEBUGGER,
     type: ConfigType.DISPLAY,
     key: 'debugger',
-    title: 'Debugger'
-  }
+    title: 'Debugger',
+  },
 ] as ConfigDetailType[]
 
 const ConfigPageDefault = {
   configs,
-  panels
+  panels,
 }
 
 interface ConfigPageProps {
@@ -192,11 +192,4 @@ interface ConfigPageState {
   saving?: boolean
 }
 
-export {
-  ConfigPageProps,
-  ConfigPageState,
-  ConfigDetailType,
-  ConfigType,
-  ConfigPanel,
-  ConfigPageDefault,
-}
+export { ConfigPageProps, ConfigPageState, ConfigDetailType, ConfigType, ConfigPanel, ConfigPageDefault, }

@@ -136,7 +136,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
             hash: block.hash,
             age: formatedAgeString(block.header.timestamp),
             transactions: `${block.transactionsCount}`,
-            gasUsed: `${+block.header.gasUsed}`,
+            quotaUsed: `${+block.header.quotaUsed}`,
           })),
         }))
       })
@@ -151,6 +151,8 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
     const { headers, items, selectors, selectorsValue, count, pageSize, pageNo, loading, error, } = this.state
     const activeParams = paramsFilter(selectorsValue) as any
     const blockSearchText = rangeSelectorText('Number', activeParams.numberFrom, activeParams.numberTo)
+    console.log(headers)
+    console.log(items)
     const transactionSearchText = rangeSelectorText(
       'Transaction',
       activeParams.transactionFrom,

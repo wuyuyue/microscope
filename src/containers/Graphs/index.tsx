@@ -11,7 +11,6 @@ import { fetchTransactions, fetchStatistics, } from '../../utils/fetcher'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError, } from '../../utils/handleError'
 import { GraphsDefault, IBlock, GraphsProps, GraphState, BlockGraphData, TxGraphData, ProposalData, } from './init'
-import Image from '../../images'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./graph.scss')
@@ -19,13 +18,13 @@ const styles = require('./graph.scss')
 const getBlockSource = ({ blocks, }) => {
   if (blocks.length <= 1) return []
   const source: BlockGraphData[] = []
-  // form the source , x = height, y = interval, tx count, gas used
+  // form the source , x = height, y = interval, tx count, quota used
   blocks.sort((b1, b2) => b1.header.number - b2.header.number).reduce((prev, curr) => {
     source.push([
       `${+(curr as IBlock).header.number}`, // height
       +(curr as IBlock).header.timestamp - +(prev as IBlock).header.timestamp, // interval
       (curr as IBlock).body.transactions.length, // tx count
-      `${+(curr as IBlock).header.gasUsed / GraphsDefault.PRICE}`,
+      `${+(curr as IBlock).header.quotaUsed / GraphsDefault.PRICE}`,
     ])
     return curr
   })
@@ -34,7 +33,7 @@ const getBlockSource = ({ blocks, }) => {
 }
 
 const getTxSource = ({ txs = this.state.transactions, }) => {
-  const source: TxGraphData[] = txs.length ? txs.map(tx => [tx.hash, tx.gasUsed, ]) : []
+  const source: TxGraphData[] = txs.length ? txs.map(tx => [tx.hash, tx.quotaUsed, ]) : []
   const graphSource = [['Transactions', 'Quota Used', ], ...source, ]
   return graphSource
 }
@@ -78,15 +77,15 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   // declare chart variables
   private blockGraph: any
   private txCountGraph: any
-  private gasUsedGraph: any
-  private txGasUsedGraph: any
+  private quotaUsedGraph: any
+  private txQuotaUsedGraph: any
   private proposalsGraph: any
   private blockGraphDOM: HTMLDivElement | null
   private txCountGraphDOM: HTMLDivElement | null
-  private gasUsedGraphDOM: HTMLDivElement | null
-  private txGasUsedGraphDOM: HTMLDivElement | null
+  private quotaUsedGraphDOM: HTMLDivElement | null
+  private txQuotaUsedGraphDOM: HTMLDivElement | null
   private proposalsGraphDOM: HTMLDivElement | null
-  private graphList = ['blockGraph', 'txCountGraph', 'gasUsedGraph', 'txGasUsedGraph', 'proposalsGraph', ]
+  private graphList = ['blockGraph', 'txCountGraph', 'quotaUsedGraph', 'txQuotaUsedGraph', 'proposalsGraph', ]
 
   private initGraphs = () => {
     // init chart dom
@@ -97,11 +96,11 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
     if (panelConfigs.graphTPB) {
       this.txCountGraph = this.initGraph(this.txCountGraphDOM as HTMLDivElement)
     }
-    if (panelConfigs.graphGasUsedBlock) {
-      this.gasUsedGraph = this.initGraph(this.gasUsedGraphDOM as HTMLDivElement)
+    if (panelConfigs.graphQuotaUsedBlock) {
+      this.quotaUsedGraph = this.initGraph(this.quotaUsedGraphDOM as HTMLDivElement)
     }
-    if (panelConfigs.graphGasUsedTx) {
-      this.txGasUsedGraph = this.initGraph(this.txGasUsedGraphDOM as HTMLDivElement)
+    if (panelConfigs.graphQuotaUsedTx) {
+      this.txQuotaUsedGraph = this.initGraph(this.txQuotaUsedGraphDOM as HTMLDivElement)
     }
     if (panelConfigs.graphProposals) {
       this.proposalsGraph = this.initGraph(this.proposalsGraphDOM as HTMLDivElement)
@@ -166,7 +165,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
           transactions: txs,
         }))
         const source = getTxSource({ txs, })
-        const txGasUsedOption = {
+        const txQuotaUsedOption = {
           ...BarOption,
           title: {
             text: `Quota Used in the Latest ${this.state.maxCount} Transactions`,
@@ -189,12 +188,12 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
             source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1], ] : [item[0], item[1], ])),
           },
         }
-        if (this.props.config.panelConfigs.graphGasUsedTx) {
+        if (this.props.config.panelConfigs.graphQuotaUsedTx) {
           this.updateGraph({
-            graph: this.txGasUsedGraph,
-            option: txGasUsedOption,
+            graph: this.txQuotaUsedGraph,
+            option: txQuotaUsedOption,
           })
-          this.txGasUsedGraph.on('click', (param: any) => {
+          this.txQuotaUsedGraph.on('click', (param: any) => {
             this.props.history.push(`/transaction/${param.value[0]}`)
           })
         }
@@ -238,10 +237,10 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
     }
   }
 
-  private updateGasUsed = source => {
+  private updateQuotaUsed = source => {
     const { panelConfigs, } = this.props.config
-    if (this.gasUsedGraph && panelConfigs.graphGasUsedBlock) {
-      const gasUsedOption = {
+    if (this.quotaUsedGraph && panelConfigs.graphQuotaUsedBlock) {
+      const quotaUsedOption = {
         title: {
           text: `Quota Used in Latest ${this.state.maxCount} Blocks`,
           textStyle: {
@@ -252,7 +251,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         ...BarOption,
         dataset: { source: source.map(item => [item[0], item[3], ]), },
       }
-      this.updateGraph({ graph: this.gasUsedGraph, option: gasUsedOption, })
+      this.updateGraph({ graph: this.quotaUsedGraph, option: quotaUsedOption, })
     }
   }
 
@@ -263,7 +262,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         const source = getBlockSource({ blocks, })
         this.updateGraphBlock(source)
         this.updateGraphTxCount(source)
-        this.updateGasUsed(source)
+        this.updateQuotaUsed(source)
       }
       return { blocks, }
     })
