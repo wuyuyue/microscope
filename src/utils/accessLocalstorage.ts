@@ -5,8 +5,12 @@
  * @Last Modified time: 2018-10-15 21:17:12
  */
 
-import { initPanelConfigs, initServerList, initPrivateKeyList } from '../initValues'
-import LOCAL_STORAGE, { PanelConfigs } from '../config/localstorage'
+import {
+  initPanelConfigs,
+  initServerList,
+  initPrivateKeyList,
+} from '../initValues'
+import LOCAL_STORAGE, { PanelConfigs, } from '../config/localstorage'
 
 export const getServerList = () => {
   const storedList = window.localStorage.getItem(LOCAL_STORAGE.SERVER_LIST)
@@ -34,7 +38,9 @@ export const getPrivkeyList = () => {
   }
   return initPrivateKeyList
 }
-export const getPanelConfigs = (defaultConfig: PanelConfigs = initPanelConfigs) => {
+export const getPanelConfigs = (
+  defaultConfig: PanelConfigs = initPanelConfigs
+) => {
   const localConfigs = window.localStorage.getItem(LOCAL_STORAGE.PANEL_CONFIGS)
   if (localConfigs) {
     try {
@@ -49,12 +55,17 @@ export const getPanelConfigs = (defaultConfig: PanelConfigs = initPanelConfigs) 
 
 export const setLocalDebugAccounts = (accounts: string[] = []) => {
   if (Array.isArray(accounts)) {
-    window.localStorage.setItem(LOCAL_STORAGE.LOCAL_DEBUG_ACCOUNTS, accounts.join(','))
+    window.localStorage.setItem(
+      LOCAL_STORAGE.LOCAL_DEBUG_ACCOUNTS,
+      accounts.join(',')
+    )
   }
 }
 
 export const getLocalDebugAccounts = () => {
-  const accounts = window.localStorage.getItem(LOCAL_STORAGE.LOCAL_DEBUG_ACCOUNTS)
+  const accounts = window.localStorage.getItem(
+    LOCAL_STORAGE.LOCAL_DEBUG_ACCOUNTS
+  )
   if (accounts) {
     return Array.from(new Set(accounts.split(',')))
   }

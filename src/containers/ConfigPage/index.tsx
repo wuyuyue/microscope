@@ -21,7 +21,13 @@ import Icon, { Loading, } from '../../components/Icons'
 
 import { withConfig, } from '../../contexts/config'
 import hideLoader from '../../utils/hideLoader'
-import { ConfigPageProps, ConfigPageState, ConfigDetailType, ConfigType, ConfigPageDefault, } from './init'
+import {
+  ConfigPageProps,
+  ConfigPageState,
+  ConfigDetailType,
+  ConfigType,
+  ConfigPageDefault,
+} from './init'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./config.scss')
@@ -39,7 +45,9 @@ const ConfigDetail = translate('microscope')(
   config: ConfigDetailType
   value: number | string | boolean | undefined
   handleSwitch: (key: string) => (e: any) => void
-  handleInput: (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleInput: (
+    key: string
+  ) => (e: React.ChangeEvent<HTMLInputElement>) => void
   controlInputScope: any
   saving: any
   t: (key: string) => string
@@ -48,7 +56,8 @@ const ConfigDetail = translate('microscope')(
       <ListItemText
         primary={
           <React.Fragment>
-            {t(config.type === ConfigType.DISPLAY ? 'display' : 'set')} {t(config.title)}
+            {t(config.type === ConfigType.DISPLAY ? 'display' : 'set')}{' '}
+            {t(config.title)}
           </React.Fragment>
         }
       />
@@ -67,7 +76,10 @@ const ConfigDetail = translate('microscope')(
           />
         ) : (
           <div>
-            <TextField value={`${value}`} onChange={controlInputScope(config.key)} />
+            <TextField
+              value={`${value}`}
+              onChange={controlInputScope(config.key)}
+            />
             {saving ? <Loading /> : <Icon name="ok" />}
           </div>
         )}
@@ -96,7 +108,11 @@ const ConfigItem = translate('microscope')(
   saving: any
   t: any
   }) => (
-    <ExpansionPanel defaultExpanded classes={{ root: styles.panel, }} elevation={0}>
+    <ExpansionPanel
+      defaultExpanded
+      classes={{ root: styles.panel, }}
+      elevation={0}
+    >
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="caption" classes={{ caption: styles.panelTitle, }}>
           {t(title)} {t('config')}
@@ -196,7 +212,9 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
             <ConfigItem
               title={panel}
               key={panel}
-              configs={ConfigPage.configs.filter(config => config.panel === panel)}
+              configs={ConfigPage.configs.filter(
+                config => config.panel === panel
+              )}
               values={this.state.configs}
               handleSwitch={this.handleSwitch}
               handleInput={this.handleInput}

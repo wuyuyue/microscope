@@ -68,11 +68,22 @@ const InfoCell = ({ name, children, ...props }) => (
 const InfoList = ({ headerInfo, header, }) =>
   headerInfo.map(item => (
     <InfoCell key={item.key} name={item.label}>
-      <span className={`${header[item.key]}`.startsWith('0x') ? texts.hash : ''}>{header[item.key]}</span>
+      <span
+        className={`${header[item.key]}`.startsWith('0x') ? texts.hash : ''}
+      >
+        {header[item.key]}
+      </span>
     </InfoCell>
   ))
 
-const InfoContent = ({ hash, header, transactions, toggleTransaction, quotaPrice, fee, }) => {
+const InfoContent = ({
+  hash,
+  header,
+  transactions,
+  toggleTransaction,
+  quotaPrice,
+  fee,
+}) => {
   const headerInfo = [
     // { key: 'quotaUsed', label: 'Quota Used', },
     { key: 'receiptsRoot', label: 'Receipts Root', },
@@ -95,7 +106,11 @@ const InfoContent = ({ hash, header, transactions, toggleTransaction, quotaPrice
           onClick={transactions.length ? toggleTransaction(true) : undefined}
           style={transactions.length ? { cursor: 'pointer', } : undefined}
         >
-          <span style={transactions.length ? { color: '#2647fdcc', } : undefined}>{transactions.length}</span>
+          <span
+            style={transactions.length ? { color: '#2647fdcc', } : undefined}
+          >
+            {transactions.length}
+          </span>
         </InfoCell>
 
         <InfoCell name="Proposer">
@@ -110,7 +125,11 @@ const InfoContent = ({ hash, header, transactions, toggleTransaction, quotaPrice
 
         <InfoCell name="Parent Hash">
           <span>
-            <Link to={`/block/${header.prevHash}`} href={`/block/${header.prevHash}`} className={texts.addr}>
+            <Link
+              to={`/block/${header.prevHash}`}
+              href={`/block/${header.prevHash}`}
+              className={texts.addr}
+            >
               {header.prevHash}
             </Link>
           </span>
@@ -122,7 +141,14 @@ const InfoContent = ({ hash, header, transactions, toggleTransaction, quotaPrice
   )
 }
 
-const BlockInfo = ({ hash, header, transactions, toggleTransaction, quotaPrice, fee, }) => (
+const BlockInfo = ({
+  hash,
+  header,
+  transactions,
+  toggleTransaction,
+  quotaPrice,
+  fee,
+}) => (
   <div className={layouts.main}>
     <InfoHead header={header} />
     <InfoContent
@@ -150,8 +176,14 @@ class Block extends React.Component<IBlockProps, IBlockState> {
 
   public componentWillReceiveProps (nextProps: IBlockProps) {
     const { blockHash, height, } = nextProps.match.params
-    const { blockHash: oldBlockHash, height: oldHeight, } = this.props.match.params
-    if ((blockHash && blockHash !== oldBlockHash) || (height && height !== oldHeight)) {
+    const {
+      blockHash: oldBlockHash,
+      height: oldHeight,
+    } = this.props.match.params
+    if (
+      (blockHash && blockHash !== oldBlockHash) ||
+      (height && height !== oldHeight)
+    ) {
       this.onMount(nextProps.match.params)
     }
   }
@@ -176,24 +208,34 @@ class Block extends React.Component<IBlockProps, IBlockState> {
     if (height) {
       // NOTICE: async
       this.setState(state => ({ loading: state.loading + 1, }))
-      this.props.CITAObservables.blockByNumber(height).subscribe((block: // RpcResult.BlockByNumber
-      any) => {
-        this.handleReturnedBlock(block)
-      }, this.handleError)
+      this.props.CITAObservables.blockByNumber(height).subscribe(
+        (
+          block: // RpcResult.BlockByNumber
+          any
+        ) => {
+          this.handleReturnedBlock(block)
+        },
+        this.handleError
+      )
     }
   }
   private handleQuotaPriceAndFee = (blockNumber: string, quotaUsed: string) => {
-    this.props.CITAObservables.getQuotaPrice(blockNumber).subscribe((price: string) => {
-      const _price = price === '0x' ? 0 : +price
-      this.setState(state => ({
-        ...state,
-        quotaPrice: `${_price}`,
-        fee: valueFormatter(+quotaUsed * +_price, this.props.config.symbol),
-      }))
-    }, this.handleError)
+    this.props.CITAObservables.getQuotaPrice(blockNumber).subscribe(
+      (price: string) => {
+        const _price = price === '0x' ? 0 : +price
+        this.setState(state => ({
+          ...state,
+          quotaPrice: `${_price}`,
+          fee: valueFormatter(+quotaUsed * +_price, this.props.config.symbol),
+        }))
+      },
+      this.handleError
+    )
   }
 
-  private handleReturnedBlock = (block: Chain.Block<Chain.TransactionInBlock>) => {
+  private handleReturnedBlock = (
+    block: Chain.Block<Chain.TransactionInBlock>
+  ) => {
     if (!block) {
       return this.handleError({
         error: {
@@ -218,7 +260,9 @@ class Block extends React.Component<IBlockProps, IBlockState> {
     // get quota price
     this.handleQuotaPriceAndFee(block.header.number, block.header.quotaUsed)
     /* eslint-enable */
-    return this.setState(state => Object.assign({}, state, { ...block, loading: state.loading - 1, }))
+    return this.setState(state =>
+      Object.assign({}, state, { ...block, loading: state.loading - 1, })
+    )
   }
 
   private toggleTransaction = (on: boolean = false) => e => {
@@ -254,8 +298,15 @@ class Block extends React.Component<IBlockProps, IBlockState> {
           fee={fee}
           quotaPrice={quotaPrice}
         />
-        <Dialog on={transactionsOn} onClose={this.toggleTransaction()} dialogTitle="Transactions List">
-          <TransactionList transactions={transactions} symbol={this.props.config.symbol} />
+        <Dialog
+          on={transactionsOn}
+          onClose={this.toggleTransaction()}
+          dialogTitle="Transactions List"
+        >
+          <TransactionList
+            transactions={transactions}
+            symbol={this.props.config.symbol}
+          />
         </Dialog>
         <ErrorNotification error={error} dismissError={this.dismissError} />
       </React.Fragment>

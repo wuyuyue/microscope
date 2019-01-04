@@ -93,8 +93,9 @@ export const ChainSwitchPanel = ({
         </div>
       ) : (
         <div className={styles.alert}>
-          If you connect to an AppChain node instead of a <a href="https://github.com/cryptape/re-birth">ReBirth</a>{' '}
-          server, Microscope will NOT be fully functional.
+          If you connect to an AppChain node instead of a{' '}
+          <a href="https://github.com/cryptape/re-birth">ReBirth</a> server,
+          Microscope will NOT be fully functional.
         </div>
       )}
     </div>

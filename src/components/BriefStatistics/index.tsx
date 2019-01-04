@@ -15,7 +15,15 @@ interface BriefStatistics {
 }
 /* eslint-enable no-use-before-define */
 
-const BriefStatistics: React.SFC<BriefStatistics> = ({ peerCount, number, timestamp, proposal, tps, tpb, ipb, }) => (
+const BriefStatistics: React.SFC<BriefStatistics> = ({
+  peerCount,
+  number,
+  timestamp,
+  proposal,
+  tps,
+  tpb,
+  ipb,
+}) => (
   <div className={styles.briefStatistics}>
     <div>
       peerCount: <span>{peerCount}</span>

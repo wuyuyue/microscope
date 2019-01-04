@@ -43,45 +43,59 @@ const NotFound = () => (
   </div>
 )
 
-const BlockDisplay = translate('microscope')(({ block, t, }: { block: IBlock; t: (key: string) => string }) => (
-  <div className={styles.display}>
-    <div className={styles.title}>Block</div>
-    <table className={styles.items}>
-      <tbody>
-        <tr>
-          <td>{t('hash')}</td>
-          <td>{block.hash}</td>
-        </tr>
-        <tr>
-          <td>{t('height')}</td>
-          <td>{+block.header.number}</td>
-        </tr>
-        <tr>
-          <td>{t('prev hash')}</td>
-          <td>{block.header.prevHash}</td>
-        </tr>
-        <tr>
-          <td>{t('validator')}</td>
-          <td>{block.header.proposer}</td>
-        </tr>
-        <tr>
-          <td>{t('time')}</td>
-          <td>{new Date(block.header.timestamp).toLocaleDateString()}</td>
-        </tr>
-        <tr>
-          <td>{t('quota used')}</td>
-          <td>{block.header.quotaUsed}</td>
-        </tr>
-      </tbody>
-    </table>
-    <Link to={`/block/${block.hash}`} href={`/block/${block.hash}`} className={styles.more}>
-      {t('detail')}
-    </Link>
-  </div>
-))
+const BlockDisplay = translate('microscope')(
+  ({ block, t, }: { block: IBlock; t: (key: string) => string }) => (
+    <div className={styles.display}>
+      <div className={styles.title}>Block</div>
+      <table className={styles.items}>
+        <tbody>
+          <tr>
+            <td>{t('hash')}</td>
+            <td>{block.hash}</td>
+          </tr>
+          <tr>
+            <td>{t('height')}</td>
+            <td>{+block.header.number}</td>
+          </tr>
+          <tr>
+            <td>{t('prev hash')}</td>
+            <td>{block.header.prevHash}</td>
+          </tr>
+          <tr>
+            <td>{t('validator')}</td>
+            <td>{block.header.proposer}</td>
+          </tr>
+          <tr>
+            <td>{t('time')}</td>
+            <td>{new Date(block.header.timestamp).toLocaleDateString()}</td>
+          </tr>
+          <tr>
+            <td>{t('quota used')}</td>
+            <td>{block.header.quotaUsed}</td>
+          </tr>
+        </tbody>
+      </table>
+      <Link
+        to={`/block/${block.hash}`}
+        href={`/block/${block.hash}`}
+        className={styles.more}
+      >
+        {t('detail')}
+      </Link>
+    </div>
+  )
+)
 
 const TransactionDisplay = translate('microscope')(
-  ({ tx, symbol, t, }: { tx: UnsignedTransaction & { hash: string }; symbol: string; t: (key: string) => string }) => (
+  ({
+    tx,
+    symbol,
+    t,
+  }: {
+  tx: UnsignedTransaction & { hash: string }
+  symbol: string
+  t: (key: string) => string
+  }) => (
     <div className={styles.display}>
       <div className={styles.title}>Transaction</div>
       <table className={styles.items}>
@@ -100,7 +114,11 @@ const TransactionDisplay = translate('microscope')(
           </tr>
         </tbody>
       </table>
-      <Link to={`/transaction/${tx.hash}`} href={`/transaction/${tx.hash}`} className={styles.more}>
+      <Link
+        to={`/transaction/${tx.hash}`}
+        href={`/transaction/${tx.hash}`}
+        className={styles.more}
+      >
         {t('detail')}
       </Link>
     </div>
@@ -108,7 +126,17 @@ const TransactionDisplay = translate('microscope')(
 )
 
 const AccountDisplay = translate('microscope')(
-  ({ balance, txCount, addr, t, }: { balance: string; txCount: number; addr: string; t: (key: string) => string }) => (
+  ({
+    balance,
+    txCount,
+    addr,
+    t,
+  }: {
+  balance: string
+  txCount: number
+  addr: string
+  t: (key: string) => string
+  }) => (
     <div className={styles.display}>
       <div className={styles.title}>{t('account')}</div>
       <table className={styles.items}>
@@ -123,7 +151,11 @@ const AccountDisplay = translate('microscope')(
           </tr>
         </tbody>
       </table>
-      <Link to={`/account/${addr}`} href={`/account/${addr}`} className={styles.more}>
+      <Link
+        to={`/account/${addr}`}
+        href={`/account/${addr}`}
+        className={styles.more}
+      >
         {t('detail')}
       </Link>
     </div>
@@ -168,12 +200,18 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
     this.props.CITAObservables.getTransaction(value).subscribe(transaction => {
       const unsignedTransaction = unsigner(transaction.content)
       unsignedTransaction.hash = transaction.hash
-      this.setState(state => Object.assign({}, state, { transaction: unsignedTransaction, }))
+      this.setState(state =>
+        Object.assign({}, state, { transaction: unsignedTransaction, })
+      )
     })
   }
   private fetchAccount = value => {
     fetchTransactions({ account: value, })
-      .then(({ result, }) => this.setState(state => Object.assign({}, state, { txCount: result.count, })))
+      .then(({ result, }) =>
+        this.setState(state =>
+          Object.assign({}, state, { txCount: result.count, })
+        )
+      )
       .catch(() => {
         this.props.CITAObservables.getTransactionCount({
           addr: value,
@@ -186,7 +224,11 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
       addr: value,
       blockNumber: 'latest',
     }).subscribe(balance => {
-      this.setState(state => Object.assign({}, state, { balance: valueFormatter(balance, this.props.config.symbol), }))
+      this.setState(state =>
+        Object.assign({}, state, {
+          balance: valueFormatter(balance, this.props.config.symbol),
+        })
+      )
     })
   }
   private inputSearchError = () =>
@@ -209,10 +251,20 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
     typeTable[search.type](search.value)
   }
   render () {
-    const { keyword, block, transaction, balance, txCount, searchValueError, searched, } = this.state
+    const {
+      keyword,
+      block,
+      transaction,
+      balance,
+      txCount,
+      searchValueError,
+      searched,
+    } = this.state
     return (
       <div>
-        <div className={`${styles.fields} ${searchValueError ? styles.error : ''}`}>
+        <div
+          className={`${styles.fields} ${searchValueError ? styles.error : ''}`}
+        >
           <div className={styles.search}>
             <input
               type="text"
@@ -227,15 +279,27 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
           </div>
           {searchValueError ? (
             <div className={styles.errormessage}>
-              Please enter Address or Transaction Hash or Block Hash or Block Height
+              Please enter Address or Transaction Hash or Block Hash or Block
+              Height
             </div>
           ) : null}
         </div>
 
         {block.hash ? <BlockDisplay block={block} /> : null}
-        {transaction.hash ? <TransactionDisplay tx={transaction} symbol={this.props.config.symbol} /> : null}
-        {balance !== '' ? <AccountDisplay balance={balance} txCount={+txCount} addr={keyword} /> : null}
-        {searched && !searchValueError && !block.hash && !transaction.hash && !balance ? <NotFound /> : null}
+        {transaction.hash ? (
+          <TransactionDisplay
+            tx={transaction}
+            symbol={this.props.config.symbol}
+          />
+        ) : null}
+        {balance !== '' ? (
+          <AccountDisplay balance={balance} txCount={+txCount} addr={keyword} />
+        ) : null}
+        {searched &&
+        !searchValueError &&
+        !block.hash &&
+        !transaction.hash &&
+        !balance ? <NotFound /> : null}
       </div>
     )
   }

@@ -7,7 +7,10 @@ import { unsigner, } from '@appchain/signer'
 import { LinearProgress, } from '../../components'
 import { TransactionFromServer, } from '../../typings'
 import { withConfig, } from '../../contexts/config'
-import { withObservables, stopSubjectNewBlock, } from '../../contexts/observables'
+import {
+  withObservables,
+  stopSubjectNewBlock,
+} from '../../contexts/observables'
 import { fetch10Transactions, } from '../../utils/fetcher'
 import { StaticCardTitle, } from '../../components/StaticCard'
 import { IconBase, } from '../../components/Icons'
@@ -41,9 +44,19 @@ const BlockHeight = ({ icon, content, name, }) => (
   </div>
 )
 
-const Validators = ({ icon, content, name, validators, toggleValidators, showValidators, }) => (
+const Validators = ({
+  icon,
+  content,
+  name,
+  validators,
+  toggleValidators,
+  showValidators,
+}) => (
   <React.Fragment>
-    <div className={`${styles.mainInfoCell} ${styles.alertContiner}`} onClick={toggleValidators}>
+    <div
+      className={`${styles.mainInfoCell} ${styles.alertContiner}`}
+      onClick={toggleValidators}
+    >
       <div className={styles.mainInfoIcon}>
         <IconBase name={icon} />
       </div>
@@ -51,7 +64,9 @@ const Validators = ({ icon, content, name, validators, toggleValidators, showVal
         <div className={styles.mainInfoContent}>{content}</div>
         <div className={styles.mainInfoName}>{name}</div>
       </div>
-      {showValidators ? <div className="fullMask" onClick={toggleValidators} /> : null}
+      {showValidators ? (
+        <div className="fullMask" onClick={toggleValidators} />
+      ) : null}
       {showValidators ? (
         <div className={styles.alert} onClick={stopPropagation}>
           {validators.map(validator => (
@@ -63,7 +78,13 @@ const Validators = ({ icon, content, name, validators, toggleValidators, showVal
   </React.Fragment>
 )
 
-const BlockInterval = ({ icon, stopCheckOvertime, overtime, metadata, name, }) => {
+const BlockInterval = ({
+  icon,
+  stopCheckOvertime,
+  overtime,
+  metadata,
+  name,
+}) => {
   const { blockInterval: interval, } = metadata
   const intervalTime = Math.floor(metadata.blockInterval / 1000)
   let c = `${Math.floor(overtime / 100) / 10}s/${intervalTime}s`
@@ -107,11 +128,20 @@ const SubInfoCell = ({ icon, content, name, }) => (
 
 const SubInfoBlock = ({ proplist, }) => (
   <div className={styles.subInfoBlock}>
-    {proplist[4].content < 0 ? null : proplist.map(prop => <SubInfoCell {...prop} />)}
+    {proplist[4].content < 0
+      ? null
+      : proplist.map(prop => <SubInfoCell {...prop} />)}
   </div>
 )
 
-const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, showValidators, stopCheckOvertime, }) => {
+const MetadataTable = ({
+  metadata,
+  lastestBlock,
+  overtime,
+  toggleValidators,
+  showValidators,
+  stopCheckOvertime,
+}) => {
   const mainProplist = [
     {
       name: 'Block Height',
@@ -147,7 +177,10 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
     {
       name: 'Economical Model',
       icon: 'chainEconomicalModel',
-      content: metadata.economicalModel === 0 ? EconomicalModel.QUOTA : EconomicalModel.CHARGE,
+      content:
+        metadata.economicalModel === 0
+          ? EconomicalModel.QUOTA
+          : EconomicalModel.CHARGE,
     },
     {
       name: 'Token Symbol',
@@ -157,7 +190,9 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
     {
       name: 'Chain ID',
       icon: 'chainId',
-      content: metadata.version ? metadata[`chainIdV${metadata.version}`] : metadata.chainId,
+      content: metadata.version
+        ? metadata[`chainIdV${metadata.version}`]
+        : metadata.chainId,
     },
     {
       name: 'Version',
@@ -167,7 +202,10 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
   ]
   return (
     <div className={styles.metadataTable}>
-      <MainInfoBlock proplist={mainProplist} {...{ toggleValidators, showValidators, stopCheckOvertime, }} />
+      <MainInfoBlock
+        proplist={mainProplist}
+        {...{ toggleValidators, showValidators, stopCheckOvertime, }}
+      />
       <SubInfoBlock proplist={subProplist} />
     </div>
   )
@@ -246,28 +284,34 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
     // NOTICE: async
     this.setState(state => ({ loading: state.loading + 1, })) // for transaction history
     fetch10Transactions()
-      .then(({ result: { transactions, }, }: { result: { transactions: TransactionFromServer[] } }) => {
-        const txlist = transactions.map((tx: any) => {
-          const content = unsigner(tx.content)
-          const { data, value, } = content.transaction
-          const error = tx.errorMessage !== null
-          let type = TX_TYPE.CONTRACT_CALL
-          if (tx.to === '0x') {
-            type = TX_TYPE.CONTRACT_CREATION
-          } else if (data === '0x' && value !== 0) {
-            type = TX_TYPE.EXCHANGE
-          }
-          return {
-            ...tx,
-            type,
-            error,
-          }
-        })
-        this.setState(state => ({
-          loading: state.loading - 1,
-          transactions: txlist,
-        }))
-      })
+      .then(
+        ({
+          result: { transactions, },
+        }: {
+        result: { transactions: TransactionFromServer[] }
+        }) => {
+          const txlist = transactions.map((tx: any) => {
+            const content = unsigner(tx.content)
+            const { data, value, } = content.transaction
+            const error = tx.errorMessage !== null
+            let type = TX_TYPE.CONTRACT_CALL
+            if (tx.to === '0x') {
+              type = TX_TYPE.CONTRACT_CREATION
+            } else if (data === '0x' && value !== 0) {
+              type = TX_TYPE.EXCHANGE
+            }
+            return {
+              ...tx,
+              type,
+              error,
+            }
+          })
+          this.setState(state => ({
+            loading: state.loading - 1,
+            transactions: txlist,
+          }))
+        }
+      )
       .catch(this.handleError)
   }
 
@@ -277,7 +321,9 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
       'homepage',
       block => {
         this.setState(state => {
-          const blocks = [...state.blocks, block, ].sort((b1, b2) => b2.header.number - b1.header.number).slice(0, 10)
+          const blocks = [...state.blocks, block, ]
+            .sort((b1, b2) => b2.header.number - b1.header.number)
+            .slice(0, 10)
           if (block.body.transactions.length > 0) {
             this.transactionHistory()
           }
@@ -294,14 +340,18 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
     // fetch metadata
     this.props.CITAObservables.metaData({
       blockNumber: 'latest',
-    }).retry(2).subscribe((metadata: Chain.MetaData) => {
-      this.setState({
-        metadata: {
-          ...metadata,
-          genesisTimestamp: new Date(metadata.genesisTimestamp).toLocaleString(),
-        },
-      })
-    }, this.handleError)
+    })
+      .retry(2)
+      .subscribe((metadata: Chain.MetaData) => {
+        this.setState({
+          metadata: {
+            ...metadata,
+            genesisTimestamp: new Date(
+              metadata.genesisTimestamp
+            ).toLocaleString(),
+          },
+        })
+      }, this.handleError)
   }
 
   private intervalCheckOvertime = -1 as any
@@ -363,11 +413,17 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
             />
             <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
               <HomeBlockList blocks={blocks} />
-              <HomeTransactionList transactions={transactions} symbol={this.props.config.symbol} />
+              <HomeTransactionList
+                transactions={transactions}
+                symbol={this.props.config.symbol}
+              />
             </Grid>
           </div>
         </div>
-        <ErrorNotification error={this.state.error} dismissError={this.dismissError} />
+        <ErrorNotification
+          error={this.state.error}
+          dismissError={this.dismissError}
+        />
       </React.Fragment>
     )
   }

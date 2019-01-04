@@ -2,18 +2,30 @@
  * @Author: Keith-CY
  * @Date: 2018-07-22 19:59:22
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-11-06 16:01:15
+ * @Last Modified time: 2019-01-04 11:22:15
  */
 
 import { Chain, } from '@appchain/plugin'
-import { IBlock, IBlockHeader, Transaction, Metadata, ABI, UnsignedTransaction, TransactionFromServer, } from './typings'
+import {
+  IBlock,
+  IBlockHeader,
+  Transaction,
+  Metadata,
+  ABI,
+  UnsignedTransaction,
+  TransactionFromServer,
+} from './typings'
 import widerThan from './utils/widerThan'
 import { Contract, AccountType, } from './typings/account'
 import { LocalAccount, } from './components/LocalAccounts'
 import { ServerList, } from './components/MetadataPanel'
 import { SelectorType, } from './components/TableWithSelector'
 import LOCAL_STORAGE, { PanelConfigs, } from './config/localstorage'
-import { getServerList, getPrivkeyList, getPanelConfigs, } from './utils/accessLocalstorage'
+import {
+  getServerList,
+  getPrivkeyList,
+  getPanelConfigs,
+} from './utils/accessLocalstorage'
 import check, { errorMessages, } from './utils/check'
 
 const isDesktop = widerThan(800)
@@ -60,7 +72,7 @@ export const initUnsignedTransaction: UnsignedTransaction = {
     publicKey: '',
   },
   transaction: {
-    data: [] as number[],
+    data: '',
     nonce: '',
     quota: 0,
     to: '',

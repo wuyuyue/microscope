@@ -7,7 +7,13 @@ import valueFormatter from '../../utils/valueFormatter'
 const texts = require('../../styles/text.scss')
 const styles = require('./styles.scss')
 
-export default ({ transactions, symbol, }: { transactions: Transaction[]; symbol: string }) => (
+export default ({
+  transactions,
+  symbol,
+}: {
+transactions: Transaction[]
+symbol: string
+}) => (
   <List>
     {transactions.map(tx => (
       <ListItem key={tx.hash}>
@@ -15,12 +21,17 @@ export default ({ transactions, symbol, }: { transactions: Transaction[]; symbol
           classes={{ primary: styles.primary, }}
           primary={
             <React.Fragment>
-              <Link to={`/transaction/${tx.hash}`} href={`/transaction/${tx.hash}`}>
+              <Link
+                to={`/transaction/${tx.hash}`}
+                href={`/transaction/${tx.hash}`}
+              >
                 <h1 className={styles.txHash}>
                   TXID: <span className={texts.addr}>{tx.hash}</span>
                 </h1>
               </Link>
-              <span>{tx.timestamp && new Date(+tx.timestamp).toLocaleString()}</span>
+              <span>
+                {tx.timestamp && new Date(+tx.timestamp).toLocaleString()}
+              </span>
             </React.Fragment>
           }
           secondary={
@@ -38,12 +49,19 @@ export default ({ transactions, symbol, }: { transactions: Transaction[]; symbol
                 {['Contract Creation', ].includes(tx.basicInfo.to) ? (
                   tx.basicInfo.to
                 ) : (
-                  <Link to={`/account/${tx.basicInfo.to}`} href={`/account/${tx.basicInfo.to}`} className={texts.addr}>
+                  <Link
+                    to={`/account/${tx.basicInfo.to}`}
+                    href={`/account/${tx.basicInfo.to}`}
+                    className={texts.addr}
+                  >
                     {tx.basicInfo.to}
                   </Link>
                 )}
                 Value
-                {': '} <span className={texts.highlight}>{valueFormatter(tx.basicInfo.value || '0', symbol)}</span>
+                {': '}{' '}
+                <span className={texts.highlight}>
+                  {valueFormatter(tx.basicInfo.value || '0', symbol)}
+                </span>
               </div>
             ) : (
               <div>{tx.content}</div>

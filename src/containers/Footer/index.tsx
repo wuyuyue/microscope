@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { createPortal } from 'react-dom'
-import { I18n, translate } from 'react-i18next'
+import { createPortal, } from 'react-dom'
+import { I18n, translate, } from 'react-i18next'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./styles.scss')
@@ -21,24 +21,27 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
   state = {
     overview: {
       title: 'overview',
-      content: 'Across the Microscope, we can reach every cell in Nervos Network'
+      content:
+        'Across the Microscope, we can reach every cell in Nervos Network',
     },
     products: {
       title: 'other product',
       items: [
         {
-          logo: 'https://uploads-ssl.webflow.com/5b10cb31f2733b937fe55ab5/5b185b65683265ce7a42c13c_nervos%20logo.png',
+          logo:
+            'https://uploads-ssl.webflow.com/5b10cb31f2733b937fe55ab5/5b185b65683265ce7a42c13c_nervos%20logo.png',
           title: 'Nervos AppChain',
           url: 'http://nervos.org/',
-          overview: 'Nervos AppChain'
+          overview: 'Nervos AppChain',
         },
         {
-          logo: 'https://raw.githubusercontent.com/cryptape/assets/master/CITA-logo.png',
+          logo:
+            'https://raw.githubusercontent.com/cryptape/assets/master/CITA-logo.png',
           title: 'CITA',
           url: 'https://github.com/cryptape/cita',
-          overview: 'CITA'
-        }
-      ] as Product[]
+          overview: 'CITA',
+        },
+      ] as Product[],
     },
     contacts: {
       title: 'contact us',
@@ -46,34 +49,35 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
         {
           icon: 'github',
           title: 'Github',
-          url: 'https://github.com/cryptape/microscope'
+          url: 'https://github.com/cryptape/microscope',
         },
         {
           icon: 'email',
           title: 'appchain.contact@cryptape.com',
-          url: 'mailto:appchain.contact@cryptape.com'
+          url: 'mailto:appchain.contact@cryptape.com',
         },
         {
           icon: 'group',
           title: 'Nervos-AppChain 开发者群组',
-          url: 'https://t.me/NervosNetworkcn'
+          url: 'https://t.me/NervosNetworkcn',
         },
         {
           icon: 'wechat',
           title: '微信公众号',
-          url: 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUzNzg4NTAzOA==&scene=124&#wechat_redirect'
+          url:
+            'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUzNzg4NTAzOA==&scene=124&#wechat_redirect',
         },
         {
           icon: 'forum',
           title: 'Nervos Forums',
-          url: 'https://talk.nervos.org/'
-        }
-      ] as Contact[]
-    }
+          url: 'https://talk.nervos.org/',
+        },
+      ] as Contact[],
+    },
   }
   render () {
-    const { overview, products, contacts } = this.state
-    const { t } = this.props
+    const { overview, products, contacts, } = this.state
+    const { t, } = this.props
     return (
       <div className={`${styles.footer} ${layout.center}`}>
         <div className={styles.overview}>
@@ -83,7 +87,7 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
         <div className={styles.products}>
           <h1>{t(products.title)}</h1>
           <div>
-            {products.items.map((item) => (
+            {products.items.map(item => (
               <div key={item.title}>
                 <a href={item.url} rel="noreferrer noopener" target="_blank">
                   <img src={item.logo} alt={item.title} />
@@ -96,8 +100,13 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
         <div className={styles.contacts}>
           <h1>{t(contacts.title)}</h1>
           <div>
-            {contacts.items.map((item) => (
-              <a key={item.title} href={item.url} rel="noreferrer noopener" target="_blank">
+            {contacts.items.map(item => (
+              <a
+                key={item.title}
+                href={item.url}
+                rel="noreferrer noopener"
+                target="_blank"
+              >
                 <svg className="icon" aria-hidden="true">
                   <use xlinkHref={`#icon-${item.icon}`} />
                 </svg>
@@ -113,4 +122,7 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
 
 const TransFooter = translate('microscope')(Footer)
 
-export default () => createPortal(<TransFooter />, document.getElementById('footer') as HTMLElement)
+export default () =>
+  createPortal(<TransFooter />, document.getElementById(
+    'footer'
+  ) as HTMLElement)

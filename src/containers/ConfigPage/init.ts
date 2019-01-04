@@ -192,4 +192,11 @@ interface ConfigPageState {
   saving?: boolean
 }
 
-export { ConfigPageProps, ConfigPageState, ConfigDetailType, ConfigType, ConfigPanel, ConfigPageDefault, }
+export {
+  ConfigPageProps,
+  ConfigPageState,
+  ConfigDetailType,
+  ConfigType,
+  ConfigPanel,
+  ConfigPageDefault,
+}

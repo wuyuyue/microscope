@@ -86,7 +86,6 @@
 }
 
 @media (max-width: 800px) {
-
   .headerNavs,
   .headerNavIcon {
     display: none;
@@ -129,7 +128,7 @@
     }
   }
 
-  &+ul>li {
+  & + ul > li {
     padding-left: 0px !important;
     padding-right: 0px !important;
   }

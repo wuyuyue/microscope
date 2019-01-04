@@ -199,7 +199,7 @@
 .inputs {
   flex: 1;
 
-  &>div {
+  & > div {
     display: flex;
     flex-wrap: nowrap;
   }
@@ -235,7 +235,6 @@
 }
 
 .inputouter.error {
-
   // input {
   //   border: $form-error;
   // }

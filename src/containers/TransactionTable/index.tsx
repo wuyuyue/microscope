@@ -1,6 +1,9 @@
 import * as React from 'react'
 import { LinearProgress, } from '@material-ui/core'
-import TableWithSelector, { TableWithSelectorProps, SelectorType, } from '../../components/TableWithSelector'
+import TableWithSelector, {
+  TableWithSelectorProps,
+  SelectorType,
+} from '../../components/TableWithSelector'
 import ErrorNotification from '../../components/ErrorNotification'
 import Banner from '../../components/Banner'
 import { fetchTransactions, } from '../../utils/fetcher'
@@ -76,13 +79,20 @@ interface setTransactionsCount {
   (count: string | number): undefined
 }
 
+interface setTransactionsCount {
+  (count: string | number): undefined
+}
+
 interface TransactionTableProps extends IContainerProps {
   inset?: boolean
   showInOut?: boolean
   setTransactionsCount?: setTransactionsCount
 }
 type TransactionTableState = typeof initialState
-class TransactionTable extends React.Component<TransactionTableProps, TransactionTableState> {
+class TransactionTable extends React.Component<
+  TransactionTableProps,
+  TransactionTableState
+  > {
   state = initialState
   componentWillMount () {
     this.setParamsFromUrl()
@@ -101,7 +111,9 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     this.handleError(err)
   }
   onSearch = params => {
-    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 0, }))
+    this.setState(state =>
+      Object.assign({}, state, { selectorsValue: params, pageNo: 0, })
+    )
     this.fetchTransactions(params)
   }
   private setPageSize = () => {
@@ -114,7 +126,9 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
       const { headers, } = state
       const visibleHeaders = headers.filter(
         header =>
-          this.props.config.panelConfigs[`transaction${header.key[0].toUpperCase()}${header.key.slice(1)}`] !== false
+          this.props.config.panelConfigs[
+            `transaction${header.key[0].toUpperCase()}${header.key.slice(1)}`
+          ] !== false
       )
       return { headers: visibleHeaders, }
     })
@@ -148,7 +162,9 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     })
   }
 
-  private fetchTransactions = (paramsInput: { [index: string]: string | number } = {}) => {
+  private fetchTransactions = (
+    paramsInput: { [index: string]: string | number } = {}
+  ) => {
     // NOTICE: async
     // const params = {}
     const params = paramsFilter(paramsInput)
@@ -159,24 +175,32 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
       }
     })
     return fetchTransactions(params)
-      .then(({ result, }: { result: { transactions: TransactionFromServer[]; count: number } }) => {
-        if (this.props.setTransactionsCount) this.props.setTransactionsCount(result.count)
-        this.setState(state => ({
-          ...state,
-          loading: state.loading - 1,
-          count: result.count,
-          items: result.transactions.map(tx => ({
-            key: tx.hash,
-            blockNumber: `${+tx.blockNumber}`,
-            hash: tx.hash,
-            from: tx.from,
-            to: toText(tx.to),
-            age: formatedAgeString(tx.timestamp),
-            value: valueFormatter(+tx.value, this.props.config.symbol),
-            quotaUsed: `${+tx.quotaUsed}`,
-          })),
-        }))
-      })
+      .then(
+        ({
+          result,
+        }: {
+        result: { transactions: TransactionFromServer[]; count: number }
+        }) => {
+          if (this.props.setTransactionsCount) {
+            this.props.setTransactionsCount(result.count)
+          }
+          this.setState(state => ({
+            ...state,
+            loading: state.loading - 1,
+            count: result.count,
+            items: result.transactions.map(tx => ({
+              key: tx.hash,
+              blockNumber: `${+tx.blockNumber}`,
+              hash: tx.hash,
+              from: tx.from,
+              to: toText(tx.to),
+              age: formatedAgeString(tx.timestamp),
+              value: valueFormatter(+tx.value, this.props.config.symbol),
+              quotaUsed: `${+tx.quotaUsed}`,
+            })),
+          }))
+        }
+      )
       .catch(err => {
         this.handleError(err)
       })
@@ -199,10 +223,24 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
   }
 
   public render () {
-    const { headers, items, selectors, selectorsValue, count, pageSize, pageNo, loading, error, } = this.state
+    const {
+      headers,
+      items,
+      selectors,
+      selectorsValue,
+      count,
+      pageSize,
+      pageNo,
+      loading,
+      error,
+    } = this.state
     const { inset = false, showInOut = false, } = this.props
     const activeParams = paramsFilter(selectorsValue) as any
-    const searchText = rangeSelectorText('Transaction', activeParams.from, activeParams.to)
+    const searchText = rangeSelectorText(
+      'Transaction',
+      activeParams.from,
+      activeParams.to
+    )
     return (
       <React.Fragment>
         {loading ? (
@@ -212,7 +250,11 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
             }}
           />
         ) : null}
-        {!inset ? <Banner>{searchText ? `Current Search: ${searchText}` : 'Transactions'}</Banner> : null}
+        {!inset ? (
+          <Banner>
+            {searchText ? `Current Search: ${searchText}` : 'Transactions'}
+          </Banner>
+        ) : null}
         <TableWithSelector
           headers={headers}
           items={items}

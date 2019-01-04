@@ -8,8 +8,6 @@ const copyToClipboard = (text: string = '') => {
   return success
 }
 
-export {
-  copyToClipboard
-}
+export { copyToClipboard, }
 
 export default copyToClipboard

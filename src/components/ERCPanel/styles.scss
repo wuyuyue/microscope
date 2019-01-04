@@ -27,7 +27,7 @@
     border: none;
     border-radius: 4px;
     background: $gradient1;
-    color: #FFF;
+    color: #fff;
     font-size: 0.875rem;
   }
 }
@@ -60,18 +60,18 @@
 
 .inputs {
   &:before {
-    content: 'Inputs: '
+    content: 'Inputs: ';
   }
 }
 
 .outputs {
   &:before {
-    content: 'Outputs: '
+    content: 'Outputs: ';
   }
 }
 
 .noEls {
   display: inline-block;
   margin: 8px;
-  color: #CCC;
+  color: #ccc;
 }

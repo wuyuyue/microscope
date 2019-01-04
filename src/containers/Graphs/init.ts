@@ -5,7 +5,7 @@ import {
   IContainerProps,
   BlockNumber,
   Timestamp,
-  Hash
+  Hash,
 } from '../../typings/'
 
 const PRICE = 1
@@ -18,13 +18,13 @@ const initState = {
   maxCount: 10,
   error: {
     code: '',
-    message: ''
-  }
+    message: '',
+  },
 }
 
 const GraphsDefault = {
   initState,
-  PRICE
+  PRICE,
 }
 
 interface GraphsProps extends IContainerProps {}
@@ -33,4 +33,12 @@ type BlockGraphData = [BlockNumber, Timestamp, number, string]
 type TxGraphData = [Hash, number]
 type ProposalData = [string, number]
 
-export { GraphsDefault, IBlock, GraphsProps, GraphState, BlockGraphData, TxGraphData, ProposalData }
+export {
+  GraphsDefault,
+  IBlock,
+  GraphsProps,
+  GraphState,
+  BlockGraphData,
+  TxGraphData,
+  ProposalData,
+}

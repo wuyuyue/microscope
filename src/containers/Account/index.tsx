@@ -10,7 +10,14 @@ import * as web3Utils from 'web3-utils'
 import * as Web3Contract from 'web3-eth-contract'
 import * as web3Abi from 'web3-eth-abi'
 
-import { Card, CardContent, Tabs, Tab, Divider, LinearProgress, } from '@material-ui/core'
+import {
+  Card,
+  CardContent,
+  Tabs,
+  Tab,
+  Divider,
+  LinearProgress,
+} from '@material-ui/core'
 
 import ERCPanel from '../../components/ERCPanel'
 import TransactionTable from '../../containers/TransactionTable'
@@ -31,7 +38,8 @@ const layouts = require('../../styles/layout.scss')
 const text = require('../../styles/text.scss')
 const styles = require('./styles.scss')
 
-const accountFormatter = (addr: string) => (/^0x/i.test(addr) ? addr : `0x${addr}`)
+const accountFormatter = (addr: string) =>
+  /^0x/i.test(addr) ? addr : `0x${addr}`
 interface AccountProps extends IContainerProps {}
 type AccountState = typeof initAccountState
 class Account extends React.Component<AccountProps, AccountState> {
@@ -89,7 +97,11 @@ class Account extends React.Component<AccountProps, AccountState> {
     this.props.CITAObservables.getBalance({ addr, blockNumber: 'latest', })
       // .finally(() => this.setState(state => ({ loading: state.loading - 1 })))
       .subscribe(
-        (balance: string) => this.setState(state => ({ loading: state.loading - 1, balance: `${+balance}`, })),
+        (balance: string) =>
+          this.setState(state => ({
+            loading: state.loading - 1,
+            balance: `${+balance}`,
+          })),
         this.handleError
       )
 
@@ -102,7 +114,9 @@ class Account extends React.Component<AccountProps, AccountState> {
       } else {
         try {
           const abiStr = web3Utils.hexToUtf8(encoded as string)
-          const abi = JSON.parse(abiStr).filter((a: any) => a.type === 'function')
+          const abi = JSON.parse(abiStr).filter(
+            (a: any) => a.type === 'function'
+          )
           const contract = new Web3Contract(abi, this.state.addr)
           this.setState(state => ({
             abi,
@@ -124,7 +138,9 @@ class Account extends React.Component<AccountProps, AccountState> {
       this.fetchInfo(addr)
     }
   }
-  private handleAbiValueChange = (index: number) => (inputIndex: number) => e => {
+  private handleAbiValueChange = (index: number) => (
+    inputIndex: number
+  ) => e => {
     const { value, } = e.target
     this.setState(state => {
       const abi = [...state.abi, ]
@@ -145,7 +161,10 @@ class Account extends React.Component<AccountProps, AccountState> {
     // send transform data
 
     try {
-      const data = web3Abi.encodeFunctionCall(jsonInterface, inputs.map(input => input.value))
+      const data = web3Abi.encodeFunctionCall(
+        jsonInterface,
+        inputs.map(input => input.value)
+      )
       this.setState(state => ({ loading: state.loading + 1, })) // for eth call
       /**
        * @method eth_call
@@ -159,7 +178,10 @@ class Account extends React.Component<AccountProps, AccountState> {
       }).subscribe(result => {
         try {
           const outputTypes = this.state.abi[index].outputs.map(o => o.type)
-          const outputs = web3Abi.decodeParameters(outputTypes, result) as { [index: string]: any; __length__: number }
+          const outputs = web3Abi.decodeParameters(outputTypes, result) as {
+            [index: string]: any
+            __length__: number
+          }
           this.setState(state => {
             const abi = JSON.parse(JSON.stringify(state.abi))
             for (let i = 0; i < outputs.__length__; i++) {
@@ -195,7 +217,14 @@ class Account extends React.Component<AccountProps, AccountState> {
         handleEthCall={this.handleEthCall}
       />
     )
-    const tx = <TransactionTable {...this.props} key={addr} setTransactionsCount={this.setTransactionsCount} inset />
+    const tx = (
+      <TransactionTable
+        {...this.props}
+        key={addr}
+        setTransactionsCount={this.setTransactionsCount}
+        inset
+      />
+    )
     const info = (
       <ContractInfoPanel
         code={code}
@@ -212,7 +241,16 @@ class Account extends React.Component<AccountProps, AccountState> {
     return table[panelOn]
   }
   render () {
-    const { loading, addr, balance, txCount, panelOn, abi, code, error, } = this.state
+    const {
+      loading,
+      addr,
+      balance,
+      txCount,
+      panelOn,
+      abi,
+      code,
+      error,
+    } = this.state
 
     return (
       <React.Fragment>
@@ -240,8 +278,12 @@ class Account extends React.Component<AccountProps, AccountState> {
             <CardContent>
               <Tabs value={panelOn} onChange={this.onTabClick}>
                 <Tab value="tx" label={`Transactions(${txCount || 0})`} />
-                {abi && abi.length ? <Tab value="abi" label="Contract Panel" /> : null}
-                {code === '0x' ? null : <Tab value="info" label="Contract Info" />}
+                {abi && abi.length ? (
+                  <Tab value="abi" label="Contract Panel" />
+                ) : null}
+                {code === '0x' ? null : (
+                  <Tab value="info" label="Contract Info" />
+                )}
               </Tabs>
               <Divider />
               {this.renderPanelByTab()}

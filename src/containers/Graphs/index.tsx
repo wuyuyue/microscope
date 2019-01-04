@@ -10,7 +10,15 @@ import { BarOption, PieOption, } from '../../config/graph'
 import { fetchTransactions, fetchStatistics, } from '../../utils/fetcher'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError, } from '../../utils/handleError'
-import { GraphsDefault, IBlock, GraphsProps, GraphState, BlockGraphData, TxGraphData, ProposalData, } from './init'
+import {
+  GraphsDefault,
+  IBlock,
+  GraphsProps,
+  GraphState,
+  BlockGraphData,
+  TxGraphData,
+  ProposalData,
+} from './init'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./graph.scss')
@@ -19,27 +27,36 @@ const getBlockSource = ({ blocks, }) => {
   if (blocks.length <= 1) return []
   const source: BlockGraphData[] = []
   // form the source , x = height, y = interval, tx count, quota used
-  blocks.sort((b1, b2) => b1.header.number - b2.header.number).reduce((prev, curr) => {
-    source.push([
-      `${+(curr as IBlock).header.number}`, // height
-      +(curr as IBlock).header.timestamp - +(prev as IBlock).header.timestamp, // interval
-      (curr as IBlock).body.transactions.length, // tx count
-      `${+(curr as IBlock).header.quotaUsed / GraphsDefault.PRICE}`,
-    ])
-    return curr
-  })
-  const graphSource = [['Blocks', 'Block Interval', 'Transactions', 'Quota Used', ], ...source, ]
+  blocks
+    .sort((b1, b2) => b1.header.number - b2.header.number)
+    .reduce((prev, curr) => {
+      source.push([
+        `${+(curr as IBlock).header.number}`, // height
+        +(curr as IBlock).header.timestamp - +(prev as IBlock).header.timestamp, // interval
+        (curr as IBlock).body.transactions.length, // tx count
+        `${+(curr as IBlock).header.quotaUsed / GraphsDefault.PRICE}`,
+      ])
+      return curr
+    })
+  const graphSource = [
+    ['Blocks', 'Block Interval', 'Transactions', 'Quota Used', ],
+    ...source,
+  ]
   return graphSource
 }
 
 const getTxSource = ({ txs = this.state.transactions, }) => {
-  const source: TxGraphData[] = txs.length ? txs.map(tx => [tx.hash, tx.quotaUsed, ]) : []
+  const source: TxGraphData[] = txs.length
+    ? txs.map(tx => [tx.hash, tx.quotaUsed, ])
+    : []
   const graphSource = [['Transactions', 'Quota Used', ], ...source, ]
   return graphSource
 }
 
 const getProposalSource = ({ proposals = this.state.proposals, }) => {
-  const source: ProposalData[] = proposals.length ? proposals.map(p => [`${p.validator.slice(0, 5)}...`, p.count, ]) : []
+  const source: ProposalData[] = proposals.length
+    ? proposals.map(p => [`${p.validator.slice(0, 5)}...`, p.count, ])
+    : []
   const graphSource = [['Validators', 'Count', ], ...source, ]
   return graphSource
 }
@@ -85,7 +102,13 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   private quotaUsedGraphDOM: HTMLDivElement | null
   private txQuotaUsedGraphDOM: HTMLDivElement | null
   private proposalsGraphDOM: HTMLDivElement | null
-  private graphList = ['blockGraph', 'txCountGraph', 'quotaUsedGraph', 'txQuotaUsedGraph', 'proposalsGraph', ]
+  private graphList = [
+    'blockGraph',
+    'txCountGraph',
+    'quotaUsedGraph',
+    'txQuotaUsedGraph',
+    'proposalsGraph',
+  ]
 
   private initGraphs = () => {
     // init chart dom
@@ -97,13 +120,16 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
       this.txCountGraph = this.initGraph(this.txCountGraphDOM as HTMLDivElement)
     }
     if (panelConfigs.graphQuotaUsedBlock) {
-      this.quotaUsedGraph = this.initGraph(this.quotaUsedGraphDOM as HTMLDivElement)
+      this.quotaUsedGraph = this.initGraph(this
+        .quotaUsedGraphDOM as HTMLDivElement)
     }
     if (panelConfigs.graphQuotaUsedTx) {
-      this.txQuotaUsedGraph = this.initGraph(this.txQuotaUsedGraphDOM as HTMLDivElement)
+      this.txQuotaUsedGraph = this.initGraph(this
+        .txQuotaUsedGraphDOM as HTMLDivElement)
     }
     if (panelConfigs.graphProposals) {
-      this.proposalsGraph = this.initGraph(this.proposalsGraphDOM as HTMLDivElement)
+      this.proposalsGraph = this.initGraph(this
+        .proposalsGraphDOM as HTMLDivElement)
     }
   }
 
@@ -168,7 +194,9 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         const txQuotaUsedOption = {
           ...BarOption,
           title: {
-            text: `Quota Used in the Latest ${this.state.maxCount} Transactions`,
+            text: `Quota Used in the Latest ${
+              this.state.maxCount
+            } Transactions`,
           },
           color: ['#ab62f1', ],
           xAxis: {
@@ -178,14 +206,19 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
             },
           },
           formatter: (param: { seriesName: string; value: any[] }) => {
-            const label = `<span>${param.seriesName}</span><br/><span>${param.value[0].slice(
+            const label = `<span>${
+              param.seriesName
+            }</span><br/><span>${param.value[0].slice(
               0,
               6
             )}...${param.value[0].slice(-4)} : ${param.value[1]}</span>`
             return label
           },
           dataset: {
-            source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1], ] : [item[0], item[1], ])),
+            source: source.map(
+              (item, idx) =>
+                idx > 0 ? [item[0], +item[1], ] : [item[0], item[1], ]
+            ),
           },
         }
         if (this.props.config.panelConfigs.graphQuotaUsedTx) {
@@ -279,12 +312,16 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   private renderGraphCell = graphName => (
     <Card>
       <CardContent>
-        <div ref={el => (this[`${graphName}DOM`] = el)} className={styles.graphContainer} />
+        <div
+          ref={el => (this[`${graphName}DOM`] = el)}
+          className={styles.graphContainer}
+        />
       </CardContent>
     </Card>
   )
 
-  private renderGraphList = () => this.graphList.map(graphName => this.renderGraphCell(graphName))
+  private renderGraphList = () =>
+    this.graphList.map(graphName => this.renderGraphCell(graphName))
 
   public render () {
     return (
@@ -293,7 +330,10 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         <div className={layout.center}>
           <div className={styles.graphs}>{this.renderGraphList()}</div>
         </div>
-        <ErrorNotification error={this.state.error} dismissError={this.dismissError} />
+        <ErrorNotification
+          error={this.state.error}
+          dismissError={this.dismissError}
+        />
       </React.Fragment>
     )
   }

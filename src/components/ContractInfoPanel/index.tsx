@@ -8,7 +8,11 @@ const Infoblock = ({ title, code, copied, copy, }) => (
   <div className={styles.infoblock}>
     <div className={styles.header}>
       <span className={styles.title}>{title}</span>
-      <button className={copied ? styles.copied : ''} onClick={copy} disabled={copied}>
+      <button
+        className={copied ? styles.copied : ''}
+        onClick={copy}
+        disabled={copied}
+      >
         {copied ? 'Copied' : 'Copy'}
       </button>
     </div>

@@ -7,10 +7,10 @@ import {
   List,
   ListItem,
   ListItemText,
-  TextField
+  TextField,
 } from '@material-ui/core'
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons'
-import { Link } from 'react-router-dom'
+import { ExpandMore as ExpandMoreIcon, } from '@material-ui/icons'
+import { Link, } from 'react-router-dom'
 import * as React from 'react'
 
 const styles = require('./debugAccounts.scss')
@@ -25,26 +25,26 @@ const DebugAccounts = ({
   accounts,
   privateKeysField,
   handleAccountsInput,
-  updateDebugAccounts
+  updateDebugAccounts,
 }: {
 accounts: DebugAccount[]
 privateKeysField: string
 handleAccountsInput: React.EventHandler<React.SyntheticEvent<HTMLElement>>
 updateDebugAccounts: React.EventHandler<React.SyntheticEvent<HTMLElement>>
 }) => (
-  <ExpansionPanel defaultExpanded style={{ marginBottom: '15px' }}>
+  <ExpansionPanel defaultExpanded style={{ marginBottom: '15px', }}>
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
       Debug Accounts(
       {accounts.length})
     </ExpansionPanelSummary>
     <ExpansionPanelDetails>
-      <List style={{ width: '100%' }}>
+      <List style={{ width: '100%', }}>
         <ListItem>
           <ListItemText primary="Address & Private Key" />
           <ListItemText
             primary="Balance"
             classes={{
-              primary: styles.accountSecondaryText
+              primary: styles.accountSecondaryText,
             }}
           />
         </ListItem>
@@ -52,7 +52,11 @@ updateDebugAccounts: React.EventHandler<React.SyntheticEvent<HTMLElement>>
           <ListItem key={account.privateKey}>
             <ListItemText
               primary={
-                <Link to={`/account/${account.address}`} href={`/account/${account.address}`} className={texts.addr}>
+                <Link
+                  to={`/account/${account.address}`}
+                  href={`/account/${account.address}`}
+                  className={texts.addr}
+                >
                   {account.address || 'null'}
                 </Link>
               }
@@ -61,14 +65,14 @@ updateDebugAccounts: React.EventHandler<React.SyntheticEvent<HTMLElement>>
             <ListItemText
               primary={account.balance}
               classes={{
-                primary: styles.accountSecondaryText
+                primary: styles.accountSecondaryText,
               }}
             />
           </ListItem>
         ))}
       </List>
     </ExpansionPanelDetails>
-    <ExpansionPanelActions style={{ flexDirection: 'column' }}>
+    <ExpansionPanelActions style={{ flexDirection: 'column', }}>
       <TextField
         multiline
         fullWidth
@@ -79,7 +83,7 @@ updateDebugAccounts: React.EventHandler<React.SyntheticEvent<HTMLElement>>
       <div
         style={{
           padding: '15px',
-          textAlign: 'right'
+          textAlign: 'right',
         }}
       >
         <Button variant="raised" onClick={updateDebugAccounts}>

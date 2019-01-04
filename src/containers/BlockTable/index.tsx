@@ -13,7 +13,9 @@ import { IContainerProps, } from '../../typings'
 import { BlockFromServer, } from '../../typings/block'
 import { withConfig, } from '../../contexts/config'
 
-import TableWithSelector, { TableWithSelectorProps, } from '../../components/TableWithSelector'
+import TableWithSelector, {
+  TableWithSelectorProps,
+} from '../../components/TableWithSelector'
 import ErrorNotification from '../../components/ErrorNotification'
 import Banner from '../../components/Banner'
 
@@ -62,7 +64,9 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
   }
 
   private onSearch = params => {
-    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 0, }))
+    this.setState(state =>
+      Object.assign({}, state, { selectorsValue: params, pageNo: 0, })
+    )
     this.fetchBlock(params)
   }
 
@@ -76,7 +80,10 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
     this.setState(state => {
       const { headers, } = state
       const visibleHeaders = headers.filter(
-        header => this.props.config.panelConfigs[`block${header.key[0].toUpperCase()}${header.key.slice(1)}`] !== false
+        header =>
+          this.props.config.panelConfigs[
+            `block${header.key[0].toUpperCase()}${header.key.slice(1)}`
+          ] !== false
       )
       return { headers: visibleHeaders, }
     })
@@ -126,20 +133,26 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
   private fetchBlock = (params: { [index: string]: string | number } = {}) => {
     this.setState(state => ({ loading: state.loading + 1, }))
     return fetchBlocks(paramsFilter(params))
-      .then(({ result, }: { result: { blocks: BlockFromServer[]; count: number } }) => {
-        this.setState(state => ({
-          loading: state.loading - 1,
-          count: result.count,
-          items: result.blocks.map(block => ({
-            key: block.hash,
-            height: `${+block.header.number}`,
-            hash: block.hash,
-            age: formatedAgeString(block.header.timestamp),
-            transactions: `${block.transactionsCount}`,
-            quotaUsed: `${+block.header.quotaUsed}`,
-          })),
-        }))
-      })
+      .then(
+        ({
+          result,
+        }: {
+        result: { blocks: BlockFromServer[]; count: number }
+        }) => {
+          this.setState(state => ({
+            loading: state.loading - 1,
+            count: result.count,
+            items: result.blocks.map(block => ({
+              key: block.hash,
+              height: `${+block.header.number}`,
+              hash: block.hash,
+              age: formatedAgeString(block.header.timestamp),
+              transactions: `${block.transactionsCount}`,
+              quotaUsed: `${+block.header.quotaUsed}`,
+            })),
+          }))
+        }
+      )
       .catch(err => {
         this.handleError(err)
       })
@@ -148,9 +161,23 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
   private dismissError = dismissError(this)
 
   public render () {
-    const { headers, items, selectors, selectorsValue, count, pageSize, pageNo, loading, error, } = this.state
+    const {
+      headers,
+      items,
+      selectors,
+      selectorsValue,
+      count,
+      pageSize,
+      pageNo,
+      loading,
+      error,
+    } = this.state
     const activeParams = paramsFilter(selectorsValue) as any
-    const blockSearchText = rangeSelectorText('Number', activeParams.numberFrom, activeParams.numberTo)
+    const blockSearchText = rangeSelectorText(
+      'Number',
+      activeParams.numberFrom,
+      activeParams.numberTo
+    )
     console.log(headers)
     console.log(items)
     const transactionSearchText = rangeSelectorText(
@@ -172,7 +199,9 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
             }}
           />
         ) : null}
-        <Banner>{searchText ? `Current Search: ${searchText}` : 'Blocks'}</Banner>
+        <Banner>
+          {searchText ? `Current Search: ${searchText}` : 'Blocks'}
+        </Banner>
         <TableWithSelector
           headers={headers}
           items={items}

@@ -14,7 +14,9 @@ const Item = ({ label, fields, }) => (
 /* eslint-disable no-restricted-globals */
 interface ErcPanel {
   abi: ABI
-  handleAbiValueChange: (index: number) => (inputIndex: number) => (e: any) => void
+  handleAbiValueChange: (
+    index: number
+  ) => (inputIndex: number) => (e: any) => void
   handleEthCall: (index: number) => (e: any) => void
 }
 /* eslint-enable no-restricted-globals */
@@ -52,7 +54,14 @@ handleEthCall: (e: any) => void
           {abiEl.outputs && abiEl.outputs.length ? (
             abiEl.outputs.map(output => {
               if (output.value && output.value.match(/jpg|png|gif/)) {
-                return <img src={output.value} key={output.name} alt="img" style={{ height: '100px', }} />
+                return (
+                  <img
+                    src={output.value}
+                    key={output.name}
+                    alt="img"
+                    style={{ height: '100px', }}
+                  />
+                )
               }
               return (
                 <input

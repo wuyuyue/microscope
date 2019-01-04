@@ -39,7 +39,15 @@ export enum DATA_TYPE {
 
 const EMPTY_DATA = 'Empty Data'
 
-const InfoItem = ({ label, type, detail, }: { label: string; type?: string; detail: any }) => (
+const InfoItem = ({
+  label,
+  type,
+  detail,
+}: {
+label: string
+type?: string
+detail: any
+}) => (
   <div key={label} className={styles.detailItem}>
     <span>{label}</span>
     <span>
@@ -118,7 +126,8 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     const { transaction, } = nextProps.match.params
     if (
       transaction &&
-      transaction.replace(/^0x/, '').toLowerCase() !== this.state.hash.replace(/^0x/, '').toLowerCase()
+      transaction.replace(/^0x/, '').toLowerCase() !==
+        this.state.hash.replace(/^0x/, '').toLowerCase()
     ) {
       this.fetchTransactionInfo(transaction)
     }
@@ -157,7 +166,9 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
               Object.defineProperty(parameters, '__length__', {
                 enumerable: false,
               })
-              this.setState({ parameters: JSON.stringify(parameters, null, 2), })
+              this.setState({
+                parameters: JSON.stringify(parameters, null, 2),
+              })
             }
           })
         } catch (err) {
@@ -169,15 +180,23 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
   private fetchTransactionInfo = transaction => {
     const hash = format0x(transaction)
     this.setState(state => ({ loading: state.loading + 2, hash, }))
-    this.props.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.Transaction) => {
-      setTimeout(() => {
-        this.handleReturnedTx(tx)
-      }, 100)
-    }, this.handleError)
-    this.props.CITAObservables.getTransactionReceipt(transaction).subscribe((receipt: // Chain.TransactionReceipt
-    any) => {
-      this.handleReturnedTxReceipt(receipt)
-    }, this.handleError)
+    this.props.CITAObservables.getTransaction(transaction).subscribe(
+      (tx: Chain.Transaction) => {
+        setTimeout(() => {
+          this.handleReturnedTx(tx)
+        }, 100)
+      },
+      this.handleError
+    )
+    this.props.CITAObservables.getTransactionReceipt(transaction).subscribe(
+      (
+        receipt: // Chain.TransactionReceipt
+        any
+      ) => {
+        this.handleReturnedTxReceipt(receipt)
+      },
+      this.handleError
+    )
     this.getQuotaPrice()
   }
 
@@ -192,7 +211,15 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     }
     try {
       const unsignedTx = unsigner(tx.content)
-      const { value, data, nonce, quota: quotaLimit, validUntilBlock, version, to, } = unsignedTx.transaction
+      const {
+        value,
+        data,
+        nonce,
+        quota: quotaLimit,
+        validUntilBlock,
+        version,
+        to,
+      } = unsignedTx.transaction
 
       if (to !== '0x') {
         this.parseParamters(to, data)
@@ -211,7 +238,11 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
         validUntilBlock,
         value,
         version,
-        type: !to ? TX_TYPE.CONTRACT_CREATION : data.replace(/^0x/, '') ? TX_TYPE.CONTRACT_CALL : TX_TYPE.EXCHANGE,
+        type: !to
+          ? TX_TYPE.CONTRACT_CREATION
+          : data.replace(/^0x/, '')
+            ? TX_TYPE.CONTRACT_CALL
+            : TX_TYPE.EXCHANGE,
         loading: state.loading - 1,
       }))
 
@@ -282,7 +313,12 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
       quotaPrice: (+quotaPrice).toLocaleString(),
       value: valueFormatter(value, symbol),
       validUntilBlock: `${(+validUntilBlock).toLocaleString()}`,
-      data: dataType === DATA_TYPE.HEX ? data : dataType === DATA_TYPE.UTF8 ? utf8Str : parameters,
+      data:
+        dataType === DATA_TYPE.HEX
+          ? data
+          : dataType === DATA_TYPE.UTF8
+            ? utf8Str
+            : parameters,
     }
     const dataTypes = [DATA_TYPE.HEX, ]
     if (utf8Str) {
@@ -333,7 +369,12 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
                     .map(
                       item =>
                         txInfo[item.key] !== '' ? (
-                          <InfoItem label={item.label} type={item.type} key={item.key} detail={txInfo[item.key]} />
+                          <InfoItem
+                            label={item.label}
+                            type={item.type}
+                            key={item.key}
+                            detail={txInfo[item.key]}
+                          />
                         ) : null
                     )}
                   <div className={styles.detailItem}>
@@ -353,7 +394,11 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
                   {dataType === DATA_TYPE.PARAMETERS ? (
                     <pre className={styles.parameters}>{parameters}</pre>
                   ) : (
-                    <textarea className={styles.hexData} disabled value={txInfo.data} />
+                    <textarea
+                      className={styles.hexData}
+                      disabled
+                      value={txInfo.data}
+                    />
                   )}
                 </List>
               </div>

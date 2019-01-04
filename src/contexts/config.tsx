@@ -34,7 +34,10 @@ class ConfigProvider extends React.Component<any, Config> {
         serverList: newServerList,
       })
       // side effect
-      window.localStorage.setItem(LOCAL_STORAGE.SERVER_LIST, JSON.stringify(newServerList))
+      window.localStorage.setItem(
+        LOCAL_STORAGE.SERVER_LIST,
+        JSON.stringify(newServerList)
+      )
       return true
     }
     return false
@@ -49,7 +52,10 @@ class ConfigProvider extends React.Component<any, Config> {
       serverList,
     })
     // side effect
-    window.localStorage.setItem(LOCAL_STORAGE.SERVER_LIST, JSON.stringify(serverList))
+    window.localStorage.setItem(
+      LOCAL_STORAGE.SERVER_LIST,
+      JSON.stringify(serverList)
+    )
     return true
   }
 
@@ -59,7 +65,10 @@ class ConfigProvider extends React.Component<any, Config> {
       const newPrivkeyList = [...privkeyList, privkey, ]
       this.setState({ privkeyList: newPrivkeyList, })
       // side effect
-      window.localStorage.setItem(LOCAL_STORAGE.PRIV_KEY_LIST, JSON.stringify(newPrivkeyList))
+      window.localStorage.setItem(
+        LOCAL_STORAGE.PRIV_KEY_LIST,
+        JSON.stringify(newPrivkeyList)
+      )
       return true
     }
     return false
@@ -72,7 +81,10 @@ class ConfigProvider extends React.Component<any, Config> {
     const privkeyList = [...this.state.privkeyList, ].splice(idx, 1)
     this.setState({ privkeyList, })
     // side effect
-    window.localStorage.setItem(LOCAL_STORAGE.PRIV_KEY_LIST, JSON.stringify(privkeyList))
+    window.localStorage.setItem(
+      LOCAL_STORAGE.PRIV_KEY_LIST,
+      JSON.stringify(privkeyList)
+    )
     return true
   }
 
@@ -81,7 +93,10 @@ class ConfigProvider extends React.Component<any, Config> {
       panelConfigs: newPanelConfigs,
     })
     // side effect
-    window.localStorage.setItem(LOCAL_STORAGE.PANEL_CONFIGS, JSON.stringify(newPanelConfigs))
+    window.localStorage.setItem(
+      LOCAL_STORAGE.PANEL_CONFIGS,
+      JSON.stringify(newPanelConfigs)
+    )
     return true
   }
 
@@ -111,7 +126,9 @@ export const provideConfig = Comp => props => (
 )
 
 export const withConfig = Comp => props => (
-  <ConfigContext.Consumer>{config => <Comp {...props} config={config} />}</ConfigContext.Consumer>
+  <ConfigContext.Consumer>
+    {config => <Comp {...props} config={config} />}
+  </ConfigContext.Consumer>
 )
 
 export default ConfigContext

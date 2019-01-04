@@ -64,7 +64,9 @@ export const formatedAgeString = time => {
 
 export const timeFormatter = (time, withDate = false): string => {
   const _time = new Date(+time)
-  return _time[withDate ? 'toLocaleString' : 'toLocaleTimeString']('zh', { hour12: false, })
+  return _time[withDate ? 'toLocaleString' : 'toLocaleTimeString']('zh', {
+    hour12: false,
+  })
 }
 
 export default {

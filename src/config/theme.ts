@@ -1,6 +1,6 @@
 // import colors, { COLORS } from './colors'
 // import sizes, { SIZES } from './sizes'
-import { createMuiTheme } from '@material-ui/core/styles'
+import { createMuiTheme, } from '@material-ui/core/styles'
 
 const theme = createMuiTheme({
   palette: {

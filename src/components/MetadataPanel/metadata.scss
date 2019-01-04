@@ -29,7 +29,7 @@ $sidebar-padding: 29px;
       border-radius: 4px;
       margin-bottom: 41px;
 
-      &>div {
+      & > div {
         height: 0.875rem;
         line-height: 1.7rem;
         height: 1.7rem;
@@ -74,10 +74,7 @@ $sidebar-padding: 29px;
     box-shadow: 0 0 4px 0 $form-focus;
   }
 
-  input.error:focus {
-    border-color: $form-error;
-    box-shadow: 0 0 4px 0 $form-error;
-  }
+  border-color: $form-error;
 
   button {
     border: none;
@@ -94,6 +91,18 @@ $sidebar-padding: 29px;
       color: #aaa;
       cursor: default;
     }
+  }
+
+  .chainerror {
+    color: $form-error;
+    position: absolute;
+    bottom: 0;
+  }
+
+  .chainerror {
+    color: $form-error;
+    position: absolute;
+    bottom: 0;
   }
 }
 

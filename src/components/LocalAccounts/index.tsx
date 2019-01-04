@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, } from 'react-router-dom'
 
 import {
   ExpansionPanel,
@@ -36,11 +36,12 @@ export default props =>
     <ExpansionPanel key={group.key}>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="body1">
-          Including: {props[group.key].length} {group.label}(s)
+          Including: {props[group.key].length} {group.label}
+          (s)
         </Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
-        <List style={{ width: '100%' }}>
+        <List style={{ width: '100%', }}>
           {props[group.key].length ? (
             props[group.key].map((item: LocalAccount, index) => (
               <ListItem key={item.addr}>

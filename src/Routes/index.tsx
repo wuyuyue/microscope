@@ -16,7 +16,11 @@ export const asyncRender = mod => routerProps => {
   /* eslint-disable */
   const Component = require(`bundle-loader?lazy!../containers/${mod}`)
   /* eslint-enable */
-  return <Bundle load={Component}>{Comp => (Comp ? <Comp {...routerProps} /> : <div>Loading</div>)}</Bundle>
+  return (
+    <Bundle load={Component}>
+      {Comp => (Comp ? <Comp {...routerProps} /> : <div>Loading</div>)}
+    </Bundle>
+  )
 }
 /* eslint-enable import/no-dynamic-require */
 /* eslint-enable global-require */

@@ -52,7 +52,9 @@ class NetStatus extends React.Component<INetStatusProps, INetStatusState> {
   private fetchStatus = () => {
     // fetch peer Count
     const { peerCount, newBlockByNumberSubject, } = this.props.CITAObservables
-    peerCount(60000).subscribe((count: string) => this.setState(state => ({ peerCount: count.slice(2), })))
+    peerCount(60000).subscribe((count: string) =>
+      this.setState(state => ({ peerCount: count.slice(2), }))
+    )
     // fetch Block Number and Block
     newBlockByNumberSubject.subscribe(block => {
       this.setState(state => ({ blockNumber: block.header.number, }))
@@ -64,7 +66,11 @@ class NetStatus extends React.Component<INetStatusProps, INetStatusState> {
     return (
       <Toolbar style={{ display: 'flex', }}>
         {NetStatus.plainStates.map(state => (
-          <PlainState {...state} key={state.title} value={this.state[state.value]} />
+          <PlainState
+            {...state}
+            key={state.title}
+            value={this.state[state.value]}
+          />
         ))}
       </Toolbar>
     )
