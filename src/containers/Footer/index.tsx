@@ -74,7 +74,7 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
         },
       ] as Contact[],
     },
-  };
+  }
   render () {
     const { overview, products, contacts, } = this.state
     const { t, } = this.props

@@ -92,9 +92,9 @@ const TransactionDisplay = translate('microscope')(
     symbol,
     t,
   }: {
-  tx: UnsignedTransaction & { hash: string };
-  symbol: string;
-  t: (key: string) => string;
+  tx: UnsignedTransaction & { hash: string }
+  symbol: string
+  t: (key: string) => string
   }) => (
     <div className={styles.display}>
       <div className={styles.title}>Transaction</div>
@@ -132,10 +132,10 @@ const AccountDisplay = translate('microscope')(
     addr,
     t,
   }: {
-  balance: string;
-  txCount: number;
-  addr: string;
-  t: (key: string) => string;
+  balance: string
+  txCount: number
+  addr: string
+  t: (key: string) => string
   }) => (
     <div className={styles.display}>
       <div className={styles.title}>{t('account')}</div>

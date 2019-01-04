@@ -92,23 +92,23 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   };
 
   // declare chart variables
-  private blockGraph: any;
-  private txCountGraph: any;
-  private quotaUsedGraph: any;
-  private txQuotaUsedGraph: any;
-  private proposalsGraph: any;
-  private blockGraphDOM: HTMLDivElement | null;
-  private txCountGraphDOM: HTMLDivElement | null;
-  private quotaUsedGraphDOM: HTMLDivElement | null;
-  private txQuotaUsedGraphDOM: HTMLDivElement | null;
-  private proposalsGraphDOM: HTMLDivElement | null;
+  private blockGraph: any
+  private txCountGraph: any
+  private quotaUsedGraph: any
+  private txQuotaUsedGraph: any
+  private proposalsGraph: any
+  private blockGraphDOM: HTMLDivElement | null
+  private txCountGraphDOM: HTMLDivElement | null
+  private quotaUsedGraphDOM: HTMLDivElement | null
+  private txQuotaUsedGraphDOM: HTMLDivElement | null
+  private proposalsGraphDOM: HTMLDivElement | null
   private graphList = [
     'blockGraph',
     'txCountGraph',
     'quotaUsedGraph',
     'txQuotaUsedGraph',
     'proposalsGraph',
-  ];
+  ]
 
   private initGraphs = () => {
     // init chart dom
@@ -233,7 +233,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         }
       })
       .catch(this.handleError)
-  };
+  }
 
   private updateGraphBlock = source => {
     const { panelConfigs, } = this.props.config
@@ -322,7 +322,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   );
 
   private renderGraphList = () =>
-    this.graphList.map(graphName => this.renderGraphCell(graphName));
+    this.graphList.map(graphName => this.renderGraphCell(graphName))
 
   public render () {
     return (

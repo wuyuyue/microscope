@@ -44,9 +44,9 @@ const InfoItem = ({
   type,
   detail,
 }: {
-label: string;
-type?: string;
-detail: any;
+label: string
+type?: string
+detail: any
 }) => (
   <div key={label} className={styles.detailItem}>
     <span>{label}</span>
@@ -282,7 +282,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     this.setState(state => ({
       dataType,
     }))
-  };
+  }
 
   private handleError = handleError(this);
   private dismissError = dismissError(this);

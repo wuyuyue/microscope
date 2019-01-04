@@ -288,7 +288,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
         ({
           result: { transactions, },
         }: {
-        result: { transactions: TransactionFromServer[] };
+        result: { transactions: TransactionFromServer[] }
         }) => {
           const txlist = transactions.map((tx: any) => {
             const content = unsigner(tx.content)
@@ -352,7 +352,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
           },
         })
       }, this.handleError)
-  };
+  }
 
   private intervalCheckOvertime = -1 as any;
 

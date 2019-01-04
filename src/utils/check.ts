@@ -7,7 +7,7 @@ const startsWith0x = string => /^0x/i.test(string)
 const checkDigits = number =>
   typeof number === 'number' &&
   isFinite(number) &&
-  Math.floor(number) === number;
+  Math.floor(number) === number
 /* eslint-enable */
 
 const checkDigitsString = number => {

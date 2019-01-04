@@ -42,15 +42,15 @@ const ConfigDetail = translate('microscope')(
     saving,
     t,
   }: {
-  config: ConfigDetailType;
-  value: number | string | boolean | undefined;
-  handleSwitch: (key: string) => (e: any) => void;
+  config: ConfigDetailType
+  value: number | string | boolean | undefined
+  handleSwitch: (key: string) => (e: any) => void
   handleInput: (
     key: string
-  ) => (e: React.ChangeEvent<HTMLInputElement>) => void;
-  controlInputScope: any;
-  saving: any;
-  t: (key: string) => string;
+  ) => (e: React.ChangeEvent<HTMLInputElement>) => void
+  controlInputScope: any
+  saving: any
+  t: (key: string) => string
   }) => (
     <ListItem key={config.key}>
       <ListItemText
@@ -140,8 +140,8 @@ const ConfigItem = translate('microscope')(
 )
 
 class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
-  static panels = ConfigPageDefault.panels;
-  static configs = ConfigPageDefault.configs;
+  static panels = ConfigPageDefault.panels
+  static configs = ConfigPageDefault.configs
 
   public constructor (props) {
     super(props)
@@ -177,7 +177,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       }
       return state
     })
-  };
+  }
 
   private controlInputScope = key => e => {
     const { configs, inputTimeout, } = this.state

@@ -231,7 +231,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
       },
       this.handleError
     )
-  };
+  }
 
   private handleReturnedBlock = (
     block: Chain.Block<Chain.TransactionInBlock>
@@ -248,8 +248,8 @@ class Block extends React.Component<IBlockProps, IBlockState> {
     block.body.transactions = block.body.transactions.map(tx => {
       const details = unsigner(tx.content);
       if (typeof tx.basicInfo !== 'string' && tx.basicInfo) {
-        tx.basicInfo.value = '' + +bytesToHex(tx.basicInfo.value as any);
-        tx.basicInfo.from = details.sender.address;
+        tx.basicInfo.value = '' + +bytesToHex(tx.basicInfo.value as any)
+        tx.basicInfo.from = details.sender.address
       }
       return {
         ...tx,
@@ -263,7 +263,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
     return this.setState(state =>
       Object.assign({}, state, { ...block, loading: state.loading - 1, })
     )
-  };
+  }
 
   private toggleTransaction = (on: boolean = false) => e => {
     this.setState(state => ({

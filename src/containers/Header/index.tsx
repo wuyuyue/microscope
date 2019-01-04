@@ -67,8 +67,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
     // fetch data of metadata panel
     this.fetchMetaDataPanel()
-    clearInterval(this.checkOvertimeNumber)
-    this.checkOvertimeNumber = setInterval(this.checkFetchBlockOvertime, 100)
+    // clearInterval(this.checkOvertimeNumber)
+    // this.checkOvertimeNumber = setInterval(this.checkFetchBlockOvertime, 100)
   }
 
   public componentWillReceiveProps (nextProps: HeaderProps) {
@@ -80,7 +80,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   public componentDidCatch (err) {
     this.handleError(err)
   }
-  private onSearch$: Subject<any>;
+  private onSearch$: Subject<any>
 
   private getChainMetadata = ip => {
     fetchMetadata(ip)
@@ -129,7 +129,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       },
       this.handleError
     )
-  };
+  }
   /**
    * @method fetchStatisticsPanel
    */
@@ -224,7 +224,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     this.setState({ lngOpen: false, })
     window.localStorage.setItem('i18nextLng', lng)
     window.location.reload()
-  };
+  }
 
   private switchChainImmediate = chain => {
     const chainIp = chain.startsWith('http') ? chain : `https://${chain}`
@@ -277,33 +277,33 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       ...state,
       showMetadata: !state.showMetadata,
     }))
-  };
-  private switchChain = (chain: string = '', immediate = false) => (
-    e?: any
-  ) => {
-    window.location.search = ''
-    if (immediate) {
-      this.switchChainImmediate(chain)
-    }
-    const { otherMetadata, } = this.state
-    this.setState({ inputChainError: false, })
-    this.setState({ waitingMetadata: true, })
-    setTimeout(() => {
-      if (otherMetadata.chainId !== -1) {
-        this.switchChainImmediate(chain)
-      } else {
-        this.setState({ inputChainError: true, })
-        this.setState({ waitingMetadata: false, })
-      }
-    }, 1000)
-  };
+  }
+  // private switchChain = (chain: string = '', immediate = false) => (
+  //   e?: any
+  // ) => {
+  //   window.location.search = ''
+  //   if (immediate) {
+  //     this.switchChainImmediate(chain)
+  //   }
+  //   const { otherMetadata, } = this.state
+  //   this.setState({ inputChainError: false, })
+  //   this.setState({ waitingMetadata: true, })
+  //   setTimeout(() => {
+  //     if (otherMetadata.chainId !== -1) {
+  //       this.switchChainImmediate(chain)
+  //     } else {
+  //       this.setState({ inputChainError: true, })
+  //       this.setState({ waitingMetadata: false, })
+  //     }
+  //   }, 1000)
+  // };
 
-  private handleError = handleError(this);
-  private dismissError = dismissError(this);
-  private searchSubscription: Subscription;
+  private handleError = handleError(this)
+  private dismissError = dismissError(this)
+  private searchSubscription: Subscription
   private translations = process.env.LNGS
     ? process.env.LNGS.split(',')
-    : ['zh', 'en', ];
+    : ['zh', 'en', ]
 
   private ActivePanel = () => {
     const {
