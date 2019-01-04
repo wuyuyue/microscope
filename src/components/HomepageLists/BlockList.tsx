@@ -13,8 +13,8 @@ export default translate('microscope')(
     blocks,
     t,
   }: {
-  blocks: Chain.Block<Chain.TransactionInBlock>[];
-  t: (key: string) => string;
+  blocks: Chain.Block<Chain.TransactionInBlock>[]
+  t: (key: string) => string
   }) => (
     <List
       classes={{

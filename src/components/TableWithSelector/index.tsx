@@ -40,23 +40,23 @@ export interface TableWithSelectorProps {
   pageSize: number;
   pageNo: number;
   selectors: {
-    type: SelectorType;
-    key: string;
-    text: string;
+    type: SelectorType
+    key: string
+    text: string
     items?: {
-      key: string;
-      text: string;
-      check?: any;
-      format?: any;
-      errorMessage?: any;
-    }[];
-    check?: any;
-    format?: any;
-    errorMessage?: any;
-  }[];
-  selectorsValue?: any;
-  onSubmit?: any;
-  handlePageChanged?: (pageNo: number) => void;
+      key: string
+      text: string
+      check?: any
+      format?: any
+      errorMessage?: any
+    }[]
+    check?: any
+    format?: any
+    errorMessage?: any
+  }[]
+  selectorsValue?: any
+  onSubmit?: any
+  handlePageChanged?: (pageNo: number) => void
   // showInOut?: boolean
   showInout?: boolean;
   inset?: boolean;
@@ -71,7 +71,7 @@ class TableWithSelector extends React.Component<
     on: false,
     selectorsValue: this.props.selectorsValue,
     selectorsError: {} as any,
-  };
+  }
 
   showDialog = (on: boolean = false) => (e?: any) => {
     this.setState(state => ({
@@ -106,7 +106,7 @@ class TableWithSelector extends React.Component<
       this.props.onSubmit(this.state.selectorsValue)
       this.showDialog(false)()
     }
-  };
+  }
   handleSelectorBlur = (
     selector: string,
     check: any = () => false,
@@ -128,12 +128,12 @@ class TableWithSelector extends React.Component<
         },
       }
     })
-    if (allright) {
-      this.props.onSubmit(this.state.selectorsValue)
-      this.showDialog(false)()
-    }
-  };
-  render () {
+    // if (allright) {
+    this.props.onSubmit(this.state.selectorsValue)
+    this.showDialog(false)()
+    // }
+  }
+  public render () {
     const { on, selectorsValue, selectorsError, } = this.state
     const {
       headers,

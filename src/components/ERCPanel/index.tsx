@@ -13,11 +13,11 @@ const Item = ({ label, fields, }) => (
 )
 /* eslint-disable no-restricted-globals */
 interface ErcPanel {
-  abi: ABI;
+  abi: ABI
   handleAbiValueChange: (
     index: number
-  ) => (inputIndex: number) => (e: any) => void;
-  handleEthCall: (index: number) => (e: any) => void;
+  ) => (inputIndex: number) => (e: any) => void
+  handleEthCall: (index: number) => (e: any) => void
 }
 /* eslint-enable no-restricted-globals */
 

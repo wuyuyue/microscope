@@ -93,7 +93,7 @@ class TransactionTable extends React.Component<
   TransactionTableProps,
   TransactionTableState
   > {
-  state = initialState;
+  state = initialState
   componentWillMount () {
     this.setParamsFromUrl()
     this.setVisibleHeaders()
@@ -179,9 +179,11 @@ class TransactionTable extends React.Component<
         ({
           result,
         }: {
-        result: { transactions: TransactionFromServer[]; count: number };
+        result: { transactions: TransactionFromServer[]; count: number }
         }) => {
-          if (this.props.setTransactionsCount) { this.props.setTransactionsCount(result.count) }
+          if (this.props.setTransactionsCount) {
+            this.props.setTransactionsCount(result.count)
+          }
           this.setState(state => ({
             ...state,
             loading: state.loading - 1,

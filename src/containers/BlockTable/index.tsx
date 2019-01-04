@@ -137,7 +137,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
         ({
           result,
         }: {
-        result: { blocks: BlockFromServer[]; count: number };
+        result: { blocks: BlockFromServer[]; count: number }
         }) => {
           this.setState(state => ({
             loading: state.loading - 1,

@@ -76,7 +76,7 @@ class Account extends React.Component<AccountProps, AccountState> {
     this.props.CITAObservables.getCode({
       contractAddr: account,
       blockNumber: 'latest',
-    }).subscribe(code => this.setState({ code, }));
+    }).subscribe(code => this.setState({ code, }))
   protected readonly addrGroups = [
     {
       key: 'normals',
@@ -137,7 +137,7 @@ class Account extends React.Component<AccountProps, AccountState> {
       })
       this.fetchInfo(addr)
     }
-  };
+  }
   private handleAbiValueChange = (index: number) => (
     inputIndex: number
   ) => e => {
@@ -179,8 +179,8 @@ class Account extends React.Component<AccountProps, AccountState> {
         try {
           const outputTypes = this.state.abi[index].outputs.map(o => o.type)
           const outputs = web3Abi.decodeParameters(outputTypes, result) as {
-            [index: string]: any;
-            __length__: number;
+            [index: string]: any
+            __length__: number
           }
           this.setState(state => {
             const abi = JSON.parse(JSON.stringify(state.abi))

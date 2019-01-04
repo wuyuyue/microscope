@@ -11,8 +11,8 @@ export default ({
   transactions,
   symbol,
 }: {
-transactions: Transaction[];
-symbol: string;
+transactions: Transaction[]
+symbol: string
 }) => (
   <List>
     {transactions.map(tx => (

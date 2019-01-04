@@ -18,5 +18,5 @@ declare module 'React' {
   function createContext<T>(
     defaultValue: T,
     calculateChangedBits?: (prev: T, next: T) => number
-  ): Context<T>;
+  ): Context<T>
 }

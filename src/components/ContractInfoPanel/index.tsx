@@ -21,10 +21,10 @@ const Infoblock = ({ title, code, copied, copy, }) => (
 )
 
 interface PanelProps {
-  abi: string;
-  code: string;
-  copiedIdx: number;
-  updateCopiedIdx: (idx: number) => void;
+  abi: string
+  code: string
+  copiedIdx: number
+  updateCopiedIdx: (idx: number) => void
 }
 
 const Panel = (props: PanelProps) => {
