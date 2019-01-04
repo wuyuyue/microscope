@@ -178,8 +178,6 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
       activeParams.numberFrom,
       activeParams.numberTo
     )
-    console.log(headers)
-    console.log(items)
     const transactionSearchText = rangeSelectorText(
       'Transaction',
       activeParams.transactionFrom,
