@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { Slide, IconButton, Snackbar } from '@material-ui/core'
-import { Close as CloseIcon } from '@material-ui/icons'
+import { Slide, IconButton, Snackbar, } from '@material-ui/core'
+import { Close as CloseIcon, } from '@material-ui/icons'
 
 const texts = require('../../styles/text.scss')
 
 const SnackbarTransition = props => <Slide direction="left" {...props} />
 
-export default ({ error, dismissError }) => (
+export default ({ error, dismissError, }) => (
   <Snackbar
     message={<span className={texts.error}>{error.message}</span>}
     open={!!error.message}
-    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    anchorOrigin={{ vertical: 'top', horizontal: 'right', }}
     // transition={SnackbarTransition}
     action={
       <React.Fragment>

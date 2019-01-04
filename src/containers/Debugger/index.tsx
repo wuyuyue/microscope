@@ -1,21 +1,24 @@
 import * as React from 'react'
-import { Grid } from '@material-ui/core'
-import { Chain } from '@nervos/plugin'
-import { unsigner } from '@appchain/signer'
+import { Grid, } from '@material-ui/core'
+import { Chain, } from '@appchain/plugin'
+import { unsigner, } from '@appchain/signer'
 import * as EthAccount from 'web3-eth-accounts'
 
 import StaticCard from '../../components/StaticCard'
 import BlockList from '../../components/HomepageLists/BlockList'
 import TransactionList from '../../components/HomepageLists/TransactionList'
-import DebugAccounts, { DebugAccount } from '../../components/DebugAccounts'
+import DebugAccounts, { DebugAccount, } from '../../components/DebugAccounts'
 import ErrorNotification from '../../components/ErrorNotification'
 
-import { withObservables } from '../../contexts/observables'
+import { withObservables, } from '../../contexts/observables'
 
 import hideLoader from '../../utils/hideLoader'
-import { IContainerProps, TransactionFromServer } from '../../typings'
-import { handleError, dismissError } from '../../utils/handleError'
-import { getLocalDebugAccounts, setLocalDebugAccounts } from '../../utils/accessLocalstorage'
+import { IContainerProps, TransactionFromServer, } from '../../typings'
+import { handleError, dismissError, } from '../../utils/handleError'
+import {
+  getLocalDebugAccounts,
+  setLocalDebugAccounts,
+} from '../../utils/accessLocalstorage'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./debugger.scss')
@@ -24,11 +27,11 @@ const ethAccounts = new EthAccount()
 
 const privateKeysToAccounts = (privateKeys: string[]) =>
   privateKeys.map(privateKey => {
-    const { address } = ethAccounts.privateKeyToAccount(privateKey)
+    const { address, } = ethAccounts.privateKeyToAccount(privateKey)
     return {
       privateKey,
       address,
-      balance: 'unloaded'
+      balance: 'unloaded',
     }
   })
 
@@ -39,8 +42,8 @@ const initState = {
   transactions: [] as TransactionFromServer[],
   error: {
     code: '',
-    message: ''
-  }
+    message: '',
+  },
 }
 
 interface DebuggerProps extends IContainerProps {}
@@ -48,36 +51,38 @@ interface DebuggerProps extends IContainerProps {}
 type DebuggerState = typeof initState
 
 class Debugger extends React.Component<DebuggerProps, DebuggerState> {
-  public readonly state = initState
+  public readonly state = initState;
   public componentDidMount () {
     hideLoader()
     this.loadDebugAccounts()
-    this.props.CITAObservables.newBlockByNumberSubject.subscribe((block: Chain.Block<Chain.TransactionInBlock>) => {
-      if (block.body.transactions.length) {
-        this.setState((state: DebuggerState) => {
-          const blocks = [...state.blocks, block]
-          const newTransactions = block.body.transactions.map(tx => {
-            const unsignedTx = unsigner(tx.content)
+    this.props.CITAObservables.newBlockByNumberSubject.subscribe(
+      (block: Chain.Block<Chain.TransactionInBlock>) => {
+        if (block.body.transactions.length) {
+          this.setState((state: DebuggerState) => {
+            const blocks = [...state.blocks, block, ]
+            const newTransactions = block.body.transactions.map(tx => {
+              const unsignedTx = unsigner(tx.content)
+              return {
+                blockNumber: block.number,
+                content: tx.content,
+                from: unsignedTx.sender.address,
+                quotaUsed: '',
+                hash: tx.hash,
+                timestamp: block.header.timestamp,
+                to: unsignedTx.transaction.to,
+                value: +unsignedTx.transaction.value.join(''),
+              }
+            })
+            const transactions = [...state.transactions, ...newTransactions, ]
+
             return {
-              blockNumber: block.number,
-              content: tx.content,
-              from: unsignedTx.sender.address,
-              gasUsed: '',
-              hash: tx.hash,
-              timestamp: block.header.timestamp,
-              to: unsignedTx.transaction.to,
-              value: unsignedTx.transaction.value
+              blocks,
+              transactions,
             }
           })
-          const transactions = [...state.transactions, ...newTransactions]
-
-          return {
-            blocks,
-            transactions
-          }
-        })
+        }
       }
-    })
+    )
     this.props.CITAObservables.newBlockByNumberSubject.subscribe(block => {
       // new block comes
       this.fetchAndUpdateAccounts(this.state.accounts)
@@ -86,43 +91,50 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
   public loadDebugAccounts = () => {
     let privateKeys = getLocalDebugAccounts()
     if (!privateKeys.length) {
-      privateKeys = process.env.DEBUG_ACCOUNTS ? process.env.DEBUG_ACCOUNTS.split(',') : []
+      privateKeys = process.env.DEBUG_ACCOUNTS
+        ? process.env.DEBUG_ACCOUNTS.split(',')
+        : []
     }
     const accounts = privateKeysToAccounts(privateKeys)
-    this.setState({ accounts, privateKeysField: privateKeys.join(',') })
+    this.setState({ accounts, privateKeysField: privateKeys.join(','), })
     this.fetchAndUpdateAccounts(accounts)
-  }
+  };
   public updateDebugAccounts = () => {
-    const { privateKeysField } = this.state
+    const { privateKeysField, } = this.state
     try {
-      const privateKeys = Array.from(new Set(privateKeysField.replace(/(\s|\n|\r)+/gi, '').split(',')))
+      const privateKeys = Array.from(
+        new Set(privateKeysField.replace(/(\s|\n|\r)+/gi, '').split(','))
+      )
       const accounts = privateKeysToAccounts(privateKeys)
       setLocalDebugAccounts(privateKeys)
       this.fetchAndUpdateAccounts(accounts)
     } catch (err) {
       window.alert(err)
     }
-  }
+  };
   public fetchAndUpdateAccounts = (accounts: DebugAccount[]) => {
     accounts.forEach((account, idx) => {
-      this.props.CITAObservables.getBalance({ addr: account.address, blockNumber: 'latest' }).subscribe(balance => {
+      this.props.CITAObservables.getBalance({
+        addr: account.address,
+        blockNumber: 'latest',
+      }).subscribe(balance => {
         this.setState(state => {
-          const _accounts = [...accounts]
+          const _accounts = [...accounts, ]
           _accounts[idx].balance = `${+balance}`
-          return { ...state, accounts: _accounts }
+          return { ...state, accounts: _accounts, }
         })
       })
     })
-  }
+  };
   private handleInput = key => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.currentTarget
+    const { value, } = e.currentTarget
     this.setState(state => ({
       ...state,
-      [key]: value
+      [key]: value,
     }))
-  }
-  private handleError = handleError(this)
-  private dismissError = dismissError(this)
+  };
+  private handleError = handleError(this);
+  private dismissError = dismissError(this);
   public render () {
     return (
       <React.Fragment>
@@ -137,8 +149,13 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
           ) : null}
           <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
             <Grid item md={6} sm={12} xs={12}>
-              <StaticCard icon="/microscopeIcons/blocks.png" title="Blocks" page="blocks" className={styles.card}>
-                <BlockList blocks={[...this.state.blocks].reverse()} />
+              <StaticCard
+                icon="/microscopeIcons/blocks.png"
+                title="Blocks"
+                page="blocks"
+                className={styles.card}
+              >
+                <BlockList blocks={[...this.state.blocks, ].reverse()} />
               </StaticCard>
             </Grid>
             <Grid item md={6} sm={12} xs={12}>
@@ -148,12 +165,17 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
                 page="transactions"
                 className={styles.card}
               >
-                <TransactionList transactions={[...this.state.transactions].reverse()} />
+                <TransactionList
+                  transactions={[...this.state.transactions, ].reverse()}
+                />
               </StaticCard>
             </Grid>
           </Grid>
         </div>
-        <ErrorNotification error={this.state.error} dismissError={this.dismissError} />
+        <ErrorNotification
+          error={this.state.error}
+          dismissError={this.dismissError}
+        />
       </React.Fragment>
     )
   }

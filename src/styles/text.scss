@@ -5,7 +5,7 @@
 }
 
 %hash {
-  font-family: Rotobo, Helvetica, monospace !important;
+  font-family: monospace, Rotobo, Helvetica !important;
   font-size: inherit !important;
   text-decoration: none;
   word-break: break-all;
@@ -20,7 +20,17 @@
 
 .addr {
   @extend %hash; // color: $primaryText;
-  color: #2647fdcc;
+  color: #5b8ee6;
+}
+
+.addrStart {
+  max-width: 206px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.addrEnd::before {
+  content: '...';
 }
 
 .hash {
@@ -38,7 +48,6 @@
 }
 
 @media (max-width: 370px) {
-
   html,
   body {
     font-size: 14px;

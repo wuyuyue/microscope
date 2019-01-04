@@ -1,17 +1,17 @@
 import * as React from 'react'
-import { Timestamp } from '../../typings'
+import { Timestamp, } from '../../typings'
 
 const styles = require('./briefStatistics.scss')
 
 /* eslint-disable no-use-before-define */
 interface BriefStatistics {
-  peerCount: number
-  number: string
-  timestamp: Timestamp
-  proposal: string
-  tps: number
-  tpb: number
-  ipb: number
+  peerCount: number;
+  number: string;
+  timestamp: Timestamp;
+  proposal: string;
+  tps: number;
+  tpb: number;
+  ipb: number;
 }
 /* eslint-enable no-use-before-define */
 
@@ -35,7 +35,11 @@ const BriefStatistics: React.SFC<BriefStatistics> = ({
       time: <span>{new Date(timestamp).toLocaleString()}</span>
     </div>
     <div>
-      validators: <span>{proposal.slice(0, 20)}...</span>
+      validators:{' '}
+      <span>
+        {proposal.slice(0, 20)}
+        ...
+      </span>
     </div>
     <div>
       TPS: <span>{tps}</span>

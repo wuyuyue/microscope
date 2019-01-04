@@ -5,18 +5,21 @@
  * @Last Modified time: 2018-08-03 14:23:19
  */
 
-import axios, { AxiosResponse } from 'axios'
-import { initServerList } from '../initValues'
+import axios, { AxiosResponse, } from 'axios'
+import { initServerList, } from '../initValues'
 import ErrorTexts from '../typings/errors'
 
-const baseURL = window.urlParamChain || window.localStorage.getItem('chainIp') || initServerList[0]
+const baseURL =
+  window.urlParamChain ||
+  window.localStorage.getItem('chainIp') ||
+  initServerList[0]
 
 const axiosIns = axios.create({
-  baseURL
+  baseURL,
 })
 
 interface Params {
-  [index: string]: string | number
+  [index: string]: string | number;
 }
 
 export const fetch10Transactions = () =>
@@ -29,7 +32,7 @@ export const fetch10Transactions = () =>
 
 export const fetchBlocks = (params: Params) =>
   axiosIns
-    .get('api/blocks', { params })
+    .get('api/blocks', { params, })
     .then((res: AxiosResponse) => res.data)
     .catch(() => {
       throw new Error(ErrorTexts.CACHE_SERVER_NOT_AVAILABLE)
@@ -37,7 +40,7 @@ export const fetchBlocks = (params: Params) =>
 
 export const fetchTransactions = (params: Params) =>
   axiosIns
-    .get('api/transactions', { params })
+    .get('api/transactions', { params, })
     .then((res: AxiosResponse) => res.data)
     .catch(() => {
       throw new Error(ErrorTexts.CACHE_SERVER_NOT_AVAILABLE)
@@ -45,7 +48,7 @@ export const fetchTransactions = (params: Params) =>
 
 export const fetchStatistics = params =>
   axiosIns
-    .get('/api/statistics', { params })
+    .get('/api/statistics', { params, })
     .then((res: AxiosResponse) => res.data)
     .catch(() => {
       throw new Error(ErrorTexts.CACHE_SERVER_NOT_AVAILABLE)
@@ -64,8 +67,8 @@ export const fetchMetadata = ip =>
     .post(ip.startsWith('http') ? ip : `https://${ip}`, {
       jsonrpc: '2.0',
       method: 'getMetaData',
-      params: ['latest'],
-      id: 1
+      params: ['latest', ],
+      id: 1,
     })
     .then((res: AxiosResponse) => res.data)
     .catch(() => {

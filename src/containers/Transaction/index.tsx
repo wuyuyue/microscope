@@ -1,282 +1,406 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import {
-  LinearProgress,
-  Card,
-  CardContent,
-  List,
-  ListSubheader,
-  ListItem,
-  ListItemText,
-  Divider
-} from '@material-ui/core'
-import { unsigner } from '@appchain/signer'
-import { Chain } from '@nervos/plugin/lib/typings/index.d'
+import { hexToUtf8, } from 'web3-utils'
+import * as abiCoder from 'web3-eth-abi'
+import { Link, } from 'react-router-dom'
+import { Card, CardContent, List, } from '@material-ui/core'
+import { unsigner, } from '@appchain/signer'
+import { Chain, } from '@appchain/plugin/lib/typings/index.d'
 
+import { LinearProgress, } from '../../components'
 import Banner from '../../components/Banner'
-
-import { withObservables } from '../../contexts/observables'
-import { IContainerProps, DetailedTransaction } from '../../typings/'
 import ErrorNotification from '../../components/ErrorNotification'
+
+import { withConfig, } from '../../contexts/config'
+import { withObservables, } from '../../contexts/observables'
+import { IContainerProps, } from '../../typings/'
 import hideLoader from '../../utils/hideLoader'
-import { handleError, dismissError } from '../../utils/handleError'
-import bytesToHex from '../../utils/bytesToHex'
+import { handleError, dismissError, } from '../../utils/handleError'
 import valueFormatter from '../../utils/valueFormatter'
+import { format0x, } from '../../utils/check'
 
 const layouts = require('../../styles/layout.scss')
 const texts = require('../../styles/text.scss')
 const styles = require('./transaction.scss')
 
+export enum TX_TYPE {
+  EXCHANGE = 'Exchange',
+  CONTRACT_CREATION = 'Contract Creation',
+  CONTRACT_CALL = 'Contract Call',
+}
+export enum TX_STATUS {
+  SUCCESS = 'Success',
+  FAILURE = 'Failure',
+}
+export enum DATA_TYPE {
+  HEX = 'Hex',
+  UTF8 = 'UTF-8',
+  PARAMETERS = 'Parameters',
+}
+
+const EMPTY_DATA = 'Empty Data'
+
+const InfoItem = ({
+  label,
+  type,
+  detail,
+}: {
+label: string
+type?: string
+detail: any
+}) => (
+  <div key={label} className={styles.detailItem}>
+    <span>{label}</span>
+    <span>
+      {type ? (
+        <Link
+          className={texts.addr}
+          to={`/${type}/${detail}`.replace(/,/g, '')}
+          href={`/${type}/${detail}`.replace(/,/g, '')}
+        >
+          {detail}
+        </Link>
+      ) : (
+        detail
+      )}
+    </span>
+  </div>
+)
 interface TransactionProps extends IContainerProps {}
 
-interface TransactionState extends DetailedTransaction {
-  timestamp: ''
-  gasUsed: ''
-  error: {
-    message: string
-    code: string
-  }
-  loading: number
-}
-const initState: TransactionState = {
+const initState = {
   hash: '',
   blockHash: '',
   blockNumber: '',
-  index: '',
-  content: '',
-  basicInfo: {
-    from: '',
-    to: '',
-    nonce: '',
-    validUntilBlock: '',
-    value: '',
-    data: '',
-    quotaLimit: '',
-    quotaPrice: '',
-    quotaUsed: '',
-    createdContractAddress: '',
-    errorMessage: ''
-  },
+  from: '',
+  to: '',
+  nonce: '',
+  validUntilBlock: '',
+  value: '',
+  data: '',
+  errorMessage: '',
+  utf8Str: '',
+  quotaLimit: '',
+  quotaUsed: '',
+  version: 0,
   error: {
     message: '',
-    code: ''
+    code: '',
   },
+  quotaPrice: '',
   timestamp: '',
-  gasUsed: '',
-  loading: 0
+  loading: 0,
+  // status: TX_STATUS.FAILURE as TX_STATUS | String,
+  type: TX_TYPE.EXCHANGE,
+  dataType: DATA_TYPE.HEX,
+  parameters: '',
 }
 
-const InfoList = ({ infos, details }) =>
-  infos.map(info => (
-    <ListItem key={info.key}>
-      <ListItemText
-        classes={{
-          primary: styles.infoTitle,
-          secondary: styles.infoValue
-        }}
-        primary={info.label}
-        secondary={
-          info.type && !['Contract Creation'].includes(details[info.key]) ? (
-            <Link
-              to={`/${info.type}/${details[info.key]}`}
-              href={`/${info.type}/${details[info.key]}`}
-              className={texts.addr}
-            >
-              {details[info.key] || 'null'}
-            </Link>
-          ) : (
-            details[info.key] || 'null'
-          )
-        }
-      />
-    </ListItem>
-  ))
+type ITransactionState = typeof initState
 
-const Info = ({ title, infos, details }) => (
-  <List
-    subheader={
-      <ListSubheader component="div" classes={{ root: styles.listHeaderRoot }}>
-        {title}
-      </ListSubheader>
-    }
-    classes={{
-      root: styles.listRoot
-    }}
-  >
-    <Divider classes={{ root: styles.divider }} light />
-    <InfoList infos={infos} details={details} />
-  </List>
-)
+class Transaction extends React.Component<TransactionProps, ITransactionState> {
+  static items = [
+    { key: 'type', label: 'Type', },
+    { key: 'from', label: 'From', type: 'account', },
+    { key: 'to', label: 'To', type: 'account', },
+    { key: 'contractAddress', label: 'Contract', type: 'account', },
+    { key: 'blockNumber', label: 'Block Height', type: 'height', },
+    { key: 'version', label: 'Version', },
+    { key: 'nonce', label: 'Nonce', },
+    { key: 'validUntilBlock', label: 'ValidUntilBlock', },
+    { key: 'value', label: 'Value', },
+    { key: 'quota', label: 'Quota', },
+    { key: 'quotaPrice', label: 'Quota Price', },
+    // { key: 'fee', label: 'Fee', },
+  ];
+  readonly state = initState;
 
-class Transaction extends React.Component<TransactionProps, TransactionState> {
-  readonly state = initState
-  public componentWillMount () {
-    const { transaction } = this.props.match.params
-    if (transaction) {
-      this.setState(state => ({ loading: state.loading + 2 }))
-      this.props.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.Transaction) => {
-        this.handleReturnedTx(tx)
-      }, this.handleError)
-      this.props.CITAObservables.getTransactionReceipt(transaction).subscribe((receipt: Chain.TransactionReceipt) => {
-        this.handleReturnedTxReceipt(receipt)
-      }, this.handleError)
-      this.getQuotaPrice()
-    }
-  }
   public componentDidMount () {
     hideLoader()
-  }
-  public componentWillReceiveProps (nextProps) {
-    const { transaction } = nextProps.match.params
+    const { transaction, } = this.props.match.params
     if (transaction) {
-      this.setState(state => ({ loading: state.loading + 2 }))
-      nextProps.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.Transaction) => {
-        this.handleReturnedTx(tx)
-      }, this.handleError)
-      nextProps.CITAObservables.getTransactionReceipt(transaction).subscribe((receipt: Chain.TransactionReceipt) => {
-        this.handleReturnedTxReceipt(receipt)
-      }, this.handleError)
+      this.fetchTransactionInfo(transaction)
     }
   }
+
+  public componentWillReceiveProps (nextProps) {
+    const { transaction, } = nextProps.match.params
+    if (
+      transaction &&
+      transaction.replace(/^0x/, '').toLowerCase() !==
+        this.state.hash.replace(/^0x/, '').toLowerCase()
+    ) {
+      this.fetchTransactionInfo(transaction)
+    }
+  }
+
   public componentDidCatch (err) {
     this.handleError(err)
   }
+
   private getQuotaPrice = () => {
     this.props.CITAObservables.getQuotaPrice().subscribe((price: string) => {
-      this.setState(state =>
-        Object.assign({}, state, {
-          basicInfo: {
-            ...state.basicInfo,
-            quotaPrice: `${price === '0x' ? '0' : +price}`
-          }
-        })
-      )
+      this.setState(state => ({
+        ...state,
+        quotaPrice: `${price === '0x' ? '0' : +price}`,
+      }))
     }, this.handleError)
-  }
+  };
+
+  private parseParamters = (contractAddr, data) =>
+    this.props.CITAObservables.getAbi({
+      contractAddr,
+      blockNumber: 'pending',
+    }).subscribe(hexAbi => {
+      if (hexAbi) {
+        try {
+          const abis = JSON.parse(hexToUtf8(hexAbi))
+          const fnHash = data.slice(0, 10)
+          abis.forEach(_abi => {
+            const _abiHash = abiCoder.encodeFunctionSignature(_abi.name)
+            if (_abi.signature === fnHash) {
+              const parameters = {}
+              const p = abiCoder.decodeParameters(_abi.inputs, data.slice(10))
+              Object.keys(p).forEach(key => {
+                parameters[key] = p[key]
+              })
+              Object.defineProperty(parameters, '__length__', {
+                enumerable: false,
+              })
+              this.setState({
+                parameters: JSON.stringify(parameters, null, 2),
+              })
+            }
+          })
+        } catch (err) {
+          console.warn(err)
+        }
+      }
+    }, console.warn);
+
+  private fetchTransactionInfo = transaction => {
+    const hash = format0x(transaction)
+    this.setState(state => ({ loading: state.loading + 2, hash, }))
+    this.props.CITAObservables.getTransaction(transaction).subscribe(
+      (tx: Chain.Transaction) => {
+        setTimeout(() => {
+          this.handleReturnedTx(tx)
+        }, 100)
+      },
+      this.handleError
+    )
+    this.props.CITAObservables.getTransactionReceipt(transaction).subscribe(
+      (
+        receipt: // Chain.TransactionReceipt
+        any
+      ) => {
+        this.handleReturnedTxReceipt(receipt)
+      },
+      this.handleError
+    )
+    this.getQuotaPrice()
+  };
+
   private handleReturnedTx = (tx: Chain.Transaction) => {
     if (!tx) {
       this.handleError({
         error: {
           message: 'Transaction Not Found',
-          code: '-1'
-        }
+          code: '-1',
+        },
       })
     }
-    const details = unsigner(tx.content)
-    const { basicInfo } = this.state
-    if (basicInfo && tx.basicInfo && typeof tx.basicInfo !== 'string') {
-      /* eslint-disable */
-      const { data, value, nonce, quota, validUntilBlock } = details.transaction
-      const { address } = details.sender
-      basicInfo.data = data === '0x' ? 'Empty Data' : data
-      basicInfo.value = valueFormatter(value)
-      basicInfo.from = address
-      basicInfo.nonce = nonce
-      basicInfo.quotaLimit = quota
-      basicInfo.validUntilBlock = validUntilBlock
-      basicInfo.to = details.transaction.to || 'Contract Creation'
-      /* eslint-enable */
+    try {
+      const unsignedTx = unsigner(tx.content)
+      const {
+        value,
+        data,
+        nonce,
+        quota: quotaLimit,
+        validUntilBlock,
+        version,
+        to,
+      } = unsignedTx.transaction
+
+      if (to !== '0x') {
+        this.parseParamters(to, data)
+      }
+
+      this.setState(state => ({
+        ...state,
+        blockHash: tx.blockHash,
+        blockNumber: `${+tx.blockNumber}`,
+        index: `${+tx.index}`,
+        data: data === '0x' ? EMPTY_DATA : data,
+        from: unsignedTx.sender.address,
+        to,
+        quotaLimit,
+        nonce,
+        validUntilBlock,
+        value,
+        version,
+        type: !to
+          ? TX_TYPE.CONTRACT_CREATION
+          : data.replace(/^0x/, '')
+            ? TX_TYPE.CONTRACT_CALL
+            : TX_TYPE.EXCHANGE,
+        loading: state.loading - 1,
+      }))
+
+      const utf8Str = hexToUtf8(data)
+      this.setState({
+        utf8Str,
+      })
+    } catch (err) {
+      console.warn(err)
+      this.handleError({
+        error: 'Invalid Transaction',
+        code: '-1',
+      })
     }
-    return this.setState(state =>
-      Object.assign(
-        {},
-        state,
-        { ...tx, blockNumber: `${+tx.blockNumber}`, index: `${+tx.index}` },
-        { basicInfo },
-        { loading: state.loading - 1 }
-      )
-    )
-  }
+  };
+
   private handleReturnedTxReceipt = (receipt: Chain.TransactionReceipt) => {
     if (!receipt) {
       this.handleError({
         error: {
-          message: 'Transaction Not Found',
-          code: '-1'
-        }
+          message: 'Transaction Receipt Not Found',
+          code: '-1',
+        },
       })
     }
-    const { errorMessage, gasUsed, contractAddress } = receipt
-    const basicInfo = {
-      ...this.state.basicInfo,
+    const { errorMessage, quotaUsed, contractAddress, } = receipt as any
+    this.setState(state => ({
+      ...state,
       errorMessage,
-      quotaUsed: gasUsed,
-      createdContractAddress: contractAddress
-    }
-    return this.setState(state => Object.assign({}, state, { basicInfo }, { loading: state.loading - 1 }))
-  }
-  private infos = [
-    { key: 'blockHash', label: 'Block Hash', type: 'block' },
-    { key: 'blockNumber', label: 'Height', type: 'height' },
-    { key: 'index', label: 'Index' }
-  ]
-  private basicInfo = [
-    { key: 'from', label: 'From', type: 'account' },
-    { key: 'to', label: 'To', type: 'account' },
-    { key: 'nonce', label: 'Nonce' },
-    { key: 'validUntilBlock', label: 'ValidUntilBlock' },
-    { key: 'value', label: 'Value' },
-    { key: 'data', label: 'Data' },
-    { key: 'quotaLimit', label: 'Quota Limit' },
-    { key: 'quotaPrice', label: 'Quota Price' },
-    { key: 'quotaUsed', label: 'Quota Used' },
-    { key: 'createdContractAddress', label: 'Created Contract Address' },
-    { key: 'errorMessage', label: 'Error Message' }
-  ]
+      quotaUsed: `${+quotaUsed}`,
+      contractAddress,
+      loading: state.loading - 1,
+    }))
+  };
 
-  private handleError = handleError(this)
-  private dismissError = dismissError(this)
-  render () {
-    const { hash, error, timestamp, gasUsed } = this.state
+  private switchDataType = (dataType: DATA_TYPE) => {
+    this.setState(state => ({
+      dataType,
+    }))
+  }
+
+  private handleError = handleError(this);
+  private dismissError = dismissError(this);
+
+  public render () {
+    const {
+      data,
+      errorMessage,
+      utf8Str,
+      dataType,
+      hash,
+      error,
+      value,
+      quotaUsed,
+      quotaPrice,
+      quotaLimit,
+      loading,
+      validUntilBlock,
+      blockNumber,
+      parameters,
+    } = this.state
+    const { symbol, } = this.props.config
+    const txInfo = {
+      ...this.state,
+      blockNumber: `${(+blockNumber).toLocaleString()}`,
+      quota: `${(+quotaUsed).toLocaleString()} / ${(+quotaLimit).toLocaleString()}`,
+      fee: valueFormatter(+quotaUsed * +quotaPrice, symbol),
+      quotaPrice: (+quotaPrice).toLocaleString(),
+      value: valueFormatter(value, symbol),
+      validUntilBlock: `${(+validUntilBlock).toLocaleString()}`,
+      data:
+        dataType === DATA_TYPE.HEX
+          ? data
+          : dataType === DATA_TYPE.UTF8
+            ? utf8Str
+            : parameters,
+    }
+    const dataTypes = [DATA_TYPE.HEX, ]
+    if (utf8Str) {
+      dataTypes.push(DATA_TYPE.UTF8)
+    }
+    if (parameters) {
+      dataTypes.push(DATA_TYPE.PARAMETERS)
+    }
     return (
       <React.Fragment>
-        {hash ? null : (
-          <LinearProgress
-            classes={{
-              root: 'linearProgressRoot'
-            }}
-          />
-        )}
-        <Banner bg={`${process.env.PUBLIC}/banner/banner-Transaction.png`}>
-          <div className={styles.hashTitle}>Transaction</div>
+        <LinearProgress loading={loading} />
+        <Banner>
+          <div className={styles.hashTitle}>Transaction: </div>
           <div className={styles.hashText}>{hash}</div>
         </Banner>
 
         <div className={layouts.main}>
-          {timestamp ? (
-            <Card classes={{ root: styles.hashCardRoot }}>
-              <CardContent>
-                <div className={styles.attrs}>
-                  {timestamp ? (
-                    <span>
-                      <svg className="icon" aria-hidden="true">
-                        <use xlinkHref="#icon-time" />
-                      </svg>
-                      <span className={styles.attrTitle}>Time: </span>
-                      {new Date(timestamp).toLocaleString()}
-                    </span>
-                  ) : null}
-                  {gasUsed ? (
-                    <span>
-                      <img
-                        src={`${process.env.PUBLIC}/microscopeIcons/petrol_barrel.svg`}
-                        alt="gas used"
-                        className={styles.gasIcon}
-                      />
-
-                      <span className={styles.attrTitle}>Gas Used: </span>
-                      {gasUsed}
-                    </span>
-                  ) : null}
-                </div>
-              </CardContent>
-            </Card>
-          ) : null}
-          <Card classes={{ root: layouts.cardContainer }}>
-            <CardContent classes={{ root: styles.cardContentRoot }}>
+          <Card classes={{ root: layouts.cardContainer, }}>
+            <CardContent classes={{ root: styles.cardContentRoot, }}>
               <div className={styles.lists}>
-                <Info title="Transaction" infos={this.basicInfo} details={this.state.basicInfo} />
-                <Info title="Block" infos={this.infos} details={this.state} />
+                <List
+                  classes={{
+                    root: styles.listRoot,
+                  }}
+                >
+                  <InfoItem
+                    label="Status"
+                    detail={
+                      errorMessage ? (
+                        <span className={styles.failure}>
+                          <svg className="icon" aria-hidden="true">
+                            <use xlinkHref="#icon-cancel-circle" />
+                          </svg>
+                          {`${TX_STATUS.FAILURE}. ${errorMessage}`}
+                        </span>
+                      ) : (
+                        <span className={styles.success}>
+                          <svg className="icon" aria-hidden="true">
+                            <use xlinkHref="#icon-check-circle" />
+                          </svg>
+                          {TX_STATUS.SUCCESS}
+                        </span>
+                      )
+                    }
+                  />
+                  {Transaction.items
+                    .filter(item => txInfo[item.key])
+                    .map(
+                      item =>
+                        txInfo[item.key] !== '' ? (
+                          <InfoItem
+                            label={item.label}
+                            type={item.type}
+                            key={item.key}
+                            detail={txInfo[item.key]}
+                          />
+                        ) : null
+                    )}
+                  <div className={styles.detailItem}>
+                    <span>data</span>
+                    <span className={styles.dataTypeSwitch}>
+                      {dataTypes.map((type: DATA_TYPE) => (
+                        <span
+                          key={type}
+                          onClick={e => this.switchDataType(type)}
+                          className={type === dataType ? styles.active : ''}
+                        >
+                          {type}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                  {dataType === DATA_TYPE.PARAMETERS ? (
+                    <pre className={styles.parameters}>{parameters}</pre>
+                  ) : (
+                    <textarea
+                      className={styles.hexData}
+                      disabled
+                      value={txInfo.data}
+                    />
+                  )}
+                </List>
               </div>
             </CardContent>
           </Card>
@@ -287,4 +411,4 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
   }
 }
 
-export default withObservables(Transaction)
+export default withConfig(withObservables(Transaction))

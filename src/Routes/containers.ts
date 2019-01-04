@@ -1,25 +1,32 @@
+import Image from '../images'
+
 export default [
-  { path: '/', name: 'Header', component: 'Header', nav: false },
+  {
+    path: '/',
+    name: 'Header',
+    component: 'Header',
+    nav: false,
+  },
   {
     path: '/',
     name: 'Homepage',
     component: 'Homepage',
     exact: true,
-    nav: false
+    nav: false,
   },
   {
     path: '/block/:blockHash',
     name: 'BlockByHash',
     component: 'Block',
     exact: true,
-    nav: false
+    nav: false,
   },
   {
     path: '/height/:height',
     name: 'BlockByHeight',
     component: 'Block',
     exact: true,
-    nav: false
+    nav: false,
   },
   {
     path: '/blocks',
@@ -27,8 +34,8 @@ export default [
     component: 'BlockTable',
     exact: true,
     nav: true,
-    icon: `${process.env.PUBLIC}/microscopeIcons/mobile_navs/block.svg`,
-    iconActive: `${process.env.PUBLIC}/microscopeIcons/mobile_navs/block_active.svg`
+    icon: Image.icon.block,
+    iconActive: Image.iconActive.block,
   },
   {
     path: '/transactions',
@@ -36,22 +43,22 @@ export default [
     component: 'TransactionTable',
     exact: true,
     nav: true,
-    icon: `${process.env.PUBLIC}/microscopeIcons/mobile_navs/transaction.svg`,
-    iconActive: `${process.env.PUBLIC}/microscopeIcons/mobile_navs/transaction_active.svg`
+    icon: Image.icon.transaction,
+    iconActive: Image.iconActive.transaction,
   },
   {
     path: '/transaction/:transaction',
     name: 'Transaction',
     component: 'Transaction',
     exact: true,
-    nav: false
+    nav: false,
   },
   {
     path: '/account/:account',
     name: 'Account',
     component: 'Account',
     exact: true,
-    nav: false
+    nav: false,
   },
   {
     path: '/graphs',
@@ -59,8 +66,8 @@ export default [
     component: 'Graphs',
     exact: true,
     nav: true,
-    icon: `${process.env.PUBLIC}/microscopeIcons/mobile_navs/statistics.svg`,
-    iconActive: `${process.env.PUBLIC}/microscopeIcons/mobile_navs/statistics_active.svg`
+    icon: Image.icon.statistics,
+    iconActive: Image.iconActive.statistics,
   },
   {
     path: '/debugger',
@@ -68,8 +75,8 @@ export default [
     component: 'Debugger',
     exact: true,
     nav: true,
-    icon: `${process.env.PUBLIC}/microscopeIcons/mobile_navs/statistics.svg`,
-    iconActive: `${process.env.PUBLIC}/microscopeIcons/mobile_navs/statistics_active.svg`
+    icon: Image.icon.statistics,
+    iconActive: Image.iconActive.statistics,
   },
   {
     path: '/config',
@@ -77,8 +84,14 @@ export default [
     component: 'ConfigPage',
     exact: true,
     nav: true,
-    icon: `${process.env.PUBLIC}/microscopeIcons/mobile_navs/config.svg`,
-    iconActive: `${process.env.PUBLIC}/microscopeIcons/mobile_navs/config_active.svg`
+    icon: Image.icon.config,
+    iconActive: Image.iconActive.config,
   },
-  { path: '/', name: 'Footer', component: 'Footer', exact: false, nav: false }
+  {
+    path: '/',
+    name: 'Footer',
+    component: 'Footer',
+    exact: false,
+    nav: false,
+  },
 ]

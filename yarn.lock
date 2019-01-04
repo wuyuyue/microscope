@@ -2,10 +2,28 @@
 # yarn lockfile v1
 
 
-"@appchain/signer@2.0.3":
-  version "2.0.3"
-  resolved "https://registry.npmjs.org/@appchain/signer/-/signer-2.0.3.tgz#146b5966a4e5e5b297abca508e7ab45ce1e7ad44"
-  integrity sha512-sAd40d0WGkdv2OMspS4ZWD8gnei1QLO5uOz1pnHw95WqGdRq8Y0H+eSN0y2tJuOSlg1GePELdCFwp078Bxi1ig==
+"@appchain/observables@^0.20.2":
+  version "0.20.2"
+  resolved "https://registry.npmjs.org/@appchain/observables/-/observables-0.20.2.tgz#125bbdb863935b6b99ef5bda071c287cbeecfbe5"
+  integrity sha512-DjX4EFqZSeOGB7Q7NlQh7XvrAJ9iqsNAHjouYhPH75WQlnHS+5sEGB7kOFuLUElaHVkAyTmW4K4zhNs0JXmFgg==
+  dependencies:
+    "@appchain/plugin" "^0.20.1"
+    "@reactivex/rxjs" "^5.5.8"
+
+"@appchain/plugin@^0.20.1":
+  version "0.20.1"
+  resolved "https://registry.npmjs.org/@appchain/plugin/-/plugin-0.20.1.tgz#3226c04c0fb20847d961b72d546ca5e13e5c89e7"
+  integrity sha512-ciTX4vNbQ4/+naQxjQUTLJmdTii6oOPgv4WVLFvC3qcH5snI4nKnkvJYZI47io2VqBh3W9RUYf0YBxWGZsrJqg==
+  dependencies:
+    "@appchain/signer" "^2.0.1"
+    "@types/google-protobuf" "^3.2.7"
+    axios "^0.18.0"
+    google-protobuf "^3.5.0"
+
+"@appchain/signer@^2.0.1", "@appchain/signer@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.npmjs.org/@appchain/signer/-/signer-2.0.4.tgz#deae6486b2d04e0525a04f7d4d26b0a9a143e9bb"
+  integrity sha512-Hk3FMjB3VTYCXmiRGH9MR2DnNlQi4W2B9mmFCUEELFgiC3bIOPkz2MXbCnPITV81XycFKtEpzyDRz+JD/a4ilA==
   dependencies:
     ec "^0.0.1"
     elliptic "^6.4.0"
@@ -86,23 +104,6 @@
   version "1.7.2"
   resolved "https://registry.npmjs.org/@most/prelude/-/prelude-1.7.2.tgz#be4ed406518d4c8c220e45c39fa7251365425b73"
   integrity sha512-GM5ec7+xpkuXiCMyzhyENgH/xZ8t0nAMDBY0QOsVVD6TrZYjJKUnW1eaI18HHX8W+COWMwWR9c0zoPiBp9+tUg==
-
-"@nervos/observables@0.18.3":
-  version "0.18.3"
-  resolved "https://registry.npmjs.org/@nervos/observables/-/observables-0.18.3.tgz#e98e13a487813649ab705588be91b9bad956d86b"
-  integrity sha512-H3edEwcMrKQ/AoDdz4eoKZ2SKrO9pBeyvNVE/jtIcldX0CGdcWL4xFc6HfHxXgUYkv2oe1wPJLHNwoXaX9kE0A==
-  dependencies:
-    "@nervos/plugin" "0.18.4"
-    "@reactivex/rxjs" "^5.5.8"
-
-"@nervos/plugin@0.18.4":
-  version "0.18.4"
-  resolved "https://registry.npmjs.org/@nervos/plugin/-/plugin-0.18.4.tgz#b6bd1df3bd39c20a7114c884a21b52146c526db1"
-  integrity sha512-ozGRfPW2kZwEmyemeaDE6nRZMZ8rGVuu4fauG0bsEPBwRLA1rpUmxYpHYSdu6Rvr10yM/MjLKOmCDajsqeGY4w==
-  dependencies:
-    "@types/google-protobuf" "^3.2.7"
-    axios "^0.18.0"
-    google-protobuf "^3.5.0"
 
 "@reactivex/rxjs@^5.5.6", "@reactivex/rxjs@^5.5.8":
   version "5.5.12"
@@ -4485,11 +4486,6 @@ i18next-browser-languagedetector@^2.1.0:
   version "2.2.3"
   resolved "https://registry.npmjs.org/i18next-browser-languagedetector/-/i18next-browser-languagedetector-2.2.3.tgz#4196a9964b6d51b76254706a267ba746c9ca19de"
   integrity sha512-sJZ2n9Vgax0vGer23hJMwyO3FRO7P0dq2DXZPXWE329g3snfJUcw+S24Mp3lqJaxL/0McDu4BD75ds6pzIfhhw==
-
-i18next-xhr-backend@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.npmjs.org/i18next-xhr-backend/-/i18next-xhr-backend-1.5.1.tgz#50282610780c6a696d880dfa7f4ac1d01e8c3ad5"
-  integrity sha512-9OLdC/9YxDvTFcgsH5t2BHCODHEotHCa6h7Ly0EUlUC7Y2GS09UeoHOGj3gWKQ3HCqXz8NlH4gOrK3NNc9vPuw==
 
 i18next@^10.3.0:
   version "10.6.0"

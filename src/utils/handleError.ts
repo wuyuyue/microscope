@@ -5,18 +5,37 @@
  * @Last Modified time: 2018-07-26 17:25:09
  */
 
-import { initError } from './../initValues'
+import { initError, } from './../initValues'
 
-export const handleError = ctx => error => {
-  if (!window.localStorage.getItem('chainIp')) return
-  // only active when chain ip exsits
-  ctx.setState(state => ({
-    loading: state.loading - 1,
-    error
-  }))
-  // }
+const createHandleError = () => {
+  const lastErrorMessageTable = {} as any
+  let lastErrorMessage = ''
+
+  return ctx => error => {
+    if (!window.localStorage.getItem('chainIp')) return
+    // only active when chain ip exsits
+    if (
+      error.message === lastErrorMessageTable[ctx.constructor.name] ||
+      error.message === lastErrorMessage
+    ) {
+      ctx.setState(state => ({
+        loading: state.loading - 1,
+      }))
+      return
+    }
+    // only active when the last error message is different
+    lastErrorMessageTable[ctx.constructor.name] = error.message
+    lastErrorMessage = error.message
+    ctx.setState(state => ({
+      loading: state.loading - 1,
+      error,
+    }))
+    // }
+  }
 }
 
+export const handleError = createHandleError()
+
 export const dismissError = ctx => () => {
-  ctx.setState({ error: initError })
+  ctx.setState({ error: initError, })
 }

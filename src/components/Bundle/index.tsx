@@ -2,18 +2,18 @@
 import * as React from 'react'
 
 interface Props {
-  load: any
-  children: (Comp: any) => React.ReactNode
+  load: any;
+  children: (Comp: any) => React.ReactNode;
 }
 interface State {
-  mod: any
+  mod: any;
 }
 
 class Bundle extends React.Component<Props, State & React.ComponentState> {
   state = {
     // short for "module" but that's a keyword in js, so "mod"
     mod: null,
-  }
+  };
 
   componentWillMount () {
     this.load(this.props)

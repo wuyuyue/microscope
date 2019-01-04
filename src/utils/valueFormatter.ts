@@ -1,2 +1,6 @@
-// export default (value: number | string) => (+value > 1e9 ? `${+value / 1e9} Coins` : `${+value} Quota`)
-export default (value: number | string) => `${+value}`
+const RATIO = 1e18
+const DECIMAL = 9
+
+export default (value: number | string, symbol?: string) =>
+  +(+value / RATIO).toFixed(DECIMAL).toLocaleString() +
+  (symbol ? ` ${symbol}` : '')

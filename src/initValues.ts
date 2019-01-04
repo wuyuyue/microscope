@@ -2,18 +2,31 @@
  * @Author: Keith-CY
  * @Date: 2018-07-22 19:59:22
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-09-11 14:27:24
+ * @Last Modified time: 2019-01-04 11:22:15
  */
 
-import { IBlock, IBlockHeader, Transaction, Metadata, ABI, UnsignedTransaction } from './typings'
+import { Chain, } from '@appchain/plugin'
+import {
+  IBlock,
+  IBlockHeader,
+  Transaction,
+  Metadata,
+  ABI,
+  UnsignedTransaction,
+  TransactionFromServer,
+} from './typings'
 import widerThan from './utils/widerThan'
-import { Contract, AccountType } from './typings/account'
-import { LocalAccount } from './components/LocalAccounts'
-
-import { SelectorType } from './components/TableWithSelector'
-import LOCAL_STORAGE, { PanelConfigs } from './config/localstorage'
-import { getServerList, getPrivkeyList, getPanelConfigs } from './utils/accessLocalstorage'
-import check, { errorMessages } from './utils/check'
+import { Contract, AccountType, } from './typings/account'
+import { LocalAccount, } from './components/LocalAccounts'
+import { ServerList, } from './components/MetadataPanel'
+import { SelectorType, } from './components/TableWithSelector'
+import LOCAL_STORAGE, { PanelConfigs, } from './config/localstorage'
+import {
+  getServerList,
+  getPrivkeyList,
+  getPanelConfigs,
+} from './utils/accessLocalstorage'
+import check, { errorMessages, } from './utils/check'
 
 const isDesktop = widerThan(800)
 export const initHeader: IBlockHeader = {
@@ -23,21 +36,21 @@ export const initHeader: IBlockHeader = {
   stateRoot: '',
   transactionsRoot: '',
   receiptsRoot: '',
-  gasUsed: '',
+  quotaUsed: '',
   proposer: '',
   proof: {
     Bft: {
-      proposal: ''
-    }
-  }
+      proposal: '',
+    },
+  },
 }
 export const initBlock: IBlock = {
   body: {
-    transactions: []
+    transactions: [],
   },
   hash: '',
   header: initHeader,
-  version: 0
+  version: 0,
 }
 
 export const initTransaction: Transaction = {
@@ -48,15 +61,15 @@ export const initTransaction: Transaction = {
     from: '',
     to: '',
     value: '',
-    data: ''
-  }
+    data: '',
+  },
 }
 export const initUnsignedTransaction: UnsignedTransaction = {
   crypto: 0,
   signature: '',
   sender: {
     address: '',
-    publicKey: ''
+    publicKey: '',
   },
   transaction: {
     data: '',
@@ -65,8 +78,8 @@ export const initUnsignedTransaction: UnsignedTransaction = {
     to: '',
     validUntilBlock: 0,
     value: 0,
-    version: 0
-  }
+    version: 0,
+  },
 }
 export const initMetadata: Metadata = {
   chainId: -1,
@@ -77,7 +90,7 @@ export const initMetadata: Metadata = {
   validators: [],
   blockInterval: 0,
   economicalModel: 0,
-  version: null
+  version: null,
 }
 
 // init config values
@@ -88,40 +101,67 @@ export const initPanelConfigs: PanelConfigs = {
   blockHash: true,
   blockAge: isDesktop,
   blockTransactions: true,
-  blockGasUsed: isDesktop,
+  blockQuotaUsed: isDesktop,
   blockPageSize: 10,
   transactionHash: true,
   transactionFrom: isDesktop,
   transactionTo: isDesktop,
   transactionValue: isDesktop,
   transactionAge: isDesktop,
-  transactionGasUsed: isDesktop,
+  transactionQuotaUsed: isDesktop,
   transactionBlockNumber: true,
   transactionPageSize: 10,
   graphIPB: true,
   graphTPB: true,
-  graphGasUsedBlock: true,
-  graphGasUsedTx: true,
+  graphQuotaUsedBlock: true,
+  graphQuotaUsedTx: true,
   graphProposals: true,
-  graphMaxCount: 10
+  graphMaxCount: 10,
 }
 
 export const initServerList = (process.env.CHAIN_SERVERS || '').split(',')
 export const initPrivateKeyList = []
-export const initError = { message: '', code: '' }
+export const initError = { message: '', code: '', }
+
+export const initHeaderState = {
+  keyword: '',
+  metadata: initMetadata,
+  showMetadata: false,
+  sidebarNavs: false,
+  activePanel: window.urlParamChain || '',
+  searchIp: '',
+  otherMetadata: initMetadata,
+  tps: 0,
+  tpb: 0,
+  ipb: 0,
+  peerCount: 0,
+  block: initBlock,
+  anchorEl: undefined,
+  lngOpen: false,
+  lng: window.localStorage.getItem('i18nextLng'),
+  inputChainError: false,
+  waitingMetadata: false,
+  error: {
+    code: '',
+    message: '',
+  },
+  overtime: 0,
+  serverList: [] as ServerList,
+}
+
 export const initAccountState = {
   loading: 0,
   type: AccountType.NORMAL,
   addr: '',
   abi: [] as ABI,
   code: '0x',
-  contract: { _jsonInterface: [], methods: [] } as Contract,
+  contract: { _jsonInterface: [], methods: [], } as Contract,
   balance: '',
   txCount: 0,
   creator: '',
   transactions: [] as Transaction[],
   customToken: {
-    name: ''
+    name: '',
   },
 
   normals: [] as LocalAccount[],
@@ -131,20 +171,21 @@ export const initAccountState = {
   addrsOn: false,
   normalsAdd: {
     name: '',
-    addr: ''
+    addr: '',
   },
   erc20sAdd: {
     name: '',
-    addr: ''
+    addr: '',
   },
   erc721sAdd: {
     name: '',
-    addr: ''
+    addr: '',
   },
   error: {
     code: '',
-    message: ''
-  }
+    message: '',
+  },
+  copiedIdx: -1,
 }
 
 export const initBlockState = {
@@ -157,29 +198,31 @@ export const initBlockState = {
     stateRoot: '',
     transactionsRoot: '',
     receiptsRoot: '',
-    gasUsed: '',
+    quotaUsed: '',
     proposer: '',
     proof: {
       Bft: {
-        proposal: ''
-      }
-    }
+        proposal: '',
+      },
+    },
   },
   body: {
-    transactions: []
+    transactions: [],
   },
   version: 0,
   transactionsOn: false,
-  error: initError
+  error: initError,
+  quotaPrice: '',
+  fee: '',
 }
 
 export const initBlockTableState = {
   headers: [
-    { key: 'height', text: 'height', href: '/height/' },
-    { key: 'hash', text: 'hash', href: '/block/' },
-    { key: 'age', text: 'age' },
-    { key: 'transactions', text: 'transactions' },
-    { key: 'gasUsed', text: 'quota used' }
+    { key: 'height', text: 'height', href: '/height/', },
+    { key: 'hash', text: 'hash', href: '/block/', },
+    { key: 'age', text: 'age', },
+    { key: 'transactions', text: 'transactions', },
+    { key: 'quotaUsed', text: 'quota used', },
   ],
   items: [] as any[],
   count: 0,
@@ -193,15 +236,15 @@ export const initBlockTableState = {
       items: [
         {
           key: 'numberFrom',
-          text: 'Height From'
+          text: 'Height From',
         },
         {
           key: 'numberTo',
-          text: 'Height To'
-        }
+          text: 'Height To',
+        },
       ],
       check: check.digitsDec,
-      errorMessage: errorMessages.digits
+      errorMessage: errorMessages.digits,
     },
     {
       type: SelectorType.RANGE,
@@ -210,39 +253,57 @@ export const initBlockTableState = {
       items: [
         {
           key: 'transactionFrom',
-          text: 'From'
+          text: 'From',
         },
         {
           key: 'transactionTo',
-          text: 'To'
-        }
+          text: 'To',
+        },
       ],
       check: check.digitsDec,
-      errorMessage: errorMessages.digits
-    }
+      errorMessage: errorMessages.digits,
+    },
   ],
   selectorsValue: {
     numberFrom: '',
     numberTo: '',
     transactionFrom: '',
-    transactionTo: ''
+    transactionTo: '',
   },
   loading: 0,
   error: {
     code: '',
-    message: ''
-  }
+    message: '',
+  },
 }
 export const initConfigContext = {
   localStorage: LOCAL_STORAGE,
   serverList: getServerList(),
   privkeyList: getPrivkeyList(),
   panelConfigs: getPanelConfigs(),
+  symbol: '',
+  setSymbol: (symbol: string) => false,
   addServer: server => false,
   deleteServer: server => false,
   addPrivkey: privkey => false,
   deletePrivkey: privkey => false,
-  changePanelConfig: (config: any) => false
+  changePanelConfig: (config: any) => false,
 }
 
 export const ContractCreation = 'Contract Creation'
+
+export const initHomePageState = {
+  loading: 0,
+  metadata: initMetadata,
+  overtime: 0,
+  blocks: [] as Chain.Block<Chain.TransactionInBlock>[],
+  transactions: [] as TransactionFromServer[],
+  showValidators: false,
+  healthy: {
+    count: '',
+  },
+  error: {
+    code: '',
+    message: '',
+  },
+}

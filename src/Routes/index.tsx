@@ -2,11 +2,11 @@
  * @Author: Keith-CY
  * @Date: 2018-07-22 19:59:10
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-07-22 20:10:55
+ * @Last Modified time: 2018-12-17 17:08:48
  */
 
 import * as React from 'react'
-import { Route } from 'react-router-dom'
+import { Route, } from 'react-router-dom'
 
 import Bundle from '../components/Bundle'
 import containers from './containers'
@@ -14,7 +14,7 @@ import containers from './containers'
 export const asyncRender = mod => routerProps => {
   if (!mod) return null
   /* eslint-disable */
-  const Component = require(`bundle-loader?lazy!../containers/${mod}`)
+  const Component = require(`bundle-loader?lazy!../containers/${mod}`);
   /* eslint-enable */
   return (
     <Bundle load={Component}>

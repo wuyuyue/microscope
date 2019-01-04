@@ -1,3 +1,5 @@
+@import '../../styles/color.scss';
+
 .card {
   border-radius: 2px;
   box-shadow: 0 0 10px 0 rgba(170, 170, 170, 0.2) !important;
@@ -15,5 +17,147 @@
   align-items: center;
 }
 
+.metadataTable {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-flow: wrap;
+  margin-bottom: 60px;
+  box-sizing: border-box;
+}
+
+.mainInfoBlock {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.mainInfoCell {
+  width: 380px;
+  max-width: 32%;
+  box-sizing: border-box;
+  max-height: 150px;
+  padding: 45px 0 35px 40px;
+  margin-bottom: 30px;
+  border-radius: 6px;
+  background: $gradient1;
+  color: #fff;
+  display: flex;
+  align-items: flex-end;
+}
+
+.alertContiner {
+  position: relative;
+}
+
+.alert {
+  z-index: 1001;
+  position: absolute;
+  overflow: auto;
+  bottom: 0;
+  right: 0;
+  transform: translate(0, 100%);
+  background: white;
+  color: black;
+  box-shadow: 0 4px 16px 0 rgba(86, 129, 204, 0.1);
+  border-radius: 5px;
+  box-sizing: border-box;
+
+  div {
+    padding: 20px;
+  }
+}
+
+.mainInfoIcon {
+  width: 70px;
+  height: 70px;
+  background-color: #699be5;
+  margin-right: 20px;
+  border-radius: 50%;
+
+  svg {
+    margin: (70 - 34px) / 2;
+    width: 34px;
+    height: 34px;
+    color: white;
+  }
+}
+
+.mainInfoContent {
+  font-size: 32px;
+  line-height: 40px;
+  margin-bottom: 4px;
+}
+
+.mainInfoName {
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.subInfoBlock {
+  display: flex;
+  width: 100%;
+  flex-flow: wrap;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px 0 rgba(86, 129, 204, 0.1);
+  background-color: #ffffff;
+  padding: 14px 0 20px 0;
+}
+
+.subInfoCell {
+  width: 33%;
+  padding: 12px 0 0 58px;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.subInfoIcon {
+  width: 22px;
+  height: 22px;
+  margin-right: 18px;
+
+  svg {
+    width: 22px;
+    height: 22px;
+    color: #5486db;
+  }
+}
+
+.subInfoContent {
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #4a5563;
+}
+
+.subInfoName {
+  font-size: 14px;
+  line-height: 20px;
+  color: #979a9e;
+}
+
 .firstChart,
-.secondChart {}
+.secondChart {
+}
+
+@media (max-width: 960px) {
+  .mainInfoBlock {
+    flex-flow: column;
+    align-items: center;
+  }
+
+  .mainInfoCell {
+    max-width: 100%;
+  }
+
+  .subInfoCell {
+    width: 50%;
+    padding: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .subInfoCell {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}

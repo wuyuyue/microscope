@@ -1,5 +1,7 @@
 @import '../../styles/color.scss';
 @import '../../styles/common.scss';
+@import '../../styles/text.scss';
+
 .infoValue {
   word-wrap: break-word;
   word-break: break-all;
@@ -24,14 +26,7 @@
 }
 
 .lists {
-  display: flex;
-  margin-top: 84px;
-  &>ul {
-    width: 50%;
-    @media (max-width: 800px) {
-      width: 100%;
-    }
-  }
+  padding: 23px 28px 0;
 }
 
 .listHeaderRoot {
@@ -44,9 +39,11 @@
     flex-direction: column;
     margin-top: 15px;
   }
+
   .attrs {
     display: flex;
     flex-direction: column;
+
     span:last-child {
       margin-top: 10px;
     }
@@ -57,24 +54,29 @@
   @include boxShadow;
   margin-bottom: 20px;
   padding-top: 8px;
+
   @media (max-width: 800px) {
     padding-top: 0;
   }
 }
 
 .hashTitle {
-  font-size: 24px;
-  @media (max-width: 800px) {
-    font-size: 16px;
-  }
+  font-size: 20px;
+  margin-right: 5px; // font-size: 24px;
+
+  // @media (max-width: 800px) {
+  //   font-size: 16px;
+  // }
 }
 
 .hashText {
-  font-size: 16px;
+  @extend %hash;
+  font-size: 20px;
   word-wrap: break-word;
   box-sizing: border-box;
+
   @media (max-width: 800px) {
-    width:100%;
+    width: 100%;
     padding: 0 50px;
     line-height: 1.4;
     padding-bottom: 5px;
@@ -85,26 +87,32 @@
 .attrs {
   display: flex;
   font-size: 18px;
+
   @media (max-width: 800px) {
     font-size: 16px;
+
     svg,
     img {
       margin-left: 0 !important;
     }
   }
-  &>span {
+
+  & > span {
     flex: 1;
     display: flex;
     align-items: center;
   }
+
   .attrTitle {
     font-size: 1.125rem;
     color: $plainText !important;
     margin: 0 20px 0 10px;
+
     @media (max-width: 800px) {
       margin-right: 8px;
     }
   }
+
   svg {
     font-size: 24px;
     color: $primary;
@@ -112,7 +120,7 @@
   }
 }
 
-.gasIcon {
+.quotaIcon {
   height: 24px;
   margin-left: 24px;
 }
@@ -122,15 +130,18 @@
 }
 
 .cardContentRoot {
-  @media(max-width: 800px) {
+  @media (max-width: 800px) {
     padding: 0 !important;
-    &>div {
+
+    & > div {
       margin: 0 !important;
     }
+
     .listHeaderRoot {
       line-height: 2;
       display: flex;
       align-items: center;
+
       &::before {
         display: block;
         width: 6px;
@@ -144,9 +155,80 @@
   }
 }
 
-.divider {
-  margin: 0 0 0 24px !important;
-  @media (max-width: 800px) {
-    margin: 0 0 0 15px !important;
+.detailItem {
+  & > span:first-child {
+    display: inline-block;
+    min-width: 200px;
+    color: #6f747a;
+
+    &:after {
+      content: ':';
+      display: inline;
+      color: currentColor;
+    }
   }
+
+  & > span:last-child {
+    color: #47484a;
+  }
+
+  margin-bottom: 36px;
+}
+
+.dataTypeSwitch {
+  & > span {
+    font-size: 12px;
+    padding: 6px 7px;
+    cursor: pointer;
+    color: #979a9e;
+    border: 1px solid #979a9e;
+
+    &:first-child {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+  }
+
+  .active {
+    background: #979a9e !important;
+    color: #fff;
+  }
+}
+
+.hexData,
+.parameters {
+  display: block;
+  width: 482px;
+  color: #000;
+  margin-left: 200px;
+  min-height: 200px;
+  max-height: 500px;
+  resize: none;
+  padding: 15px;
+}
+
+.hexData {
+  border: 1px solid #e7edf5;
+  border-radius: 8px;
+  line-height: 1.8;
+}
+
+.success,
+.failure {
+  svg {
+    margin-right: 4px;
+  }
+}
+
+.success {
+  color: #3dd895;
+}
+
+.failure {
+  color: #ff8181;
 }

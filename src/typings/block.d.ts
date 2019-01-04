@@ -2,31 +2,31 @@ export type Hash = string
 export type BlockNumber = string
 export type Timestamp = string | number
 export interface IBlockHeader {
-  timestamp: Timestamp
-  prevHash: Hash
-  number: BlockNumber
-  stateRoot: string
-  transactionsRoot: string
-  receiptsRoot: string
-  gasUsed: string
-  proposer: string
+  timestamp: Timestamp;
+  prevHash: Hash;
+  number: BlockNumber;
+  stateRoot: string;
+  transactionsRoot: string;
+  receiptsRoot: string;
+  quotaUsed: string;
+  proposer: string;
   proof: {
     Bft: {
-      proposal: string
-    }
-  }
+      proposal: string;
+    };
+  };
 }
 
 export interface Transaction {
-  hash: Hash
-  timestamp?: string
-  content?: string
+  hash: Hash;
+  timestamp?: string;
+  content?: string;
   basicInfo?: {
-    from: string
-    to: string
-    value: string
-    data: string
-  }
+    from: string;
+    to: string;
+    value: string;
+    data: string;
+  };
   // content: string
   // id: string
   // from: Hash
@@ -36,77 +36,77 @@ export interface Transaction {
 }
 
 export interface DetailedTransaction {
-  hash: Hash
-  content?: string
+  hash: Hash;
+  content?: string;
   basicInfo?: {
-    to: string
-    from: string
-    data: string
-    value: string
-    nonce: string
-    validUntilBlock: string
-    quotaLimit: string
-    quotaPrice?: string
-    quotaUsed: string
-    createdContractAddress: string
-    errorMessage: string
-  }
-  blockHash: Hash
-  blockNumber: string
-  index: string
+    to: string;
+    from: string;
+    data: string;
+    value: string;
+    nonce: string;
+    validUntilBlock: string;
+    quotaLimit: string;
+    quotaPrice?: string;
+    quotaUsed: string;
+    createdContractAddress: string;
+    errorMessage: string;
+  };
+  blockHash: Hash;
+  blockNumber: string;
+  index: string;
 }
 
 export interface IBlock {
   body: {
-    transactions: Transaction[]
-  }
-  hash: Hash
-  header: IBlockHeader
-  version: string | number
+    transactions: Transaction[];
+  };
+  hash: Hash;
+  header: IBlockHeader;
+  version: string | number;
 }
 export interface TransactionFromServer {
-  blockNumber: string
-  content: string
-  from: string
-  gasUsed: string
-  hash: string
-  timestamp: number
-  to: string
-  value: number
+  blockNumber: string;
+  content: string;
+  from: string;
+  quotaUsed: string;
+  hash: string;
+  timestamp: number;
+  to: string;
+  value: number;
 }
 
 export interface BlockFromServer {
-  version: number
-  transactionsCount: number
+  version: number;
+  transactionsCount: number;
   header: {
-    transactionsRoot: string
-    timestamp: number
-    stateRoot: string
-    receiptsRoot: string
+    transactionsRoot: string;
+    timestamp: number;
+    stateRoot: string;
+    receiptsRoot: string;
     proof: {
       Bft: {
-        proposal: string
-      }
-    }
-    prevHash: string
-    number: string
-    gasUsed: string
-  }
-  hash: string
+        proposal: string;
+      };
+    };
+    prevHash: string;
+    number: string;
+    quotaUsed: string;
+  };
+  hash: string;
 }
 
 export interface ProposalFromServer {
-  validator: string
-  count: number
+  validator: string;
+  count: number;
 }
 export interface Metadata {
-  chainId: number
-  chainName: string
-  operator: string
-  website: string
-  genesisTimestamp: string
-  validators: string[]
-  blockInterval: number
-  economicalModel: number
-  version: number | null
+  chainId: number;
+  chainName: string;
+  operator: string;
+  website: string;
+  genesisTimestamp: string;
+  validators: string[];
+  blockInterval: number;
+  economicalModel: number;
+  version: number | null;
 }

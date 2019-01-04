@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, } from 'react-router-dom'
 
 import {
   ExpansionPanel,
@@ -25,9 +25,9 @@ const texts = require('../../styles/text.scss')
 const styles = require('./styles.scss')
 /* eslint-disable no-restricted-globals */
 export interface LocalAccount {
-  name: string
-  abi?: string
-  addr: string
+  name: string;
+  abi?: string;
+  addr: string;
 }
 /* eslint-enable no-restricted-globals */
 
@@ -36,11 +36,12 @@ export default props =>
     <ExpansionPanel key={group.key}>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="body1">
-          Including: {props[group.key].length} {group.label}(s)
+          Including: {props[group.key].length} {group.label}
+          (s)
         </Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
-        <List style={{ width: '100%' }}>
+        <List style={{ width: '100%', }}>
           {props[group.key].length ? (
             props[group.key].map((item: LocalAccount, index) => (
               <ListItem key={item.addr}>

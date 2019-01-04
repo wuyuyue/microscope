@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { List, Divider } from '@material-ui/core'
-import { ABI, ABIElement } from '../../typings'
+import { List, Divider, } from '@material-ui/core'
+import { ABI, ABIElement, } from '../../typings'
 
 const styles = require('./styles.scss')
 
-const Item = ({ label, fields }) => (
+const Item = ({ label, fields, }) => (
   <div className={styles.method}>
     <div className={styles.title}>{label}</div>
     <Divider />
@@ -15,7 +15,7 @@ const Item = ({ label, fields }) => (
 interface ErcPanel {
   abi: ABI
   handleAbiValueChange: (
-    index: number,
+    index: number
   ) => (inputIndex: number) => (e: any) => void
   handleEthCall: (index: number) => (e: any) => void
 }
@@ -26,10 +26,10 @@ const ContractMethod = ({
   handleAbiValueChange,
   handleEthCall,
 }: {
-abiEl: ABIElement
-index: number
-handleAbiValueChange: (inputIndex: number) => (e: any) => void
-handleEthCall: (e: any) => void
+abiEl: ABIElement;
+index: number;
+handleAbiValueChange: (inputIndex: number) => (e: any) => void;
+handleEthCall: (e: any) => void;
 }) => (
   <Item
     label={abiEl.name}
@@ -59,7 +59,7 @@ handleEthCall: (e: any) => void
                     src={output.value}
                     key={output.name}
                     alt="img"
-                    style={{ height: '100px' }}
+                    style={{ height: '100px', }}
                   />
                 )
               }

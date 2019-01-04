@@ -4,7 +4,10 @@ import transitions from '@material-ui/core/styles/transitions'
 const startsWith0x = string => /^0x/i.test(string)
 
 /* eslint-disable */
-const checkDigits = number => typeof number === 'number' && isFinite(number) && Math.floor(number) === number
+const checkDigits = number =>
+  typeof number === 'number' &&
+  isFinite(number) &&
+  Math.floor(number) === number
 /* eslint-enable */
 
 const checkDigitsString = number => {
@@ -53,15 +56,15 @@ const check = {
   digits: checkDigitsString,
   digitsDec: checkDigitsStringDec,
   transaction: checkTransaction,
-  format0x
+  format0x,
 }
 
 const errorMessages = {
   address: 'Please enter Address here',
   // height: 'Please enter only Address',
-  digits: 'Please enter only digits'
+  digits: 'Please enter only digits',
   // transaction: 'Please enter only transaction'
 }
 
-export { errorMessages }
+export { errorMessages, format0x, }
 export default check

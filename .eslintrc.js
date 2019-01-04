@@ -40,6 +40,7 @@ module.exports = {
       after: true
     }],
     'comma-style': [2, 'last'],
+    'comma-dangle': [2, 'always'],
     'constructor-super': 2,
     curly: [2, 'multi-line'],
     'dot-location': [2, 'property'],

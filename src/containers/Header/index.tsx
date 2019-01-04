@@ -1,348 +1,407 @@
 import * as React from 'react'
-import { createPortal } from 'react-dom'
-import { translate } from 'react-i18next'
-import { Subject, Subscription } from '@reactivex/rxjs'
-import { AppBar, Toolbar, Menu, MenuItem, Typography, Button, IconButton } from '@material-ui/core'
-import { Translate as TranslateIcon, Close as CloseIcon } from '@material-ui/icons'
-import { Chain } from '@nervos/plugin'
+import { createPortal, } from 'react-dom'
+import { translate, } from 'react-i18next'
+import { Subject, Subscription, } from '@reactivex/rxjs'
+import {
+  AppBar,
+  Toolbar,
+  Menu,
+  MenuItem,
+  Typography,
+  Button,
+  IconButton,
+} from '@material-ui/core'
+import {
+  Translate as TranslateIcon,
+  Close as CloseIcon,
+} from '@material-ui/icons'
+import { Chain, } from '@appchain/plugin'
 import containers from '../../Routes/containers'
 import HeaderNavs from '../../components/HeaderNavs'
 import SidebarNavs from '../../components/SidebarNavs'
 import ErrorNotification from '../../components/ErrorNotification'
-import { IContainerProps } from '../../typings'
 import RightSidebar from '../../components/RightSidebar'
-import MetadataPanel, { ServerList } from '../../components/MetadataPanel'
+import { ServerList, ChainSwitchPanel, } from '../../components/MetadataPanel'
 import BriefStatisticsPanel from '../../components/BriefStatistics'
 import SearchPanel from '../../components/SearchPanel'
-import { withConfig } from '../../contexts/config'
-import { withObservables } from '../../contexts/observables'
-import { fetchStatistics, fetchServerList, fetchMetadata } from '../../utils/fetcher'
-import { initBlock, initMetadata } from '../../initValues'
-import { handleError, dismissError } from '../../utils/handleError'
+import { withConfig, } from '../../contexts/config'
+import { withObservables, } from '../../contexts/observables'
+import {
+  fetchStatistics,
+  fetchServerList,
+  fetchMetadata,
+} from '../../utils/fetcher'
+import { initMetadata, } from '../../initValues'
+import { handleError, dismissError, } from '../../utils/handleError'
+import { stopPropagation, } from '../../utils/event'
+import {
+  saveChainHistoryLocal,
+  loadedLocalStorage,
+} from '../../utils/localstorage'
+import { initHeaderState as initState, HeaderState, HeaderProps, } from './init'
+import Image from '../../images'
 
 const styles = require('./header.scss')
-
-const LOGO = `${process.env.PUBLIC}/images/microscopeLogo.svg`
 const layout = require('../../styles/layout')
 
-const initState = {
-  keyword: '',
-  metadata: initMetadata,
-  sidebarNavs: false,
-  activePanel: window.urlParamChain || window.localStorage.getItem('chainIp') ? '' : 'metadata',
-  searchIp: '',
-  otherMetadata: initMetadata,
-  tps: 0,
-  tpb: 0,
-  ipb: 0,
-  peerCount: 0,
-  block: initBlock,
-  anchorEl: undefined,
-  lngOpen: false,
-  lng: window.localStorage.getItem('i18nextLng'),
-  inputChainError: false,
-  waitingMetadata: false,
-  error: {
-    code: '',
-    message: ''
-  },
-  globalHeaderAlertOpen: false,
-  globalHeaderHardAlertOpen: false,
-  overtime: 0,
-  serverList: [] as ServerList
-}
-type HeaderState = typeof initState
-interface HeaderProps extends IContainerProps {}
-
 class Header extends React.Component<HeaderProps, HeaderState> {
-  state = initState
-  componentWillMount () {
+  public readonly state = initState;
+
+  public componentWillMount () {
     this.onSearch$ = new Subject()
-    // hide TPS in header
+    this.initBlockTimestamp()
   }
-  componentDidMount () {
+
+  public componentDidMount () {
     // start search subscription
-    this.searchSubscription = this.onSearch$.debounceTime(1000).subscribe(({ key, value }) => {
-      if (key === 'searchIp') {
-        this.getChainMetadata(value)
-      }
-    }, this.handleError)
+    this.searchSubscription = this.onSearch$
+      .debounceTime(1000)
+      .subscribe(({ key, value, }) => {
+        if (key === 'searchIp') {
+          this.getChainMetadata(value)
+        }
+      }, this.handleError)
 
     // fetch status of brief-statistics panel
     this.fetchStatisticsPanel()
+
     // fetch data of metadata panel
     this.fetchMetaDataPanel()
-    clearInterval(this.checkOvertimeNumber)
-    this.checkOvertimeNumber = setInterval(this.checkFetchBlockOvertime, 100)
+    // clearInterval(this.checkOvertimeNumber)
+    // this.checkOvertimeNumber = setInterval(this.checkFetchBlockOvertime, 100)
   }
-  componentWillReceiveProps (nextProps: HeaderProps) {
+
+  public componentWillReceiveProps (nextProps: HeaderProps) {
     if (this.props.location.pathname !== nextProps.location.pathname) {
       this.togglePanel('')()
     }
   }
-  componentDidCatch (err) {
+
+  public componentDidCatch (err) {
     this.handleError(err)
   }
-  componentWillUnmount () {
-    clearInterval(this.checkOvertimeNumber)
-  }
   private onSearch$: Subject<any>
+
   private getChainMetadata = ip => {
     fetchMetadata(ip)
-      .then(({ result }) => {
+      .then(({ result, }) => {
         this.setState({
           otherMetadata: {
             ...result,
-            genesisTimestamp: new Date(result.genesisTimestamp).toLocaleString()
-          }
+            genesisTimestamp: new Date(
+              result.genesisTimestamp
+            ).toLocaleString(),
+          },
         })
       })
       .catch(this.handleError)
-  }
+  };
 
-  private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
-    this.setState({ sidebarNavs: open })
-  }
-  checkOvertimeNumber = -1 as any
-  private checkFetchBlockOvertime = () => {
-    const { metadata, block } = this.state
-    const { timestamp } = block.header
-    const now = Date.now()
-    const space = now - Number(timestamp)
-    const { blockInterval: interval } = metadata
-    if (space > 3 * interval) {
-      if (!this.state.globalHeaderHardAlertOpen) {
-        this.setState(state => ({
-          ...state,
-          globalHeaderHardAlertOpen: true,
-          overtime: space
-        }))
-      } else if (space - this.state.overtime > 1000) {
-        this.setState(state => ({
-          ...state,
-          overtime: space
-        }))
-      }
-    } else if (space > 2 * interval) {
-      if (!this.state.globalHeaderAlertOpen) {
-        this.setState(state => ({
-          ...state,
-          globalHeaderAlertOpen: true,
-          overtime: space
-        }))
-      } else {
-        this.setState(state => ({
-          ...state,
-          overtime: space
-        }))
-      }
-    } else {
+  private initBlockTimestamp = () => {
+    const { timestamp, } = this.state.block.header
+    if (!timestamp) {
       this.setState(state => ({
-        ...state,
-        globalHeaderAlertOpen: false,
-        globalHeaderHardAlertOpen: false,
-        overtime: 0,
+        block: {
+          ...state.block,
+          header: {
+            ...state.block.header,
+            timestamp: Date.now(),
+          },
+        },
       }))
     }
+  };
+
+  private toggleSideNavs = (open: boolean = false) => (
+    e: React.SyntheticEvent<HTMLElement>
+  ) => {
+    this.setState({ sidebarNavs: open, })
+  };
+
+  private fetchNewBlockLoop = () => {
+    const { newBlockSubjectAdd, } = this.props.CITAObservables
+    newBlockSubjectAdd(
+      'header',
+      block => {
+        this.setState({
+          block,
+        })
+      },
+      this.handleError
+    )
   }
   /**
    * @method fetchStatisticsPanel
    */
   private fetchStatisticsPanel = () => {
     // fetch brief statistics
-    fetchStatistics({ type: 'brief' })
-      .then(({ result: { tps, tpb, ipb } }) => {
-        this.setState(state => ({ ...state, tps, tpb, ipb }))
+    fetchStatistics({ type: 'brief', })
+      .then(({ result: { tps, tpb, ipb, }, }) => {
+        this.setState(state => ({ ...state, tps, tpb, ipb, }))
       })
       .catch(this.handleError)
     // fetch peer Count
-    const { peerCount, newBlockByNumberSubject } = this.props.CITAObservables
+    const { peerCount, } = this.props.CITAObservables
     peerCount(60000).subscribe(
-      (count: string) => this.setState((state: any) => ({ ...state, peerCount: +count })),
+      (count: string) =>
+        this.setState((state: any) => ({ ...state, peerCount: +count, })),
       this.handleError
     )
-    // fetch Block Number and Block
-    newBlockByNumberSubject.subscribe(block => {
-      this.setState({
-        block
-      })
-    }, this.handleError)
-    newBlockByNumberSubject.connect()
+    this.fetchNewBlockLoop()
+    this.fetchServerList()
+  };
+
+  private fetchServerList = () => {
     // fetch server list
     fetchServerList()
       .then(servers => {
         if (!servers) return
-        const serverList = [] as ServerList
+        const history = loadedLocalStorage('chainHistory') || []
+        const serverList = [...history, ] as ServerList
         Object.keys(servers).forEach(serverName => {
           serverList.push({
             serverName,
-            serverIp: servers[serverName]
+            serverIp: servers[serverName],
           })
         })
-        this.setState({ serverList })
+        this.setState({ serverList, })
       })
       .catch(this.handleError)
-  }
+  };
 
   private fetchMetaDataPanel = () => {
     // fetch metadata
     this.props.CITAObservables.metaData({
-      blockNumber: 'latest'
+      blockNumber: 'latest',
     }).subscribe((metadata: Chain.MetaData) => {
       this.setState({
         metadata: {
           ...metadata,
-          genesisTimestamp: new Date(metadata.genesisTimestamp).toLocaleString()
-        }
+          genesisTimestamp: new Date(
+            metadata.genesisTimestamp
+          ).toLocaleString(),
+        },
       })
+      this.props.config.setSymbol(metadata.tokenSymbol)
     }, this.handleError)
 
-    // fetch server list
-    fetchServerList()
-      .then(servers => {
-        if (!servers) return
-        const serverList = [] as ServerList
-        Object.keys(servers).forEach(serverName => {
-          serverList.push({
-            serverName,
-            serverIp: servers[serverName]
-          })
-        })
-        this.setState({ serverList })
-      })
-      .catch(this.handleError)
-  }
+    this.fetchServerList()
+  };
+
   private togglePanel = (panel: string) => (e?: any) => {
     this.setState({
-      activePanel: panel
+      activePanel: panel,
     })
-  }
+  };
 
-  private handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  public handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === 13) {
       this.switchChain('')()
     }
-  }
+  };
 
-  protected handleInput = key => (e: React.SyntheticEvent<HTMLInputElement>) => {
-    const { value } = e.currentTarget
+  protected handleInput = key => (
+    e: React.SyntheticEvent<HTMLInputElement>
+  ) => {
+    const { value, } = e.currentTarget
     if (key === 'searchIp') {
-      this.onSearch$.next({ key: 'searchIp', value })
+      this.onSearch$.next({ key: 'searchIp', value, })
     }
     this.setState(state => ({
       ...state,
       [key]: value,
-      otherMetadata: initMetadata
+      otherMetadata: initMetadata,
+      inputChainError: false,
+      waitingMetadata: false,
     }))
-  }
+  };
+
   private toggleLngMenu = (lngOpen = false) => e => {
-    this.setState({ lngOpen, anchorEl: e.currentTarget })
-  }
+    this.setState({ lngOpen, anchorEl: e.currentTarget, })
+  };
 
   private changeLng = (lng = 'en') => e => {
-    this.setState({ lngOpen: false })
+    this.setState({ lngOpen: false, })
     window.localStorage.setItem('i18nextLng', lng)
     window.location.reload()
   }
+
   private switchChainImmediate = chain => {
-    const ip = chain || this.state.searchIp
-    this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `https://${ip}`)
-    const chainIp = ip.startsWith('http') ? ip : `https://${ip}`
+    const chainIp = chain.startsWith('http') ? chain : `https://${chain}`
+    this.props.CITAObservables.setServer(chainIp)
     window.localStorage.setItem('chainIp', chainIp)
-    window.location.reload()
-  }
-  private switchChain = (chain: string = '', immediate = false) => (e?: any) => {
-    window.location.search = ''
-    if (immediate) {
-      this.switchChainImmediate(chain)
+    let i = 0
+    const reload = () => {
+      if (i++ > 20) return
+      setTimeout(() => {
+        if (window.localStorage.getItem('chainIp') === chainIp) {
+          window.location.href = window.location.origin
+          window.location.reload()
+        } else {
+          reload()
+        }
+      }, 100)
     }
-    const { otherMetadata } = this.state
-    this.setState({ inputChainError: false })
-    this.setState({ waitingMetadata: true })
-    setTimeout(() => {
+    reload()
+  };
+
+  private pollingCheckChainAndSwitch = (maxCount, ip) => {
+    let count = maxCount
+    const timer = setInterval(() => {
+      const { otherMetadata, } = this.state
       if (otherMetadata.chainId !== -1) {
-        this.switchChainImmediate(chain)
+        clearInterval(timer)
+        saveChainHistoryLocal(ip, otherMetadata.chainName)
+        this.switchChainImmediate(ip)
+      } else if (count < 0) {
+        clearInterval(timer)
       } else {
-        this.setState({ inputChainError: true })
-        this.setState({ waitingMetadata: false })
+        count--
       }
-    }, 1000)
+    }, 500)
+  };
+
+  private switchChain = (chain: string, immediate = false) => (e?: any) => {
+    const ip = chain || this.state.searchIp
+    if (immediate) {
+      this.switchChainImmediate(ip)
+    } else {
+      this.setState({ inputChainError: false, waitingMetadata: true, })
+      this.pollingCheckChainAndSwitch(15, ip)
+    }
+  };
+
+  private toggleMetadata = e => {
+    stopPropagation(e)
+    this.setState(state => ({
+      ...state,
+      showMetadata: !state.showMetadata,
+    }))
   }
+  // private switchChain = (chain: string = '', immediate = false) => (
+  //   e?: any
+  // ) => {
+  //   window.location.search = ''
+  //   if (immediate) {
+  //     this.switchChainImmediate(chain)
+  //   }
+  //   const { otherMetadata, } = this.state
+  //   this.setState({ inputChainError: false, })
+  //   this.setState({ waitingMetadata: true, })
+  //   setTimeout(() => {
+  //     if (otherMetadata.chainId !== -1) {
+  //       this.switchChainImmediate(chain)
+  //     } else {
+  //       this.setState({ inputChainError: true, })
+  //       this.setState({ waitingMetadata: false, })
+  //     }
+  //   }, 1000)
+  // };
 
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private searchSubscription: Subscription
-  private translations = process.env.LNGS ? process.env.LNGS.split(',') : ['zh', 'en']
-  render () {
+  private translations = process.env.LNGS
+    ? process.env.LNGS.split(',')
+    : ['zh', 'en', ]
+
+  private ActivePanel = () => {
     const {
-      anchorEl,
-      lngOpen,
-      error,
       serverList,
       inputChainError,
       waitingMetadata,
-      globalHeaderAlertOpen,
-      globalHeaderHardAlertOpen
+      activePanel,
     } = this.state
+    if (activePanel === 'statistics') {
+      return (
+        <BriefStatisticsPanel
+          peerCount={this.state.peerCount}
+          number={this.state.block.header.number}
+          timestamp={this.state.block.header.timestamp}
+          proposal={this.state.block.header.proof.Bft.proposal}
+          tps={this.state.tps}
+          tpb={this.state.tpb}
+          ipb={this.state.ipb}
+        />
+      )
+    }
+    return <SearchPanel />
+  };
+
+  public render () {
+    const { anchorEl, lngOpen, error, } = this.state
     const {
-      location: { pathname },
-      t
+      location: { pathname, },
+      t,
     } = this.props
-    const ignoredContainer = [this.props.config.panelConfigs.debugger ? '' : 'Debugger']
-    const displayedContainers = containers.filter(container => !ignoredContainer.includes(container.name))
+    const ignoredContainer = [
+      this.props.config.panelConfigs.debugger ? '' : 'Debugger',
+    ]
+    const displayedContainers = containers.filter(
+      container => !ignoredContainer.includes(container.name)
+    )
+
     return createPortal(
       <React.Fragment>
         <AppBar position="fixed" elevation={0}>
-          <div
-            style={{
-              maxHeight: globalHeaderAlertOpen ? '100vh' : '0',
-              lineHeight: '1rem',
-              padding: globalHeaderAlertOpen ? '1rem 0' : '0',
-              fontSize: '1rem',
-              overflow: 'hidden',
-              background: globalHeaderHardAlertOpen ? '#fc4141' : '#f5a623',
-              textAlign: 'center',
-              transition: 'height 0.5s ease 0s, padding 0.5s ease 0s'
-            }}
-          >
-            Notice：No blocks loaded in
-            {globalHeaderHardAlertOpen
-              ? Math.floor(this.state.overtime / 1000)
-              : Math.floor(this.state.overtime / 100) / 10}
-            s
-          </div>
-
           <Toolbar
             className={layout.center}
             classes={{
-              root: styles.toolbarRoot
+              root: styles.toolbarRoot,
             }}
           >
             <IconButton
               aria-label="open drawer"
               onClick={this.toggleSideNavs(true)}
-              classes={{ root: styles.toggleIcon }}
+              classes={{ root: styles.toggleIcon, }}
             >
-              <img src={`${process.env.PUBLIC}/microscopeIcons/expand.png`} alt="expand" />
+              <img src={Image.extend} alt="expand" />
             </IconButton>
-            <HeaderNavs containers={displayedContainers} pathname={pathname} logo={LOGO} />
+            <HeaderNavs
+              containers={displayedContainers}
+              pathname={pathname}
+              logo={Image.logo}
+            />
             <SidebarNavs
               open={this.state.sidebarNavs}
               containers={displayedContainers}
               pathname={pathname}
               toggleSideNavs={this.toggleSideNavs}
-              logo={LOGO}
+              logo={Image.logo}
             />
-            <div className={styles.rightNavs}>
-              <Button className={styles.navItem} onClick={this.togglePanel('metadata')}>
-                {this.state.metadata.chainName || 'InvalidChain'}
-              </Button>
-              {/* this.props.config.panelConfigs.TPS ? (
-                <Button className={styles.navItem} onClick={this.togglePanel('statistics')}>
-                  {t('TPS')}: {this.state.tps.toFixed(2)}
+            <div className={styles.rightNavs} style={{}}>
+              <div className={styles.navItem}>
+                <Button
+                  className={styles.navItem}
+                  onClick={this.toggleMetadata}
+                >
+                  {this.state.metadata.chainName || 'InvalidChain'}
                 </Button>
-              ) : null */}
-              <IconButton className={styles.navItem} onClick={this.togglePanel('search')}>
+                {this.state.showMetadata ? (
+                  <div className="fullMask" onClick={this.toggleMetadata} />
+                ) : null}
+                {this.state.showMetadata ? (
+                  <div className={styles.clickDown} onClick={stopPropagation}>
+                    <ChainSwitchPanel
+                      metadata={this.state.metadata}
+                      handleInput={this.handleInput}
+                      searchIp={this.state.searchIp}
+                      searchResult={this.state.otherMetadata}
+                      switchChain={this.switchChain}
+                      handleKeyUp={this.handleKeyUp}
+                      serverList={this.state.serverList}
+                      inputChainError={this.state.inputChainError}
+                      waitingMetadata={this.state.waitingMetadata}
+                      t={t}
+                    />
+                  </div>
+                ) : null}
+              </div>
+
+              <IconButton
+                className={styles.navItem}
+                onClick={this.togglePanel('search')}
+              >
                 <svg className="icon" aria-hidden="true">
                   <use xlinkHref="#icon-magnifier" />
                 </svg>
@@ -352,7 +411,11 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                   <TranslateIcon />
                 </IconButton>
               ) : null}
-              <Menu open={lngOpen} anchorEl={anchorEl} onClose={this.toggleLngMenu()}>
+              <Menu
+                open={lngOpen}
+                anchorEl={anchorEl}
+                onClose={this.toggleLngMenu()}
+              >
                 {this.translations.map(lng => (
                   <MenuItem onClick={this.changeLng(lng)} key={lng}>
                     {t(lng).toUpperCase()}
@@ -362,12 +425,16 @@ class Header extends React.Component<HeaderProps, HeaderState> {
             </div>
           </Toolbar>
         </AppBar>
-        <RightSidebar on={this.state.activePanel !== ''} onClose={this.togglePanel('')} onOpen={() => {}}>
+        <RightSidebar
+          on={this.state.activePanel !== ''}
+          onClose={this.togglePanel('')}
+          onOpen={() => {}}
+        >
           <div className={styles.rightSidebarContent}>
             <AppBar color="default" position="sticky" elevation={0}>
               <Toolbar
                 classes={{
-                  root: styles.toolbarRoot
+                  root: styles.toolbarRoot,
                 }}
               >
                 <Typography variant="title" color="inherit">
@@ -378,31 +445,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 </IconButton>
               </Toolbar>
             </AppBar>
-            {this.state.activePanel === 'metadata' ? (
-              <MetadataPanel
-                metadata={this.state.metadata}
-                handleInput={this.handleInput}
-                searchIp={this.state.searchIp}
-                searchResult={this.state.otherMetadata}
-                switchChain={this.switchChain}
-                handleKeyUp={this.handleKeyUp}
-                serverList={serverList}
-                inputChainError={inputChainError}
-                waitingMetadata={waitingMetadata}
-              />
-            ) : this.state.activePanel === 'statistics' ? (
-              <BriefStatisticsPanel
-                peerCount={this.state.peerCount}
-                number={this.state.block.header.number}
-                timestamp={this.state.block.header.timestamp}
-                proposal={this.state.block.header.proof.Bft.proposal}
-                tps={this.state.tps}
-                tpb={this.state.tpb}
-                ipb={this.state.ipb}
-              />
-            ) : (
-              <SearchPanel />
-            )}
+            {this.ActivePanel()}
           </div>
         </RightSidebar>
         <ErrorNotification error={error} dismissError={this.dismissError} />

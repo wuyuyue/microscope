@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { SwipeableDrawer } from '@material-ui/core'
+import { SwipeableDrawer, } from '@material-ui/core'
 
 interface MetadataProps {
-  on: boolean
-  onClose: (e: any) => void
-  onOpen: () => void
-  children: React.ReactChild
+  on: boolean;
+  onClose: (e: any) => void;
+  onOpen: () => void;
+  children: React.ReactChild;
 }
 
 const RightSidebar: React.SFC<MetadataProps> = ({
