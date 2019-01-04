@@ -14,7 +14,10 @@ const createHandleError = () => {
   return ctx => error => {
     if (!window.localStorage.getItem('chainIp')) return
     // only active when chain ip exsits
-    if (error.message === lastErrorMessageTable[ctx.constructor.name] || error.message === lastErrorMessage) {
+    if (
+      error.message === lastErrorMessageTable[ctx.constructor.name] ||
+      error.message === lastErrorMessage
+    ) {
       ctx.setState(state => ({
         loading: state.loading - 1,
       }))

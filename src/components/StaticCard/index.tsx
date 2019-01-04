@@ -5,12 +5,12 @@ import { TrendingFlat as ArrowIcon, } from '@material-ui/icons'
 const styles = require('./staticCard.scss')
 
 interface StaticCardProps {
-  index?: number
-  icon: string
-  title: string
-  page?: string
-  className?: string
-  children?: React.ReactNode
+  index?: number;
+  icon: string;
+  title: string;
+  page?: string;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 export default (props: StaticCardProps) => (
@@ -36,8 +36,8 @@ export default (props: StaticCardProps) => (
 )
 
 interface StaticCardProps {
-  title: string
-  page?: string
+  title: string;
+  page?: string;
 }
 
 export const StaticCardTitle = props => (

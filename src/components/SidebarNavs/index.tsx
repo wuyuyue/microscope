@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { translate } from 'react-i18next'
+import { Link, } from 'react-router-dom'
+import { translate, } from 'react-i18next'
 import {
   Typography,
   Toolbar,
@@ -23,7 +23,7 @@ const SidebarNavs = ({
   t,
 }) => (
   <Drawer open={open} onClose={toggleSideNavs()}>
-    <AppBar position="sticky" classes={{ root: styles.sidebarNavs }}>
+    <AppBar position="sticky" classes={{ root: styles.sidebarNavs, }}>
       <Toolbar
         classes={{
           root: styles.toolbarRoot,
@@ -33,7 +33,7 @@ const SidebarNavs = ({
           to="/"
           href="/"
           onClick={toggleSideNavs()}
-          style={{ color: '#000', marginRight: '31px' }}
+          style={{ color: '#000', marginRight: '31px', }}
         >
           <Typography variant="title" color="inherit">
             <img src={logo} alt="logo" className={styles.headerLogo} />
@@ -42,7 +42,7 @@ const SidebarNavs = ({
         <IconButton
           aria-label="open drawer"
           onClick={toggleSideNavs()}
-          classes={{ root: styles.toggleIcon }}
+          classes={{ root: styles.toggleIcon, }}
         >
           <img
             src={`${process.env.PUBLIC}/microscopeIcons/expand.png`}
@@ -68,13 +68,13 @@ const SidebarNavs = ({
                   <img
                     src={container.iconActive}
                     alt="icon"
-                    style={{ marginRight: '8px' }}
+                    style={{ marginRight: '8px', }}
                   />
                 ) : (
                   <img
                     src={container.icon}
                     alt="icon"
-                    style={{ marginRight: '8px' }}
+                    style={{ marginRight: '8px', }}
                   />
                 )}
                 <span>{t(container.name)}</span>

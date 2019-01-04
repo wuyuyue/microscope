@@ -3,7 +3,12 @@ import { Link, } from 'react-router-dom'
 import { translate, } from 'react-i18next'
 import { Paper, } from '@material-ui/core'
 import Pager from 'react-pager'
-import { KeyboardArrowLeft, KeyboardArrowRight, SkipNext, SkipPrevious, } from '@material-ui/icons'
+import {
+  KeyboardArrowLeft,
+  KeyboardArrowRight,
+  SkipNext,
+  SkipPrevious,
+} from '@material-ui/icons'
 import { ContractCreation, } from '../../initValues'
 
 import Dialog from '../../containers/Dialog'
@@ -19,51 +24,60 @@ export enum SelectorType {
 }
 
 export interface TableHeaderWithSelector {
-  key: string
-  text: string
-  href?: string
+  key: string;
+  text: string;
+  href?: string;
 }
 export interface TableRowWithSelector {
-  key: string
-  [index: string]: string
+  key: string;
+  [index: string]: string;
 }
 
 export interface TableWithSelectorProps {
-  headers: TableHeaderWithSelector[]
-  items: TableRowWithSelector[]
-  count: number
-  pageSize: number
-  pageNo: number
+  headers: TableHeaderWithSelector[];
+  items: TableRowWithSelector[];
+  count: number;
+  pageSize: number;
+  pageNo: number;
   selectors: {
-    type: SelectorType
-    key: string
-    text: string
-    items?: { key: string; text: string; check?: any; format?: any; errorMessage?: any }[]
-    check?: any
-    format?: any
-    errorMessage?: any
-  }[]
-  selectorsValue?: any
-  onSubmit?: any
-  handlePageChanged?: (pageNo: number) => void
+    type: SelectorType;
+    key: string;
+    text: string;
+    items?: {
+      key: string;
+      text: string;
+      check?: any;
+      format?: any;
+      errorMessage?: any;
+    }[];
+    check?: any;
+    format?: any;
+    errorMessage?: any;
+  }[];
+  selectorsValue?: any;
+  onSubmit?: any;
+  handlePageChanged?: (pageNo: number) => void;
   // showInOut?: boolean
-  showInout?: boolean
-  inset?: boolean
-  searchText?: string
+  showInout?: boolean;
+  inset?: boolean;
+  searchText?: string;
 }
 
-class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (key: string) => string }, any> {
+class TableWithSelector extends React.Component<
+  TableWithSelectorProps & { t: (key: string) => string },
+  any
+  > {
   state = {
     on: false,
     selectorsValue: this.props.selectorsValue,
     selectorsError: {} as any,
-  }
+  };
 
   showDialog = (on: boolean = false) => (e?: any) => {
     this.setState(state => ({
       on,
     }))
-  }
+  };
 
   handleSelectorInput = (selector: string) => e => {
     e.persist()
@@ -78,7 +92,7 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
         [selector]: false,
       },
     }))
-  }
+  };
   handleSubmit = e => {
     const { selectorsError, } = this.state
     let allright = true
@@ -92,8 +106,12 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
       this.props.onSubmit(this.state.selectorsValue)
       this.showDialog(false)()
     }
-  }
-  handleSelectorBlur = (selector: string, check: any = () => false, format: any = v => v) => e => {
+  };
+  handleSelectorBlur = (
+    selector: string,
+    check: any = () => false,
+    format: any = v => v
+  ) => e => {
     e.persist()
     const { value, } = e.target
     const valueError = value ? !check(value) : false
@@ -110,14 +128,38 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
         },
       }
     })
-  }
+    if (allright) {
+      this.props.onSubmit(this.state.selectorsValue)
+      this.showDialog(false)()
+    }
+  };
   render () {
     const { on, selectorsValue, selectorsError, } = this.state
-    const { headers, items, selectors, pageSize, pageNo, count, t, inset, searchText, } = this.props
+    const {
+      headers,
+      items,
+      selectors,
+      pageSize,
+      pageNo,
+      count,
+      t,
+      inset,
+      searchText,
+    } = this.props
     const total = Math.ceil(count / pageSize)
     return (
-      <Paper className={`${layout.center} ${inset ? styles.insetContainer : styles.container}`} elevation={0}>
-        <Dialog on={!!on} dialogTitle={t('advanced selector')} onClose={this.showDialog(false)} maxWidth="md">
+      <Paper
+        className={`${layout.center} ${
+          inset ? styles.insetContainer : styles.container
+        }`}
+        elevation={0}
+      >
+        <Dialog
+          on={!!on}
+          dialogTitle={t('advanced selector')}
+          onClose={this.showDialog(false)}
+          maxWidth="md"
+        >
           <div className={styles.dialog}>
             <div className={styles.fields}>
               <div className={styles.titles}>
@@ -133,7 +175,11 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
                     selector.items ? (
                       <div key={selector.key} className={styles.rangeSelector}>
                         {selector.items.map(item => (
-                          <div className={`${styles.inputouter} ${selectorsError[item.key] ? styles.error : ''}`}>
+                          <div
+                            className={`${styles.inputouter} ${
+                              selectorsError[item.key] ? styles.error : ''
+                            }`}
+                          >
                             <input
                               key={item.key}
                               value={selectorsValue[item.key]}
@@ -155,15 +201,25 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
                       </div>
                     ) : (
                       <div key={selector.key} className={styles.singleSelector}>
-                        <div className={`${styles.inputouter} ${selectorsError[selector.key] ? styles.error : ''}`}>
+                        <div
+                          className={`${styles.inputouter} ${
+                            selectorsError[selector.key] ? styles.error : ''
+                          }`}
+                        >
                           <input
                             value={selectorsValue[selector.key]}
                             placeholder={t(selector.text)}
                             onChange={this.handleSelectorInput(selector.key)}
-                            onBlur={this.handleSelectorBlur(selector.key, selector.check, selector.format)}
+                            onBlur={this.handleSelectorBlur(
+                              selector.key,
+                              selector.check,
+                              selector.format
+                            )}
                           />
                           {selectorsError[selector.key] ? (
-                            <div className={`${styles.errormessage}`}>{selector.errorMessage}</div>
+                            <div className={`${styles.errormessage}`}>
+                              {selector.errorMessage}
+                            </div>
                           ) : null}
                         </div>
                       </div>
@@ -178,7 +234,9 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
           <span>
             {t('current params')}: {searchText}
           </span>
-          <button onClick={this.showDialog(true)}>{t('advanced selector')}</button>
+          <button onClick={this.showDialog(true)}>
+            {t('advanced selector')}
+          </button>
         </div>
         <table className={styles.table}>
           <thead>
@@ -192,22 +250,28 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
             {items.map(item => (
               <tr key={item.key}>
                 {headers.map(header => (
-                  <td key={header.key} className={text.ellipsis} title={item[header.key]}>
-                    {header.href === undefined || (header.key === 'to' && [ContractCreation, ].includes(item.to)) ? (
-                      item[header.key] === null ? (
-                        '/'
+                  <td
+                    key={header.key}
+                    className={text.ellipsis}
+                    title={item[header.key]}
+                  >
+                    {header.href === undefined ||
+                    (header.key === 'to' &&
+                      [ContractCreation, ].includes(item.to)) ? (
+                        item[header.key] === null ? (
+                          '/'
+                        ) : (
+                          item[header.key]
+                        )
                       ) : (
-                        item[header.key]
-                      )
-                    ) : (
-                      <Link
-                        to={`${header.href}${item[header.key]}`}
-                        href={`${header.href}${item[header.key]}`}
-                        className={text.addr}
-                      >
-                        {item[header.key] === null ? '/' : item[header.key]}
-                      </Link>
-                    )}
+                        <Link
+                          to={`${header.href}${item[header.key]}`}
+                          href={`${header.href}${item[header.key]}`}
+                          className={text.addr}
+                        >
+                          {item[header.key] === null ? '/' : item[header.key]}
+                        </Link>
+                      )}
                   </td>
                 ))}
               </tr>

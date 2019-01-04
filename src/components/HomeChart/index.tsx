@@ -8,8 +8,8 @@ export default class HomeChart extends React.Component<any, any> {
     this.chart = echarts.init(this.chartDOM as HTMLDivElement)
     this.chart.showLoading()
   }
-  private chart: any
-  private chartDOM: HTMLDivElement | null
+  private chart: any;
+  private chartDOM: HTMLDivElement | null;
   render () {
     return (
       <div className={this.props.className}>

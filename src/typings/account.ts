@@ -1,14 +1,14 @@
 /* eslint-disable no-restricted-globals */
 export interface Contract {
   methods: {
-    type: 'function' | 'event'
-    name: string
-    inputs: { name: string; type: string }[]
-    outputs: { name: string; type: string }[]
-  }[]
+    type: 'function' | 'event';
+    name: string;
+    inputs: { name: string; type: string }[];
+    outputs: { name: string; type: string }[];
+  }[];
   _jsonInterface: {
-    signature: string
-  }[]
+    signature: string;
+  }[];
 }
 /* eslint-enable no-restricted-globals */
 export enum AccountType {

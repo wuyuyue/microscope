@@ -50,16 +50,16 @@ const MetadataRender = translate('microscope')(
 export type ServerList = { serverName: string; serverIp: string }[]
 
 interface MetadataPanelProps {
-  metadata: Metadata
-  searchIp: string
-  searchResult: Metadata
-  waitingMetadata: boolean
-  inputChainError: boolean
-  handleInput: (key: string) => (e: any) => void
-  switchChain: (ip?: string, immediate?: boolean) => (e) => void
-  handleKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) => void
-  t: (key: string) => string
-  serverList: ServerList
+  metadata: Metadata;
+  searchIp: string;
+  searchResult: Metadata;
+  waitingMetadata: boolean;
+  inputChainError: boolean;
+  handleInput: (key: string) => (e: any) => void;
+  switchChain: (ip?: string, immediate?: boolean) => (e) => void;
+  handleKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  t: (key: string) => string;
+  serverList: ServerList;
 }
 
 export const ChainSwitchPanel = ({
@@ -93,8 +93,9 @@ export const ChainSwitchPanel = ({
         </div>
       ) : (
         <div className={styles.alert}>
-          If you connect to an AppChain node instead of a <a href="https://github.com/cryptape/re-birth">ReBirth</a>{' '}
-          server, Microscope will NOT be fully functional.
+          If you connect to an AppChain node instead of a{' '}
+          <a href="https://github.com/cryptape/re-birth">ReBirth</a> server,
+          Microscope will NOT be fully functional.
         </div>
       )}
     </div>

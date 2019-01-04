@@ -9,7 +9,13 @@ const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
 
 export default translate('microscope')(
-  ({ blocks, t, }: { blocks: Chain.Block<Chain.TransactionInBlock>[]; t: (key: string) => string }) => (
+  ({
+    blocks,
+    t,
+  }: {
+  blocks: Chain.Block<Chain.TransactionInBlock>[];
+  t: (key: string) => string;
+  }) => (
     <List
       classes={{
         padding: styles.listPadding,
@@ -24,7 +30,10 @@ export default translate('microscope')(
         >
           <div className={styles.blockIcon}>
             <span>{t('block')}</span>
-            <Link to={`/height/${block.header.number}`} href={`/height/${block.header.number}`}>
+            <Link
+              to={`/height/${block.header.number}`}
+              href={`/height/${block.header.number}`}
+            >
               #{+block.header.number}
             </Link>
           </div>
@@ -43,19 +52,29 @@ export default translate('microscope')(
                   href={`/block/${block.hash}`}
                   title={block.hash}
                 >
-                  <span className={`${texts.addr} ${texts.addrStart}`}>{block.hash.slice(0, -4)}</span>
-                  <span className={`${texts.addr} ${texts.addrEnd}`}>{block.hash.slice(-4)}</span>
+                  <span className={`${texts.addr} ${texts.addrStart}`}>
+                    {block.hash.slice(0, -4)}
+                  </span>
+                  <span className={`${texts.addr} ${texts.addrEnd}`}>
+                    {block.hash.slice(-4)}
+                  </span>
                 </Link>
-                <span className={styles.time}>{formatedAgeString(block.header.timestamp)}</span>
+                <span className={styles.time}>
+                  {formatedAgeString(block.header.timestamp)}
+                </span>
               </React.Fragment>
             }
             secondary={
               <React.Fragment>
                 <span className={texts.ellipsis}>
-                  {t('including')} <b>{block.body.transactions.length}</b> {t('Transactions')}.{' '}
+                  {t('including')} <b>{block.body.transactions.length}</b>{' '}
+                  {t('Transactions')}.{' '}
                 </span>
                 <span className={texts.ellipsis}>
-                  {t('proposed by')} <span className={texts.highlight}>{block.header.proposer}</span>
+                  {t('proposed by')}{' '}
+                  <span className={texts.highlight}>
+                    {block.header.proposer}
+                  </span>
                 </span>
               </React.Fragment>
             }

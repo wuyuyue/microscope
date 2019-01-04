@@ -13,7 +13,9 @@ import { IContainerProps, } from '../../typings'
 import { BlockFromServer, } from '../../typings/block'
 import { withConfig, } from '../../contexts/config'
 
-import TableWithSelector, { TableWithSelectorProps, } from '../../components/TableWithSelector'
+import TableWithSelector, {
+  TableWithSelectorProps,
+} from '../../components/TableWithSelector'
 import ErrorNotification from '../../components/ErrorNotification'
 import Banner from '../../components/Banner'
 
@@ -28,20 +30,20 @@ import { formatedAgeString, } from '../../utils/timeFormatter'
 
 interface BlockSelectors {
   selectorsValue: {
-    [index: string]: number | string
-  }
+    [index: string]: number | string;
+  };
 }
 type BlockTableState = TableWithSelectorProps &
   BlockSelectors & {
-    loading: number
-    error: { code: string; message: string }
+    loading: number;
+    error: { code: string; message: string };
   }
 interface BlockTableProps extends IContainerProps {}
 
 const initialState: BlockTableState = initBlockTableState
 
 class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
-  readonly state = initialState
+  readonly state = initialState;
   public componentWillMount () {
     this.setParamsFromUrl()
     this.setVisibleHeaders()
@@ -62,25 +64,30 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
   }
 
   private onSearch = params => {
-    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 0, }))
+    this.setState(state =>
+      Object.assign({}, state, { selectorsValue: params, pageNo: 0, })
+    )
     this.fetchBlock(params)
-  }
+  };
 
   private setPageSize = () => {
     const { blockPageSize: pageSize, } = this.props.config.panelConfigs
     this.setState({ pageSize, })
-  }
+  };
 
   private setVisibleHeaders = () => {
     // hide invisible header
     this.setState(state => {
       const { headers, } = state
       const visibleHeaders = headers.filter(
-        header => this.props.config.panelConfigs[`block${header.key[0].toUpperCase()}${header.key.slice(1)}`] !== false
+        header =>
+          this.props.config.panelConfigs[
+            `block${header.key[0].toUpperCase()}${header.key.slice(1)}`
+          ] !== false
       )
       return { headers: visibleHeaders, }
     })
-  }
+  };
 
   private setParamsFromUrl = () => {
     const actParams = new URLSearchParams(this.props.location.search)
@@ -107,7 +114,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
       selectorsValue,
       pageNo,
     })
-  }
+  };
 
   private handlePageChanged = newPage => {
     const offset = newPage * this.state.pageSize
@@ -121,36 +128,56 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
         this.setState({ pageNo: newPage, })
       })
       .catch(this.handleError)
-  }
+  };
 
   private fetchBlock = (params: { [index: string]: string | number } = {}) => {
     this.setState(state => ({ loading: state.loading + 1, }))
     return fetchBlocks(paramsFilter(params))
-      .then(({ result, }: { result: { blocks: BlockFromServer[]; count: number } }) => {
-        this.setState(state => ({
-          loading: state.loading - 1,
-          count: result.count,
-          items: result.blocks.map(block => ({
-            key: block.hash,
-            height: `${+block.header.number}`,
-            hash: block.hash,
-            age: formatedAgeString(block.header.timestamp),
-            transactions: `${block.transactionsCount}`,
-            quotaUsed: `${+block.header.quotaUsed}`,
-          })),
-        }))
-      })
+      .then(
+        ({
+          result,
+        }: {
+        result: { blocks: BlockFromServer[]; count: number };
+        }) => {
+          this.setState(state => ({
+            loading: state.loading - 1,
+            count: result.count,
+            items: result.blocks.map(block => ({
+              key: block.hash,
+              height: `${+block.header.number}`,
+              hash: block.hash,
+              age: formatedAgeString(block.header.timestamp),
+              transactions: `${block.transactionsCount}`,
+              quotaUsed: `${+block.header.quotaUsed}`,
+            })),
+          }))
+        }
+      )
       .catch(err => {
         this.handleError(err)
       })
-  }
-  private handleError = handleError(this)
-  private dismissError = dismissError(this)
+  };
+  private handleError = handleError(this);
+  private dismissError = dismissError(this);
 
   public render () {
-    const { headers, items, selectors, selectorsValue, count, pageSize, pageNo, loading, error, } = this.state
+    const {
+      headers,
+      items,
+      selectors,
+      selectorsValue,
+      count,
+      pageSize,
+      pageNo,
+      loading,
+      error,
+    } = this.state
     const activeParams = paramsFilter(selectorsValue) as any
-    const blockSearchText = rangeSelectorText('Number', activeParams.numberFrom, activeParams.numberTo)
+    const blockSearchText = rangeSelectorText(
+      'Number',
+      activeParams.numberFrom,
+      activeParams.numberTo
+    )
     console.log(headers)
     console.log(items)
     const transactionSearchText = rangeSelectorText(
@@ -172,7 +199,9 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
             }}
           />
         ) : null}
-        <Banner>{searchText ? `Current Search: ${searchText}` : 'Blocks'}</Banner>
+        <Banner>
+          {searchText ? `Current Search: ${searchText}` : 'Blocks'}
+        </Banner>
         <TableWithSelector
           headers={headers}
           items={items}

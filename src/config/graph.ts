@@ -1,28 +1,28 @@
 export const BarOption = {
   legend: {
     show: false,
-    bottom: '0'
+    bottom: '0',
   },
   tooltip: {},
   dataset: {
-    source: []
+    source: [],
   },
-  xAxis: { type: 'category' },
+  xAxis: { type: 'category', },
   yAxis: {},
-  series: [{ type: 'bar' }]
+  series: [{ type: 'bar', }, ],
 }
 export const LineOption = {
   legend: {
     show: false,
-    bottom: '0'
+    bottom: '0',
   },
   tooltip: {},
   dataset: {
-    source: []
+    source: [],
   },
-  xAxis: { type: 'category' },
+  xAxis: { type: 'category', },
   yAxis: {},
-  series: [{ type: 'line' }],
+  series: [{ type: 'line', }, ],
   backgroundColor: {
     type: 'linear',
     x: 0,
@@ -32,38 +32,38 @@ export const LineOption = {
     colorStops: [
       {
         offset: 0,
-        color: 'red'
+        color: 'red',
       },
       {
         offset: 1,
-        color: 'blue'
-      }
+        color: 'blue',
+      },
     ],
-    globalCoord: false
-  }
+    globalCoord: false,
+  },
 }
 export const PieOption = {
-  legend: { show: false, bottom: '0' },
+  legend: { show: false, bottom: '0', },
   tooltip: {},
-  dataset: { source: [] },
-  xAxis: { show: false },
-  yAxis: { show: false },
+  dataset: { source: [], },
+  xAxis: { show: false, },
+  yAxis: { show: false, },
   series: [
     {
       type: 'pie',
-      radius: ['50%', '70%'],
+      radius: ['50%', '70%', ],
       emphasis: {
         itemStyle: {
           shadowColor: 'rgba(0,0,0,0.5)',
-          shadowBlur: 20
-        }
-      }
-    }
-  ]
+          shadowBlur: 20,
+        },
+      },
+    },
+  ],
 }
 
 export default {
   BarOption,
   PieOption,
-  LineOption
+  LineOption,
 }

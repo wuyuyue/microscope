@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { List, ListItem, ListItemText } from '@material-ui/core'
-import { Metadata } from '../../typings'
+import { List, ListItem, ListItemText, } from '@material-ui/core'
+import { Metadata, } from '../../typings'
 
 const texts = require('../../styles/text')
 
-export default ({ metadata }: { metadata: Metadata }) => (
+export default ({ metadata, }: { metadata: Metadata }) => (
   <List>
     <ListItem>
       <ListItemText primary={`Chain-ID: ${metadata.chainId}`} />
@@ -35,7 +35,7 @@ export default ({ metadata }: { metadata: Metadata }) => (
     <ListItem>
       <ListItemText
         primary={`Genesis Time: ${new Date(
-          +metadata.genesisTimestamp,
+          +metadata.genesisTimestamp
         ).toLocaleString()}`}
       />
     </ListItem>

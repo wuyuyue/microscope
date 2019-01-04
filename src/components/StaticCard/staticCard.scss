@@ -21,7 +21,7 @@
   img {
     height: 24px;
   }
-  @media (max-width:800px) {
+  @media (max-width: 800px) {
     position: relative;
     line-height: 2;
     margin: 0;
@@ -52,7 +52,7 @@
   border-bottom: none;
   font-weight: normal;
   padding: 0 0 10px 0;
-  @media (max-width:800px) {
+  @media (max-width: 800px) {
     background: none;
     &:before,
     &:after {

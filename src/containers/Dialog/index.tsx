@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { createPortal } from 'react-dom'
+import { createPortal, } from 'react-dom'
 import {
   Dialog,
   DialogTitle,
@@ -9,7 +9,7 @@ import {
   Typography,
   Slide,
 } from '@material-ui/core'
-import { Close as CloseIcon } from '@material-ui/icons'
+import { Close as CloseIcon, } from '@material-ui/icons'
 
 const styles = require('./dialog.scss')
 
@@ -18,12 +18,12 @@ function Transition (props) {
 }
 
 interface DialogCompProps {
-  onClose: (e) => void
-  on: boolean
-  fullScreen?: boolean
-  dialogTitle: string
-  maxWidth?: 'xs' | 'sm' | 'md'
-  children?: React.ReactNode
+  onClose: (e) => void;
+  on: boolean;
+  fullScreen?: boolean;
+  dialogTitle: string;
+  maxWidth?: 'xs' | 'sm' | 'md';
+  children?: React.ReactNode;
 }
 const DialogComp = (props: DialogCompProps) => (
   <Dialog
@@ -52,7 +52,7 @@ const DialogComp = (props: DialogCompProps) => (
         </Toolbar>
       </AppBar>
     ) : (
-      <DialogTitle classes={{ root: styles.dialogTitle }}>
+      <DialogTitle classes={{ root: styles.dialogTitle, }}>
         {props.dialogTitle}
         <IconButton onClick={props.onClose} aria-label="Close">
           <CloseIcon />
@@ -65,7 +65,7 @@ const DialogComp = (props: DialogCompProps) => (
 export default class extends React.Component<DialogCompProps, {}> {
   render () {
     return createPortal(<DialogComp {...this.props} />, document.getElementById(
-      'dialog',
+      'dialog'
     ) as HTMLElement)
   }
 }

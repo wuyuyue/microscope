@@ -6,7 +6,7 @@ import CITAObservables from '@appchain/observables'
 
 declare global {
   interface Window {
-    urlParamChain: string | null
+    urlParamChain: string | null;
   }
 }
 
@@ -17,8 +17,14 @@ if (URLSearchParams) {
 }
 
 const initObservables: any = new CITAObservables({
-  server: window.urlParamChain || window.localStorage.getItem('chainIp') || process.env.CHAIN_SERVERS || '',
-  interval: (process.env.OBSERVABLE_INTERVAL && +process.env.OBSERVABLE_INTERVAL) || 1000,
+  server:
+    window.urlParamChain ||
+    window.localStorage.getItem('chainIp') ||
+    process.env.CHAIN_SERVERS ||
+    '',
+  interval:
+    (process.env.OBSERVABLE_INTERVAL && +process.env.OBSERVABLE_INTERVAL) ||
+    1000,
 })
 
 const newBlockCallbackTable = {} as any
@@ -39,16 +45,19 @@ const handleCallback = block => {
 }
 
 const fetchBlockByNumber = (number, time = 3) => {
-  initObservables.blockByNumber(number, false).subscribe(handleCallback, error => {
-    const t = time - 1
-    if (t > -1) {
-      fetchBlockByNumber(number, t)
-    }
-    handleError(error)
-  })
+  initObservables
+    .blockByNumber(number, false)
+    .subscribe(handleCallback, error => {
+      const t = time - 1
+      if (t > -1) {
+        fetchBlockByNumber(number, t)
+      }
+      handleError(error)
+    })
 }
 
-export const stopSubjectNewBlock = () => clearInterval(newBlockCallbackInterval)
+export const stopSubjectNewBlock = () =>
+  clearInterval(newBlockCallbackInterval)
 
 export const startSubjectNewBlock = () => {
   stopSubjectNewBlock()
@@ -85,7 +94,9 @@ const ObservableContext = React.createContext(initObservables)
 
 export const withObservables = Comp => props => (
   <ObservableContext.Consumer>
-    {(observables: CITAObservables) => <Comp {...props} CITAObservables={observables} />}
+    {(observables: CITAObservables) => (
+      <Comp {...props} CITAObservables={observables} />
+    )}
   </ObservableContext.Consumer>
 )
 export const provideObservabls = Comp => props => (

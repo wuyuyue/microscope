@@ -2,7 +2,7 @@
 @import '../../styles/layout.scss';
 .addServer {
   display: flex;
-  &>div:first-child {
+  & > div:first-child {
     width: 80vw;
   }
 }
@@ -24,7 +24,7 @@
   color: #fff !important;
 }
 
-.switchChecked.switchColorSecondary+.switchBar {
+.switchChecked.switchColorSecondary + .switchBar {
   background-color: $primary !important;
 }
 

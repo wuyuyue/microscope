@@ -18,7 +18,9 @@ const HeaderNavs = ({ containers, pathname, logo, t, }) => (
           <Link
             to={container.path}
             href={container.path}
-            className={`${styles.navItem} ${pathname === container.path ? styles.activeNav : ''}`}
+            className={`${styles.navItem} ${
+              pathname === container.path ? styles.activeNav : ''
+            }`}
           >
             <span>{t(container.name)}</span>
           </Link>

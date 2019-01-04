@@ -5,17 +5,25 @@ const styles = require('./briefStatistics.scss')
 
 /* eslint-disable no-use-before-define */
 interface BriefStatistics {
-  peerCount: number
-  number: string
-  timestamp: Timestamp
-  proposal: string
-  tps: number
-  tpb: number
-  ipb: number
+  peerCount: number;
+  number: string;
+  timestamp: Timestamp;
+  proposal: string;
+  tps: number;
+  tpb: number;
+  ipb: number;
 }
 /* eslint-enable no-use-before-define */
 
-const BriefStatistics: React.SFC<BriefStatistics> = ({ peerCount, number, timestamp, proposal, tps, tpb, ipb, }) => (
+const BriefStatistics: React.SFC<BriefStatistics> = ({
+  peerCount,
+  number,
+  timestamp,
+  proposal,
+  tps,
+  tpb,
+  ipb,
+}) => (
   <div className={styles.briefStatistics}>
     <div>
       peerCount: <span>{peerCount}</span>

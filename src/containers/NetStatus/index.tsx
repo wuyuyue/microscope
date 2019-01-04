@@ -42,9 +42,9 @@ class NetStatus extends React.Component<INetStatusProps, INetStatusState> {
     { title: 'Current Height', value: 'blockNumber', },
     { title: 'Quota Price', value: 'quotaPrice', },
     { title: 'Network', value: 'network', },
-  ]
-  static updateInterval: any
-  readonly state = initialState
+  ];
+  static updateInterval: any;
+  readonly state = initialState;
   componentWillMount () {
     this.fetchStatus()
   }
@@ -52,19 +52,25 @@ class NetStatus extends React.Component<INetStatusProps, INetStatusState> {
   private fetchStatus = () => {
     // fetch peer Count
     const { peerCount, newBlockByNumberSubject, } = this.props.CITAObservables
-    peerCount(60000).subscribe((count: string) => this.setState(state => ({ peerCount: count.slice(2), })))
+    peerCount(60000).subscribe((count: string) =>
+      this.setState(state => ({ peerCount: count.slice(2), }))
+    )
     // fetch Block Number and Block
     newBlockByNumberSubject.subscribe(block => {
       this.setState(state => ({ blockNumber: block.header.number, }))
     })
     newBlockByNumberSubject.connect()
-  }
+  };
   render () {
     const { block, } = this.state
     return (
       <Toolbar style={{ display: 'flex', }}>
         {NetStatus.plainStates.map(state => (
-          <PlainState {...state} key={state.title} value={this.state[state.value]} />
+          <PlainState
+            {...state}
+            key={state.title}
+            value={this.state[state.value]}
+          />
         ))}
       </Toolbar>
     )

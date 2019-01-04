@@ -29,7 +29,6 @@
   padding: 23px 28px 0;
 }
 
-
 .listHeaderRoot {
   font-size: 1.25rem !important;
   color: $tableText !important;
@@ -98,7 +97,7 @@
     }
   }
 
-  &>span {
+  & > span {
     flex: 1;
     display: flex;
     align-items: center;
@@ -131,10 +130,10 @@
 }
 
 .cardContentRoot {
-  @media(max-width: 800px) {
+  @media (max-width: 800px) {
     padding: 0 !important;
 
-    &>div {
+    & > div {
       margin: 0 !important;
     }
 
@@ -157,7 +156,7 @@
 }
 
 .detailItem {
-  &>span:first-child {
+  & > span:first-child {
     display: inline-block;
     min-width: 200px;
     color: #6f747a;
@@ -169,7 +168,7 @@
     }
   }
 
-  &>span:last-child {
+  & > span:last-child {
     color: #47484a;
   }
 
@@ -177,8 +176,7 @@
 }
 
 .dataTypeSwitch {
-
-  &>span {
+  & > span {
     font-size: 12px;
     padding: 6px 7px;
     cursor: pointer;

@@ -10,6 +10,7 @@
   a {
     word-break: break-all;
   }
+
   a.hashlink {
     word-break: keep-all;
     white-space: nowrap;
@@ -87,6 +88,7 @@
   opacity: 0.8;
   border-radius: 6px;
   background-color: #75b5ef;
+
   span {
     color: inherit;
   }
@@ -115,9 +117,11 @@
 
 .fromTo {
   display: flex;
+
   span {
     max-width: 50%;
   }
+
   span:first-child {
     margin-right: 30px;
   }

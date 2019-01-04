@@ -19,10 +19,10 @@ enum ConfigPanel {
 
 /* eslint-disable no-use-before-define */
 interface ConfigDetailType {
-  panel: ConfigPanel
-  type: ConfigType
-  key: string
-  title: string
+  panel: ConfigPanel;
+  type: ConfigType;
+  key: string;
+  title: string;
 }
 /* eslint-enable no-use-before-define */
 
@@ -182,14 +182,21 @@ const ConfigPageDefault = {
 }
 
 interface ConfigPageProps {
-  config: Config
-  t: (key: string) => string
+  config: Config;
+  t: (key: string) => string;
 }
 
 interface ConfigPageState {
-  configs: PanelConfigs
-  inputTimeout?: any
-  saving?: boolean
+  configs: PanelConfigs;
+  inputTimeout?: any;
+  saving?: boolean;
 }
 
-export { ConfigPageProps, ConfigPageState, ConfigDetailType, ConfigType, ConfigPanel, ConfigPageDefault, }
+export {
+  ConfigPageProps,
+  ConfigPageState,
+  ConfigDetailType,
+  ConfigType,
+  ConfigPanel,
+  ConfigPageDefault,
+}
