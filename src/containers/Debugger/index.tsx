@@ -15,10 +15,7 @@ import { withObservables, } from '../../contexts/observables'
 import hideLoader from '../../utils/hideLoader'
 import { IContainerProps, TransactionFromServer, } from '../../typings'
 import { handleError, dismissError, } from '../../utils/handleError'
-import {
-  getLocalDebugAccounts,
-  setLocalDebugAccounts,
-} from '../../utils/accessLocalstorage'
+import { getLocalDebugAccounts, setLocalDebugAccounts, } from '../../utils/accessLocalstorage'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./debugger.scss')
@@ -51,38 +48,35 @@ interface DebuggerProps extends IContainerProps {}
 type DebuggerState = typeof initState
 
 class Debugger extends React.Component<DebuggerProps, DebuggerState> {
-  public readonly state = initState;
+  public readonly state = initState
   public componentDidMount () {
     hideLoader()
     this.loadDebugAccounts()
-    this.props.CITAObservables.newBlockByNumberSubject.subscribe(
-      (block: Chain.Block<Chain.TransactionInBlock>) => {
-        if (block.body.transactions.length) {
-          this.setState((state: DebuggerState) => {
-            const blocks = [...state.blocks, block, ]
-            const newTransactions = block.body.transactions.map(tx => {
-              const unsignedTx = unsigner(tx.content)
-              return {
-                blockNumber: block.number,
-                content: tx.content,
-                from: unsignedTx.sender.address,
-                quotaUsed: '',
-                hash: tx.hash,
-                timestamp: block.header.timestamp,
-                to: unsignedTx.transaction.to,
-                value: +unsignedTx.transaction.value.join(''),
-              }
-            })
-            const transactions = [...state.transactions, ...newTransactions, ]
-
+    this.props.CITAObservables.newBlockByNumberSubject.subscribe((block: Chain.Block<Chain.TransactionInBlock>) => {
+      if (block.body.transactions.length) {
+        this.setState((state: DebuggerState) => {
+          const blocks = [...state.blocks, block, ]
+          const newTransactions = block.body.transactions.map(tx => {
+            const unsignedTx = unsigner(tx.content)
             return {
-              blocks,
-              transactions,
+              blockNumber: block.number,
+              content: tx.content,
+              from: unsignedTx.sender.address,
+              quotaUsed: '',
+              hash: tx.hash,
+              timestamp: block.header.timestamp,
+              to: unsignedTx.transaction.to,
+              value: +unsignedTx.transaction.value,
             }
           })
-        }
+          const transactions = [...state.transactions, ...newTransactions, ]
+          return {
+            blocks,
+            transactions,
+          }
+        })
       }
-    )
+    })
     this.props.CITAObservables.newBlockByNumberSubject.subscribe(block => {
       // new block comes
       this.fetchAndUpdateAccounts(this.state.accounts)
@@ -91,27 +85,23 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
   public loadDebugAccounts = () => {
     let privateKeys = getLocalDebugAccounts()
     if (!privateKeys.length) {
-      privateKeys = process.env.DEBUG_ACCOUNTS
-        ? process.env.DEBUG_ACCOUNTS.split(',')
-        : []
+      privateKeys = process.env.DEBUG_ACCOUNTS ? process.env.DEBUG_ACCOUNTS.split(',') : []
     }
     const accounts = privateKeysToAccounts(privateKeys)
     this.setState({ accounts, privateKeysField: privateKeys.join(','), })
     this.fetchAndUpdateAccounts(accounts)
-  };
+  }
   public updateDebugAccounts = () => {
     const { privateKeysField, } = this.state
     try {
-      const privateKeys = Array.from(
-        new Set(privateKeysField.replace(/(\s|\n|\r)+/gi, '').split(','))
-      )
+      const privateKeys = Array.from(new Set(privateKeysField.replace(/(\s|\n|\r)+/gi, '').split(',')))
       const accounts = privateKeysToAccounts(privateKeys)
       setLocalDebugAccounts(privateKeys)
       this.fetchAndUpdateAccounts(accounts)
     } catch (err) {
       window.alert(err)
     }
-  };
+  }
   public fetchAndUpdateAccounts = (accounts: DebugAccount[]) => {
     accounts.forEach((account, idx) => {
       this.props.CITAObservables.getBalance({
@@ -125,16 +115,16 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
         })
       })
     })
-  };
+  }
   private handleInput = key => (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, } = e.currentTarget
     this.setState(state => ({
       ...state,
       [key]: value,
     }))
-  };
-  private handleError = handleError(this);
-  private dismissError = dismissError(this);
+  }
+  private handleError = handleError(this)
+  private dismissError = dismissError(this)
   public render () {
     return (
       <React.Fragment>
@@ -149,12 +139,7 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
           ) : null}
           <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
             <Grid item md={6} sm={12} xs={12}>
-              <StaticCard
-                icon="/microscopeIcons/blocks.png"
-                title="Blocks"
-                page="blocks"
-                className={styles.card}
-              >
+              <StaticCard icon="/microscopeIcons/blocks.png" title="Blocks" page="blocks" className={styles.card}>
                 <BlockList blocks={[...this.state.blocks, ].reverse()} />
               </StaticCard>
             </Grid>
@@ -165,17 +150,12 @@ class Debugger extends React.Component<DebuggerProps, DebuggerState> {
                 page="transactions"
                 className={styles.card}
               >
-                <TransactionList
-                  transactions={[...this.state.transactions, ].reverse()}
-                />
+                <TransactionList transactions={[...this.state.transactions, ].reverse()} />
               </StaticCard>
             </Grid>
           </Grid>
         </div>
-        <ErrorNotification
-          error={this.state.error}
-          dismissError={this.dismissError}
-        />
+        <ErrorNotification error={this.state.error} dismissError={this.dismissError} />
       </React.Fragment>
     )
   }
