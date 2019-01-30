@@ -27,18 +27,9 @@ const TransactionTypeInfo = {
 const Primary = ({ tx, t, symbol, }) => (
   <React.Fragment>
     <div>TX#:</div>
-    <Link
-      to={`/transaction/${tx.hash}`}
-      href={`/transaction/${tx.hash}`}
-      className={styles.hashlink}
-      title={tx.hash}
-    >
-      <span className={`${texts.addr} ${texts.addrStart}`}>
-        {tx.hash.slice(0, 23)}
-      </span>
-      <span className={`${texts.addr} ${texts.addrEnd}`}>
-        {tx.hash.slice(-4)}
-      </span>
+    <Link to={`/transaction/${tx.hash}`} href={`/transaction/${tx.hash}`} className={styles.hashlink} title={tx.hash}>
+      <span className={`${texts.addr} ${texts.addrStart}`}>{tx.hash.slice(0, 23)}</span>
+      <span className={`${texts.addr} ${texts.addrEnd}`}>{tx.hash.slice(-4)}</span>
     </Link>
     <span className={styles.time}>{formatedAgeString(tx.timestamp)}</span>
   </React.Fragment>
@@ -49,22 +40,14 @@ const Secondary = ({ tx, t, symbol, }) => (
     <div className={styles.fromTo}>
       <span className={texts.ellipsis}>
         <div>From</div>
-        <Link
-          to={`/account/${tx.from}`}
-          href={`/account/${tx.from}`}
-          className={texts.addr}
-        >
+        <Link to={`/account/${tx.from}`} href={`/account/${tx.from}`} className={texts.addr}>
           {tx.from}
         </Link>
       </span>
       {tx.type === TX_TYPE.CONTRACT_CREATION || tx.to === '0x' ? null : (
         <span className={texts.ellipsis}>
           <div>To</div>
-          <Link
-            to={`/account/${tx.to}`}
-            href={`/account/${tx.to}`}
-            className={texts.addr}
-          >
+          <Link to={`/account/${tx.to}`} href={`/account/${tx.to}`} className={texts.addr}>
             {tx.to}
           </Link>
         </span>
@@ -82,7 +65,7 @@ const Secondary = ({ tx, t, symbol, }) => (
 const TransactionCell = ({ tx, t, symbol, }) => (
   <ListItem key={tx.hash} classes={{ root: styles.listItemContainer, }}>
     <div>
-      <img src={TransactionTypeInfo[tx.type].icon} alt="" />
+      <img src={TransactionTypeInfo[tx.type] && TransactionTypeInfo[tx.type].icon} alt="" />
     </div>
     <ListItemText
       classes={{ primary: styles.primary, root: styles.listItemTextRoot, }}
@@ -98,9 +81,9 @@ export default translate('microscope')(
     t,
     symbol,
   }: {
-  transactions: TransactionFromServer[];
-  t: (key: string) => string;
-  symbol?: string;
+  transactions: TransactionFromServer[]
+  t: (key: string) => string
+  symbol?: string
   }) => (
     <List
       classes={{
