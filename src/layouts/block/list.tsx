@@ -10,12 +10,6 @@ import { hashHistory } from 'react-router'
 import { timePassed } from '../../utils/time'
 import { valueFormat } from '../../utils/hex'
 
-// import * as cacheAPI from '../../utils/cacheAPI';
-
-// import Pagination from 'rc-pagination'
-// import 'rc-pagination/assets/index.css'
-// import Select from 'rc-select'
-// import 'rc-select/assets/index.css'
 
 class BlockList extends React.Component<any, any> {
   componentDidMount() {
@@ -202,48 +196,6 @@ class BlockList extends React.Component<any, any> {
                 </tbody>
               </table>
               <div style={{ float: 'right' }}>
-                {
-                //   <Pagination
-                //   selectComponentClass={Select}
-                //   current={data.pageNum}
-                //   total={data.total}
-                //   showQuickJumper={{ goButton: <button>确定</button> }}
-                //   defaultPageSize={data.pageSize}
-                //   showSizeChanger={true}
-                //   onShowSizeChange={(page: number, pageSize: number) => {
-                //     hashHistory.push(
-                //       '/block/list?pageNum=' +
-                //         page +
-                //         '&pageSize=' +
-                //         pageSize +
-                //         '&blockFrom=' +
-                //         self.props.block.list.blockFrom +
-                //         '&blockTo=' +
-                //         self.props.block.list.blockTo +
-                //         '&transactionCountMin=' +
-                //         self.props.block.list.transactionCountMin +
-                //         '&transactionCountMax=' +
-                //         self.props.block.list.transactionCountMax
-                //     )
-                //   }}
-                //   onChange={(page: number, pageSize: number) => {
-                //     hashHistory.push(
-                //       '/block/list?pageNum=' +
-                //         page +
-                //         '&pageSize=' +
-                //         pageSize +
-                //         '&blockFrom=' +
-                //         self.props.block.list.blockFrom +
-                //         '&blockTo=' +
-                //         self.props.block.list.blockTo +
-                //         '&transactionCountMin=' +
-                //         self.props.block.list.transactionCountMin +
-                //         '&transactionCountMax=' +
-                //         self.props.block.list.transactionCountMax
-                //     )
-                //   }}
-                // />
-                }
                 <ul className="rc-pagination ">
                   {
                     hasPrev? 
